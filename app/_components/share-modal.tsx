@@ -518,6 +518,46 @@ async function waitForShareMapReady(root: HTMLElement, timeoutMs = 2500) {
   }
 }
 
+async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
+  const images = Array.from(root.querySelectorAll('img'));
+  if (images.length === 0) return;
+
+  await Promise.all(
+    images.map(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        return img.decode?.().catch(() => undefined) ?? Promise.resolve();
+      }
+
+      return new Promise<void>(resolve => {
+        let settled = false;
+        const done = () => {
+          if (settled) return;
+          settled = true;
+          resolve();
+        };
+
+        const timer = window.setTimeout(done, timeoutMs);
+        img.addEventListener(
+          'load',
+          () => {
+            window.clearTimeout(timer);
+            img.decode?.().then(done).catch(done);
+          },
+          { once: true }
+        );
+        img.addEventListener(
+          'error',
+          () => {
+            window.clearTimeout(timer);
+            done();
+          },
+          { once: true }
+        );
+      });
+    })
+  );
+}
+
 function ShareModal() {
   const { active, deactivate, shareInfo } = useShareModal();
 
@@ -526,9 +566,14 @@ function ShareModal() {
     if (!shareContent) return;
 
     await waitForShareMapReady(shareContent);
+    await waitForShareImages(shareContent);
 
     try {
-      const canvas = await html2canvas(shareContent, { scale: 3 });
+      const canvas = await html2canvas(shareContent, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true
+      });
       const link = document.createElement('a');
       link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
       link.href = canvas.toDataURL('image/png');
@@ -549,6 +594,19 @@ function ShareModal() {
       ));
     } catch (err) {
       console.error('Error capturing image:', err);
+      toast.custom(t => (
+        <div className="relative bg-red-100 w-full sm:w-[354px] p-5 border-red-500 border rounded-xl">
+          <div className="flex flex-row justify-between">
+            <Text color="critical">图片保存失败，请重试</Text>
+          </div>
+          <button
+            className="absolute top-2 right-3"
+            onClick={() => toast.dismiss(t)}
+          >
+            <Icon color="critical" size={4} svg={<X />} />
+          </button>
+        </div>
+      ));
     }
   }
 

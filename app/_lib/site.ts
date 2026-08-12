@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 
 export const siteUrl = 'https://toutai.online';
 export const siteName = '投胎模拟器';
-export const siteIcon = '/icons/app-icon.png';
+/** Favicon / OG / PWA large icon */
+export const siteIcon = '/icons/app-icon-512.png';
+/** Nav bar & share card small icon */
+export const siteIconSmall = '/icons/app-icon-64.png';
 export const chinaEditionTitle = `${siteName} 「中国版」`;
 export const worldEditionTitle = `${siteName} 「世界版」`;
 
@@ -106,8 +109,8 @@ export function createPageMetadata(pageKey: keyof typeof pages): Metadata {
       images: [
         {
           url: siteIcon,
-          width: 1024,
-          height: 1024,
+          width: 512,
+          height: 512,
           alt: siteName
         }
       ]
