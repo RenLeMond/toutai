@@ -16,7 +16,7 @@ export function CarrotIcon({ size = 28 }: { size?: number }) {
       aria-hidden="true"
       width={size}
       height={size}
-      className="shrink-0 rounded-[22%]"
+      className="shrink-0"
       loading="eager"
       decoding="async"
     />
