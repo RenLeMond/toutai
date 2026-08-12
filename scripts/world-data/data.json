@@ -1,0 +1,2279 @@
+{
+    "AD": {
+        "name_en": "Andorra",
+        "name_cn": "安道尔共和国",
+        "population": 81.94,
+        "birth_rate": 6.852,
+        "position": [
+            1.32,
+            42.31
+        ],
+        "continent": "EU"
+    },
+    "AE": {
+        "name_en": "United Arab Emirates",
+        "name_cn": "阿拉伯联合酋长国",
+        "population": 10986.4,
+        "birth_rate": 9.819,
+        "position": [
+            54.22,
+            24.28
+        ],
+        "continent": "AS"
+    },
+    "AF": {
+        "name_en": "Afghanistan",
+        "name_cn": "阿富汗",
+        "population": 42647.49,
+        "birth_rate": 35.007,
+        "position": [
+            67.709953,
+            33.93911
+        ],
+        "continent": "AS"
+    },
+    "AG": {
+        "name_en": "Antigua and Barbuda",
+        "name_cn": "安提瓜和巴布达",
+        "population": 93.77,
+        "birth_rate": 11.747,
+        "position": [
+            -61.48,
+            17.2
+        ],
+        "continent": "NA"
+    },
+    "AL": {
+        "name_en": "Albania",
+        "name_cn": "阿尔巴尼亚",
+        "population": 2377.13,
+        "birth_rate": 10.131,
+        "position": [
+            20.168331,
+            41.153332
+        ],
+        "continent": "EU"
+    },
+    "AM": {
+        "name_en": "Armenia",
+        "name_cn": "阿美尼亚",
+        "population": 3033.5,
+        "birth_rate": 11.1,
+        "position": [
+            44.31,
+            40.1
+        ],
+        "continent": "AS"
+    },
+    "BT": {
+        "name_en": "Bhutan",
+        "name_cn": "不丹",
+        "population": 791.52,
+        "birth_rate": 12.525,
+        "position": [
+            90.433601,
+            27.514162
+        ],
+        "continent": "AS"
+    },
+    "CV": {
+        "name_en": "Cabo Verde",
+        "name_cn": "佛得角",
+        "population": 524.88,
+        "birth_rate": 12.222,
+        "position": [
+            -23.34,
+            15.02
+        ],
+        "continent": "AF"
+    },
+    "BA": {
+        "name_en": "Bosnia and Herzegovina",
+        "name_cn": "波黑",
+        "population": 3164.25,
+        "birth_rate": 7.72,
+        "position": [
+            17.702648,
+            44.007665
+        ],
+        "continent": "EU"
+    },
+    "AW": {
+        "name_en": "Aruba",
+        "name_cn": "阿鲁巴",
+        "population": 108,
+        "birth_rate": 7.593,
+        "position": [
+            -70.02,
+            12.32
+        ],
+        "continent": "NA"
+    },
+    "AO": {
+        "name_en": "Angola",
+        "name_cn": "安哥拉",
+        "population": 37885.85,
+        "birth_rate": 37.158,
+        "position": [
+            17.873887,
+            -11.202692
+        ],
+        "continent": "AF"
+    },
+    "AR": {
+        "name_en": "Argentina",
+        "name_cn": "阿根廷",
+        "population": 45696.16,
+        "birth_rate": 11.086,
+        "position": [
+            -63.61667199999999,
+            -38.416097
+        ],
+        "continent": "SA"
+    },
+    "AT": {
+        "name_en": "Austria",
+        "name_cn": "奥地利",
+        "population": 9177.98,
+        "birth_rate": 8.4,
+        "position": [
+            14.550072,
+            47.516231
+        ],
+        "continent": "EU"
+    },
+    "AU": {
+        "name_en": "Australia",
+        "name_cn": "澳大利亚",
+        "population": 27194.29,
+        "birth_rate": 10.7,
+        "position": [
+            133.775136,
+            -25.274398
+        ],
+        "continent": "OA"
+    },
+    "AZ": {
+        "name_en": "Azerbaijan",
+        "name_cn": "阿塞拜疆",
+        "population": 10202.83,
+        "birth_rate": 10,
+        "position": [
+            47.576927,
+            40.143105
+        ],
+        "continent": "AS"
+    },
+    "BB": {
+        "name_en": "Barbados",
+        "name_cn": "巴巴多斯",
+        "population": 282.47,
+        "birth_rate": 11.117,
+        "position": [
+            -59.3,
+            13.05
+        ],
+        "continent": "NA"
+    },
+    "BD": {
+        "name_en": "Bangladesh",
+        "name_cn": "孟加拉国",
+        "population": 173562.36,
+        "birth_rate": 19.988,
+        "position": [
+            90.356331,
+            23.684994
+        ],
+        "continent": "AS"
+    },
+    "BE": {
+        "name_en": "Belgium",
+        "name_cn": "比利时",
+        "population": 11858.61,
+        "birth_rate": 9.2,
+        "position": [
+            4.469936,
+            50.503887
+        ],
+        "continent": "EU"
+    },
+    "BF": {
+        "name_en": "Burkina Faso",
+        "name_cn": "布基纳法索",
+        "population": 23548.78,
+        "birth_rate": 31.336,
+        "position": [
+            -1.561593,
+            12.238333
+        ],
+        "continent": "AF"
+    },
+    "BG": {
+        "name_en": "Bulgaria",
+        "name_cn": "保加利亚",
+        "population": 6441.42,
+        "birth_rate": 8.3,
+        "position": [
+            25.48583,
+            42.733883
+        ],
+        "continent": "EU"
+    },
+    "BH": {
+        "name_en": "Bahrain",
+        "name_cn": "巴林",
+        "population": 1588.67,
+        "birth_rate": 12.033,
+        "position": [
+            50.3,
+            26.1
+        ],
+        "continent": "AS"
+    },
+    "BI": {
+        "name_en": "Burundi",
+        "name_cn": "布隆迪",
+        "population": 14047.79,
+        "birth_rate": 33.211,
+        "position": [
+            29.918886,
+            -3.373056
+        ],
+        "continent": "AF"
+    },
+    "BJ": {
+        "name_en": "Benin",
+        "name_cn": "贝宁",
+        "population": 14462.72,
+        "birth_rate": 33.419,
+        "position": [
+            2.315834,
+            9.30769
+        ],
+        "continent": "AF"
+    },
+    "BM": {
+        "name_en": "Bermuda",
+        "name_cn": "百慕大群岛",
+        "population": 64.64,
+        "birth_rate": 7.92,
+        "position": [
+            -64.765816,
+            32.289895
+        ],
+        "continent": "NA"
+    },
+    "BN": {
+        "name_en": "Brunei Darussalam",
+        "name_cn": "文莱",
+        "population": 462.72,
+        "birth_rate": 13.328,
+        "position": [
+            114.727669,
+            4.535277
+        ],
+        "continent": "AS"
+    },
+    "BO": {
+        "name_en": "Bolivia",
+        "name_cn": "玻利维亚",
+        "population": 12413.32,
+        "birth_rate": 21.026,
+        "position": [
+            -63.58865299999999,
+            -16.290154
+        ],
+        "continent": "SA"
+    },
+    "BR": {
+        "name_en": "Brazil",
+        "name_cn": "巴西",
+        "population": 211998.57,
+        "birth_rate": 12.133,
+        "position": [
+            -51.92528,
+            -14.235004
+        ],
+        "continent": "SA"
+    },
+    "BS": {
+        "name_en": "Bahamas The",
+        "name_cn": "巴哈马",
+        "population": 401.28,
+        "birth_rate": 10.817,
+        "position": [
+            -77.39627999999999,
+            25.03428
+        ],
+        "continent": "NA"
+    },
+    "BW": {
+        "name_en": "Botswana",
+        "name_cn": "博茨瓦纳",
+        "population": 2521.14,
+        "birth_rate": 24.361,
+        "position": [
+            24.684866,
+            -22.328474
+        ],
+        "continent": "AF"
+    },
+    "BY": {
+        "name_en": "Belarus",
+        "name_cn": "白俄罗斯",
+        "population": 9132.63,
+        "birth_rate": 7.031,
+        "position": [
+            27.953389,
+            53.709807
+        ],
+        "continent": "EU"
+    },
+    "BZ": {
+        "name_en": "Belize",
+        "name_cn": "伯利兹",
+        "population": 417.07,
+        "birth_rate": 18.051,
+        "position": [
+            -88.49765,
+            17.189877
+        ],
+        "continent": "NA"
+    },
+    "CA": {
+        "name_en": "Canada",
+        "name_cn": "加拿大",
+        "population": 41262.33,
+        "birth_rate": 8.9,
+        "position": [
+            -106.346771,
+            56.130366
+        ],
+        "continent": "NA"
+    },
+    "KY": {
+        "name_en": "Cayman Islands",
+        "name_cn": "开曼群岛",
+        "population": 74.46,
+        "birth_rate": 11.56,
+        "position": [
+            -81.24,
+            19.2
+        ],
+        "continent": "NA"
+    },
+    "XC": {
+        "name_en": "Channel Islands",
+        "name_cn": "海峡群岛",
+        "population": 168.13,
+        "birth_rate": 8.2,
+        "position": [
+            -2.15306,
+            49.227503
+        ],
+        "continent": "EU"
+    },
+    "CF": {
+        "name_en": "Central African Republic",
+        "name_cn": "中非共和国",
+        "population": 5330.69,
+        "birth_rate": 46.193,
+        "position": [
+            20.939444,
+            6.611110999999999
+        ],
+        "continent": "AF"
+    },
+    "CG": {
+        "name_en": "Congo Rep.",
+        "name_cn": "刚果共和国",
+        "population": 6332.96,
+        "birth_rate": 30.424,
+        "position": [
+            15.827659,
+            -0.228021
+        ],
+        "continent": "AF"
+    },
+    "CD": {
+        "name_en": "Congo Dem. Rep.",
+        "name_cn": "刚果民主共和国",
+        "population": 109276.27,
+        "birth_rate": 40.885,
+        "position": [
+            21.758664,
+            -4.038333
+        ],
+        "continent": "AF"
+    },
+    "CH": {
+        "name_en": "Switzerland",
+        "name_cn": "瑞士",
+        "population": 9005.58,
+        "birth_rate": 8.7,
+        "position": [
+            8.227511999999999,
+            46.818188
+        ],
+        "continent": "EU"
+    },
+    "HR": {
+        "name_en": "Croatia",
+        "name_cn": "克罗地亚",
+        "population": 3866.2,
+        "birth_rate": 8.3,
+        "position": [
+            15.2,
+            45.1
+        ],
+        "continent": "EU"
+    },
+    "GQ": {
+        "name_en": "Equatorial Guinea",
+        "name_cn": "赤道几内亚",
+        "population": 1892.52,
+        "birth_rate": 29.994,
+        "position": [
+            10.267895,
+            1.650801
+        ],
+        "continent": "AF"
+    },
+    "KM": {
+        "name_en": "Comoros",
+        "name_cn": "科摩罗",
+        "population": 866.63,
+        "birth_rate": 28.232,
+        "position": [
+            43.872219,
+            -11.875001
+        ],
+        "continent": "AF"
+    },
+    "ER": {
+        "name_en": "Eritrea",
+        "name_cn": "厄立特里亚",
+        "population": 3535.6,
+        "birth_rate": 28.719,
+        "position": [
+            39.782334,
+            15.179384
+        ],
+        "continent": "AF"
+    },
+    "FO": {
+        "name_en": "Faroe Islands",
+        "name_cn": "法罗群岛",
+        "population": 54.64,
+        "birth_rate": 10.8,
+        "position": [
+            -6.56,
+            62.05
+        ],
+        "continent": "EU"
+    },
+    "CL": {
+        "name_en": "Chile",
+        "name_cn": "智利",
+        "population": 19764.77,
+        "birth_rate": 8.723,
+        "position": [
+            -71.542969,
+            -35.675147
+        ],
+        "continent": "SA"
+    },
+    "CM": {
+        "name_en": "Cameroon",
+        "name_cn": "喀麦隆",
+        "population": 29123.74,
+        "birth_rate": 33.344,
+        "position": [
+            12.354722,
+            7.369721999999999
+        ],
+        "continent": "AF"
+    },
+    "CN": {
+        "name_en": "China",
+        "name_cn": "中国",
+        "population": 1408975,
+        "birth_rate": 6.77,
+        "position": [
+            104.195397,
+            35.86166
+        ],
+        "continent": "AS"
+    },
+    "CO": {
+        "name_en": "Colombia",
+        "name_cn": "哥伦比亚",
+        "population": 52886.36,
+        "birth_rate": 13.251,
+        "position": [
+            -74.297333,
+            4.570868
+        ],
+        "continent": "SA"
+    },
+    "CR": {
+        "name_en": "Costa Rica",
+        "name_cn": "哥斯达黎加",
+        "population": 5129.91,
+        "birth_rate": 9.991,
+        "position": [
+            -83.753428,
+            9.748916999999999
+        ],
+        "continent": "NA"
+    },
+    "CS": {
+        "name_en": "Czechia",
+        "name_cn": "捷克",
+        "population": 10905.03,
+        "birth_rate": 7.7,
+        "position": [
+            14.22,
+            50.05
+        ],
+        "continent": "EU"
+    },
+    "CU": {
+        "name_en": "Cuba",
+        "name_cn": "古巴",
+        "population": 10979.78,
+        "birth_rate": 8.62,
+        "position": [
+            -77.781167,
+            21.521757
+        ],
+        "continent": "NA"
+    },
+    "CY": {
+        "name_en": "Cyprus",
+        "name_cn": "塞浦路斯",
+        "population": 1358.28,
+        "birth_rate": 10.517,
+        "position": [
+            33.429859,
+            35.126413
+        ],
+        "continent": "AS"
+    },
+    "DE": {
+        "name_en": "Germany",
+        "name_cn": "德国",
+        "population": 83516.59,
+        "birth_rate": 8.1,
+        "position": [
+            10.451526,
+            51.165691
+        ],
+        "continent": "EU"
+    },
+    "DJ": {
+        "name_en": "Djibouti",
+        "name_cn": "吉布提",
+        "population": 1168.72,
+        "birth_rate": 20.931,
+        "position": [
+            42.590275,
+            11.825138
+        ],
+        "continent": "AF"
+    },
+    "DK": {
+        "name_en": "Denmark",
+        "name_cn": "丹麦",
+        "population": 5976.99,
+        "birth_rate": 9.5,
+        "position": [
+            9.501785,
+            56.26392
+        ],
+        "continent": "EU"
+    },
+    "DO": {
+        "name_en": "Dominican Republic",
+        "name_cn": "多米尼加共和国",
+        "population": 11427.56,
+        "birth_rate": 17.62,
+        "position": [
+            -69.59,
+            18.3
+        ],
+        "continent": "NA"
+    },
+    "DZ": {
+        "name_en": "Algeria",
+        "name_cn": "阿尔及利亚",
+        "population": 46814.31,
+        "birth_rate": 18.837,
+        "position": [
+            1.659626,
+            28.033886
+        ],
+        "continent": "AF"
+    },
+    "EC": {
+        "name_en": "Ecuador",
+        "name_cn": "厄瓜多尔",
+        "population": 18135.48,
+        "birth_rate": 14.82,
+        "position": [
+            -78.18340599999999,
+            -1.831239
+        ],
+        "continent": "SA"
+    },
+    "EE": {
+        "name_en": "Estonia",
+        "name_cn": "爱沙尼亚",
+        "population": 1372.34,
+        "birth_rate": 7.1,
+        "position": [
+            25.013607,
+            58.595272
+        ],
+        "continent": "EU"
+    },
+    "EG": {
+        "name_en": "Egypt Arab Rep.",
+        "name_cn": "埃及",
+        "population": 116538.26,
+        "birth_rate": 20.915,
+        "position": [
+            30.802498,
+            26.820553
+        ],
+        "continent": "AF"
+    },
+    "ES": {
+        "name_en": "Spain",
+        "name_cn": "西班牙",
+        "population": 48848.84,
+        "birth_rate": 6.5,
+        "position": [
+            -3.74922,
+            40.46366700000001
+        ],
+        "continent": "EU"
+    },
+    "ET": {
+        "name_en": "Ethiopia",
+        "name_cn": "埃塞俄比亚",
+        "population": 132059.77,
+        "birth_rate": 31.469,
+        "position": [
+            40.489673,
+            9.145000000000001
+        ],
+        "continent": "AF"
+    },
+    "FI": {
+        "name_en": "Finland",
+        "name_cn": "芬兰",
+        "population": 5619.91,
+        "birth_rate": 7.8,
+        "position": [
+            25.748151,
+            61.92410999999999
+        ],
+        "continent": "EU"
+    },
+    "FJ": {
+        "name_en": "Fiji",
+        "name_cn": "斐济",
+        "population": 928.78,
+        "birth_rate": 17.864,
+        "position": [
+            178.3,
+            -18.06
+        ],
+        "continent": "OA"
+    },
+    "FR": {
+        "name_en": "France",
+        "name_cn": "法国",
+        "population": 68551.65,
+        "birth_rate": 9.7,
+        "position": [
+            2.213749,
+            46.227638
+        ],
+        "continent": "EU"
+    },
+    "GA": {
+        "name_en": "Gabon",
+        "name_cn": "加蓬",
+        "population": 2538.95,
+        "birth_rate": 27.127,
+        "position": [
+            11.609444,
+            -0.803689
+        ],
+        "continent": "AF"
+    },
+    "GB": {
+        "name_en": "United Kingdom",
+        "name_cn": "英国",
+        "population": 69281,
+        "birth_rate": 9.892,
+        "position": [
+            -3.435973,
+            55.378051
+        ],
+        "continent": "EU"
+    },
+    "GD": {
+        "name_en": "Grenada",
+        "name_cn": "格林纳达",
+        "population": 117.21,
+        "birth_rate": 11.477,
+        "position": [
+            -61.721782,
+            12.08328
+        ],
+        "continent": "NA"
+    },
+    "GE": {
+        "name_en": "Georgia",
+        "name_cn": "格鲁吉亚",
+        "population": 3812.52,
+        "birth_rate": 11.289,
+        "position": [
+            43.711615,
+            41.999919
+        ],
+        "continent": "AS"
+    },
+    "GH": {
+        "name_en": "Ghana",
+        "name_cn": "加纳",
+        "population": 34427.41,
+        "birth_rate": 25.92,
+        "position": [
+            -1.023194,
+            7.946527
+        ],
+        "continent": "AF"
+    },
+    "GM": {
+        "name_en": "Gambia The",
+        "name_cn": "冈比亚",
+        "population": 2759.99,
+        "birth_rate": 29.857,
+        "position": [
+            -15.310139,
+            13.443182
+        ],
+        "continent": "AF"
+    },
+    "GN": {
+        "name_en": "Guinea",
+        "name_cn": "几内亚",
+        "population": 14754.79,
+        "birth_rate": 33.325,
+        "position": [
+            -9.696645,
+            9.945587
+        ],
+        "continent": "AF"
+    },
+    "GR": {
+        "name_en": "Greece",
+        "name_cn": "希腊",
+        "population": 10405.13,
+        "birth_rate": 6.6,
+        "position": [
+            21.824312,
+            39.074208
+        ],
+        "continent": "EU"
+    },
+    "GT": {
+        "name_en": "Guatemala",
+        "name_cn": "危地马拉",
+        "population": 18406.36,
+        "birth_rate": 20.619,
+        "position": [
+            -90.23075899999999,
+            15.783471
+        ],
+        "continent": "NA"
+    },
+    "GU": {
+        "name_en": "Guam",
+        "name_cn": "关岛",
+        "population": 167.78,
+        "birth_rate": 17.342,
+        "position": [
+            144.747738,
+            13.440083
+        ],
+        "continent": "OA"
+    },
+    "GY": {
+        "name_en": "Guyana",
+        "name_cn": "圭亚那",
+        "population": 831.09,
+        "birth_rate": 19.883,
+        "position": [
+            -58.93018,
+            4.860416
+        ],
+        "continent": "SA"
+    },
+    "HK": {
+        "name_en": "Hong Kong SAR China",
+        "name_cn": "香港(中国)",
+        "population": 7524.1,
+        "birth_rate": 4.9,
+        "position": [
+            114.213137,
+            22.279452
+        ],
+        "continent": "AS"
+    },
+    "HN": {
+        "name_en": "Honduras",
+        "name_cn": "洪都拉斯",
+        "population": 10825.7,
+        "birth_rate": 21.649,
+        "position": [
+            -86.241905,
+            15.199999
+        ],
+        "continent": "NA"
+    },
+    "HT": {
+        "name_en": "Haiti",
+        "name_cn": "海地",
+        "population": 11772.56,
+        "birth_rate": 21.944,
+        "position": [
+            -72.285215,
+            18.971187
+        ],
+        "continent": "NA"
+    },
+    "HU": {
+        "name_en": "Hungary",
+        "name_cn": "匈牙利",
+        "population": 9562.07,
+        "birth_rate": 8.2,
+        "position": [
+            19.503304,
+            47.162494
+        ],
+        "continent": "EU"
+    },
+    "ID": {
+        "name_en": "Indonesia",
+        "name_cn": "印度尼西亚",
+        "population": 283487.93,
+        "birth_rate": 15.762,
+        "position": [
+            106.515414,
+            -6.10304
+        ],
+        "continent": "AS"
+    },
+    "IE": {
+        "name_en": "Ireland",
+        "name_cn": "爱尔兰",
+        "population": 5395.79,
+        "birth_rate": 10,
+        "position": [
+            -8.24389,
+            53.41291
+        ],
+        "continent": "EU"
+    },
+    "IL": {
+        "name_en": "Israel",
+        "name_cn": "以色列",
+        "population": 10002.2,
+        "birth_rate": 18.6,
+        "position": [
+            34.851612,
+            31.046051
+        ],
+        "continent": "AS"
+    },
+    "IN": {
+        "name_en": "India",
+        "name_cn": "印度",
+        "population": 1450935.79,
+        "birth_rate": 15.981,
+        "position": [
+            78.96288,
+            20.593684
+        ],
+        "continent": "AS"
+    },
+    "IQ": {
+        "name_en": "Iraq",
+        "name_cn": "伊拉克",
+        "population": 46042.02,
+        "birth_rate": 25.58,
+        "position": [
+            43.679291,
+            33.223191
+        ],
+        "continent": "AS"
+    },
+    "IR": {
+        "name_en": "Iran Islamic Rep.",
+        "name_cn": "伊朗",
+        "population": 91567.74,
+        "birth_rate": 12.571,
+        "position": [
+            53.688046,
+            32.427908
+        ],
+        "continent": "AS"
+    },
+    "IS": {
+        "name_en": "Iceland",
+        "name_cn": "冰岛",
+        "population": 386.51,
+        "birth_rate": 11.2,
+        "position": [
+            -19.020835,
+            64.963051
+        ],
+        "continent": "EU"
+    },
+    "IT": {
+        "name_en": "Italy",
+        "name_cn": "意大利",
+        "population": 58952.7,
+        "birth_rate": 6.3,
+        "position": [
+            12.56738,
+            41.87194
+        ],
+        "continent": "EU"
+    },
+    "CI": {
+        "name_en": "Cote d'Ivoire",
+        "name_cn": "科特迪瓦",
+        "population": 31934.23,
+        "birth_rate": 31.564,
+        "position": [
+            -5.17,
+            6.49
+        ],
+        "continent": "AF"
+    },
+    "JM": {
+        "name_en": "Jamaica",
+        "name_cn": "牙买加",
+        "population": 2839.18,
+        "birth_rate": 11.45,
+        "position": [
+            -77.297508,
+            18.109581
+        ],
+        "continent": "NA"
+    },
+    "JO": {
+        "name_en": "Jordan",
+        "name_cn": "约旦",
+        "population": 11552.88,
+        "birth_rate": 20.452,
+        "position": [
+            36.238414,
+            30.585164
+        ],
+        "continent": "AS"
+    },
+    "JP": {
+        "name_en": "Japan",
+        "name_cn": "日本",
+        "population": 123975.37,
+        "birth_rate": 5.7,
+        "position": [
+            138.252924,
+            36.204824
+        ],
+        "continent": "AS"
+    },
+    "KE": {
+        "name_en": "Kenya",
+        "name_cn": "肯尼亚",
+        "population": 56432.94,
+        "birth_rate": 26.968,
+        "position": [
+            37.906193,
+            -0.023559
+        ],
+        "continent": "AF"
+    },
+    "KG": {
+        "name_en": "Kyrgyz Republic",
+        "name_cn": "吉尔吉斯坦",
+        "population": 7221.87,
+        "birth_rate": 19.4,
+        "position": [
+            74.46,
+            42.54
+        ],
+        "continent": "AS"
+    },
+    "KH": {
+        "name_en": "Cambodia",
+        "name_cn": "柬埔寨",
+        "population": 17638.8,
+        "birth_rate": 20.309,
+        "position": [
+            104.990963,
+            12.565679
+        ],
+        "continent": "AS"
+    },
+    "KP": {
+        "name_en": "Korea Dem. People's Rep.",
+        "name_cn": "朝鲜",
+        "population": 26498.82,
+        "birth_rate": 12.858,
+        "position": [
+            127.510093,
+            40.339852
+        ],
+        "continent": "AS"
+    },
+    "KR": {
+        "name_en": "Korea Rep.",
+        "name_cn": "韩国",
+        "population": 51751.07,
+        "birth_rate": 4.7,
+        "position": [
+            127.766922,
+            35.907757
+        ],
+        "continent": "AS"
+    },
+    "KW": {
+        "name_en": "Kuwait",
+        "name_cn": "科威特",
+        "population": 4897.26,
+        "birth_rate": 10.02,
+        "position": [
+            47.481766,
+            29.31166
+        ],
+        "continent": "AS"
+    },
+    "KZ": {
+        "name_en": "Kazakhstan",
+        "name_cn": "哈萨克斯坦",
+        "population": 20592.57,
+        "birth_rate": 19.521,
+        "position": [
+            66.923684,
+            48.019573
+        ],
+        "continent": "AS"
+    },
+    "LA": {
+        "name_en": "Lao PDR",
+        "name_cn": "老挝",
+        "population": 7769.82,
+        "birth_rate": 20.933,
+        "position": [
+            102.495496,
+            19.85627
+        ],
+        "continent": "AS"
+    },
+    "LB": {
+        "name_en": "Lebanon",
+        "name_cn": "黎巴嫩",
+        "population": 5805.96,
+        "birth_rate": 15.958,
+        "position": [
+            35.862285,
+            33.854721
+        ],
+        "continent": "AS"
+    },
+    "LC": {
+        "name_en": "St. Lucia",
+        "name_cn": "圣卢西亚",
+        "population": 179.74,
+        "birth_rate": 11.209,
+        "position": [
+            -60.58,
+            14.02
+        ],
+        "continent": "NA"
+    },
+    "LI": {
+        "name_en": "Liechtenstein",
+        "name_cn": "列支敦士登",
+        "population": 40.45,
+        "birth_rate": 8.4,
+        "position": [
+            9.31,
+            47.08
+        ],
+        "continent": "EU"
+    },
+    "LK": {
+        "name_en": "Sri Lanka",
+        "name_cn": "斯里兰卡",
+        "population": 21916,
+        "birth_rate": 10.1,
+        "position": [
+            80.77179699999999,
+            7.873053999999999
+        ],
+        "continent": "AS"
+    },
+    "LR": {
+        "name_en": "Liberia",
+        "name_cn": "利比里亚",
+        "population": 5612.82,
+        "birth_rate": 30.577,
+        "position": [
+            -9.429499000000002,
+            6.428055
+        ],
+        "continent": "AF"
+    },
+    "LS": {
+        "name_en": "Lesotho",
+        "name_cn": "莱索托",
+        "population": 2337.42,
+        "birth_rate": 23.762,
+        "position": [
+            28.233608,
+            -29.609988
+        ],
+        "continent": "AF"
+    },
+    "LT": {
+        "name_en": "Lithuania",
+        "name_cn": "立陶宛",
+        "population": 2888.28,
+        "birth_rate": 6.6,
+        "position": [
+            23.881275,
+            55.169438
+        ],
+        "continent": "EU"
+    },
+    "LU": {
+        "name_en": "Luxembourg",
+        "name_cn": "卢森堡",
+        "population": 677.01,
+        "birth_rate": 9.5,
+        "position": [
+            6.129582999999999,
+            49.815273
+        ],
+        "continent": "EU"
+    },
+    "LV": {
+        "name_en": "Latvia",
+        "name_cn": "拉脱维亚",
+        "population": 1866.12,
+        "birth_rate": 6.9,
+        "position": [
+            24.603189,
+            56.879635
+        ],
+        "continent": "EU"
+    },
+    "LY": {
+        "name_en": "Libya",
+        "name_cn": "利比亚",
+        "population": 7381.02,
+        "birth_rate": 16.495,
+        "position": [
+            17.228331,
+            26.3351
+        ],
+        "continent": "AF"
+    },
+    "MA": {
+        "name_en": "Morocco",
+        "name_cn": "摩洛哥",
+        "population": 38081.17,
+        "birth_rate": 16.402,
+        "position": [
+            -7.092619999999999,
+            31.791702
+        ],
+        "continent": "AF"
+    },
+    "MC": {
+        "name_en": "Monaco",
+        "name_cn": "摩纳哥",
+        "population": 38.63,
+        "birth_rate": 9.558,
+        "position": [
+            7.414268,
+            43.735708
+        ],
+        "continent": "EU"
+    },
+    "MD": {
+        "name_en": "Moldova",
+        "name_cn": "摩尔多瓦",
+        "population": 2402.31,
+        "birth_rate": 10.59,
+        "position": [
+            28.369885,
+            47.411631
+        ],
+        "continent": "EU"
+    },
+    "MG": {
+        "name_en": "Madagascar",
+        "name_cn": "马达加斯加",
+        "population": 31964.96,
+        "birth_rate": 31.714,
+        "position": [
+            46.869107,
+            -18.766947
+        ],
+        "continent": "AF"
+    },
+    "ML": {
+        "name_en": "Mali",
+        "name_cn": "马里",
+        "population": 24478.6,
+        "birth_rate": 39.532,
+        "position": [
+            -3.996166,
+            17.570692
+        ],
+        "continent": "AF"
+    },
+    "MM": {
+        "name_en": "Myanmar",
+        "name_cn": "缅甸",
+        "population": 54500.09,
+        "birth_rate": 16.464,
+        "position": [
+            95.956223,
+            21.913965
+        ],
+        "continent": "AS"
+    },
+    "MN": {
+        "name_en": "Mongolia",
+        "name_cn": "蒙古",
+        "population": 3524.79,
+        "birth_rate": 16.9,
+        "position": [
+            103.846656,
+            46.862496
+        ],
+        "continent": "AS"
+    },
+    "MO": {
+        "name_en": "Macao SAR China",
+        "name_cn": "澳门（中国）",
+        "population": 687,
+        "birth_rate": 5.3,
+        "position": [
+            113.578035,
+            22.14523
+        ],
+        "continent": "AS"
+    },
+    "MT": {
+        "name_en": "Malta",
+        "name_cn": "马耳他",
+        "population": 568.85,
+        "birth_rate": 7.7,
+        "position": [
+            14.31,
+            35.54
+        ],
+        "continent": "EU"
+    },
+    "MP": {
+        "name_en": "Northern Mariana Islands",
+        "name_cn": "马里亚那群岛",
+        "population": 44.28,
+        "birth_rate": 12.107,
+        "position": [
+            145.45,
+            15.12
+        ],
+        "continent": "OA"
+    },
+    "MQ": {
+        "name_en": "St. Martin (French part)",
+        "name_cn": "马提尼克",
+        "population": 26.13,
+        "birth_rate": 15.045,
+        "position": [
+            -61.02,
+            14.36
+        ],
+        "continent": "NA"
+    },
+    "MU": {
+        "name_en": "Mauritius",
+        "name_cn": "毛里求斯",
+        "population": 1245.78,
+        "birth_rate": 10.3,
+        "position": [
+            57.559051,
+            -20.246695
+        ],
+        "continent": "AF"
+    },
+    "MV": {
+        "name_en": "Maldives",
+        "name_cn": "马尔代夫",
+        "population": 527.8,
+        "birth_rate": 10.587,
+        "position": [
+            73.28,
+            4.0
+        ],
+        "continent": "AS"
+    },
+    "MW": {
+        "name_en": "Malawi",
+        "name_cn": "马拉维",
+        "population": 21655.29,
+        "birth_rate": 31.143,
+        "position": [
+            34.301525,
+            -13.254308
+        ],
+        "continent": "AF"
+    },
+    "MX": {
+        "name_en": "Mexico",
+        "name_cn": "墨西哥",
+        "population": 130861.01,
+        "birth_rate": 15.464,
+        "position": [
+            -102.552784,
+            23.634501
+        ],
+        "continent": "NA"
+    },
+    "MY": {
+        "name_en": "Malaysia",
+        "name_cn": "马来西亚",
+        "population": 35557.67,
+        "birth_rate": 12.362,
+        "position": [
+            101.975766,
+            4.210484
+        ],
+        "continent": "AS"
+    },
+    "MZ": {
+        "name_en": "Mozambique",
+        "name_cn": "莫桑比克",
+        "population": 34631.77,
+        "birth_rate": 37.028,
+        "position": [
+            35.529562,
+            -18.665695
+        ],
+        "continent": "AF"
+    },
+    "NA": {
+        "name_en": "Namibia",
+        "name_cn": "纳米比亚",
+        "population": 3030.13,
+        "birth_rate": 25.891,
+        "position": [
+            18.49041,
+            -22.95764
+        ],
+        "continent": "AF"
+    },
+    "NE": {
+        "name_en": "Niger",
+        "name_cn": "尼日尔",
+        "population": 27032.41,
+        "birth_rate": 41.42,
+        "position": [
+            8.081666,
+            17.607789
+        ],
+        "continent": "AF"
+    },
+    "NG": {
+        "name_en": "Nigeria",
+        "name_cn": "尼日利亚",
+        "population": 232679.48,
+        "birth_rate": 32.493,
+        "position": [
+            8.675277,
+            9.081999
+        ],
+        "continent": "AF"
+    },
+    "NI": {
+        "name_en": "Nicaragua",
+        "name_cn": "尼加拉瓜",
+        "population": 6916.14,
+        "birth_rate": 19.141,
+        "position": [
+            -85.207229,
+            12.865416
+        ],
+        "continent": "NA"
+    },
+    "NL": {
+        "name_en": "Netherlands",
+        "name_cn": "荷兰",
+        "population": 17993.49,
+        "birth_rate": 9.2,
+        "position": [
+            5.291265999999999,
+            52.132633
+        ],
+        "continent": "EU"
+    },
+    "NO": {
+        "name_en": "Norway",
+        "name_cn": "挪威",
+        "population": 5572.28,
+        "birth_rate": 9.7,
+        "position": [
+            8.468945999999999,
+            60.47202399999999
+        ],
+        "continent": "EU"
+    },
+    "NP": {
+        "name_en": "Nepal",
+        "name_cn": "尼泊尔",
+        "population": 29651.05,
+        "birth_rate": 18.962,
+        "position": [
+            84.12400799999999,
+            28.394857
+        ],
+        "continent": "AS"
+    },
+    "NZ": {
+        "name_en": "New Zealand",
+        "name_cn": "新西兰",
+        "population": 5290,
+        "birth_rate": 11.03,
+        "position": [
+            174.885971,
+            -40.900557
+        ],
+        "continent": "OA"
+    },
+    "OM": {
+        "name_en": "Oman",
+        "name_cn": "阿曼",
+        "population": 5281.54,
+        "birth_rate": 16.778,
+        "position": [
+            55.923255,
+            21.512583
+        ],
+        "continent": "AS"
+    },
+    "PA": {
+        "name_en": "Panama",
+        "name_cn": "巴拿马",
+        "population": 4515.58,
+        "birth_rate": 15.867,
+        "position": [
+            -80.782127,
+            8.537981
+        ],
+        "continent": "NA"
+    },
+    "PE": {
+        "name_en": "Peru",
+        "name_cn": "秘鲁",
+        "population": 34217.85,
+        "birth_rate": 15.751,
+        "position": [
+            -75.015152,
+            -9.189967
+        ],
+        "continent": "SA"
+    },
+    "PF": {
+        "name_en": "French Polynesia",
+        "name_cn": "法属玻利尼西亚",
+        "population": 281.81,
+        "birth_rate": 10.688,
+        "position": [
+            -149.34,
+            -17.32
+        ],
+        "continent": "OA"
+    },
+    "PG": {
+        "name_en": "Papua New Guinea",
+        "name_cn": "巴布亚新几内亚",
+        "population": 10576.5,
+        "birth_rate": 24.291,
+        "position": [
+            143.95555,
+            -6.314992999999999
+        ],
+        "continent": "OA"
+    },
+    "PH": {
+        "name_en": "Philippines",
+        "name_cn": "菲律宾",
+        "population": 115843.67,
+        "birth_rate": 15.894,
+        "position": [
+            121.774017,
+            12.879721
+        ],
+        "continent": "AS"
+    },
+    "PK": {
+        "name_en": "Pakistan",
+        "name_cn": "巴基斯坦",
+        "population": 251269.16,
+        "birth_rate": 27.412,
+        "position": [
+            69.34511599999999,
+            30.375321
+        ],
+        "continent": "AS"
+    },
+    "PL": {
+        "name_en": "Poland",
+        "name_cn": "波兰",
+        "population": 36559.23,
+        "birth_rate": 6.9,
+        "position": [
+            19.145136,
+            51.919438
+        ],
+        "continent": "EU"
+    },
+    "PR": {
+        "name_en": "Puerto Rico",
+        "name_cn": "波多黎各",
+        "population": 3202.52,
+        "birth_rate": 5.7,
+        "position": [
+            -66.590149,
+            18.220833
+        ],
+        "continent": "NA"
+    },
+    "PT": {
+        "name_en": "Portugal",
+        "name_cn": "葡萄牙",
+        "population": 10694.68,
+        "birth_rate": 7.9,
+        "position": [
+            -8.224454,
+            39.39987199999999
+        ],
+        "continent": "EU"
+    },
+    "PY": {
+        "name_en": "Paraguay",
+        "name_cn": "巴拉圭",
+        "population": 6929.15,
+        "birth_rate": 19.728,
+        "position": [
+            -58.443832,
+            -23.442503
+        ],
+        "continent": "SA"
+    },
+    "QA": {
+        "name_en": "Qatar",
+        "name_cn": "卡塔尔",
+        "population": 2857.82,
+        "birth_rate": 9.524,
+        "position": [
+            51.183884,
+            25.354826
+        ],
+        "continent": "AS"
+    },
+    "RO": {
+        "name_en": "Romania",
+        "name_cn": "罗马尼亚",
+        "population": 19051.8,
+        "birth_rate": 7.5,
+        "position": [
+            24.96676,
+            45.943161
+        ],
+        "continent": "EU"
+    },
+    "RU": {
+        "name_en": "Russian Federation",
+        "name_cn": "俄罗斯",
+        "population": 143669.65,
+        "birth_rate": 8.4,
+        "position": [
+            105.318756,
+            61.52401
+        ],
+        "continent": "EU"
+    },
+    "SA": {
+        "name_en": "Saudi Arabia",
+        "name_cn": "沙特阿拉伯",
+        "population": 35300.28,
+        "birth_rate": 16.495,
+        "position": [
+            45.079162,
+            23.885942
+        ],
+        "continent": "AS"
+    },
+    "SB": {
+        "name_en": "Solomon Islands",
+        "name_cn": "所罗门群岛",
+        "population": 819.2,
+        "birth_rate": 26.707,
+        "position": [
+            160.156194,
+            -9.64571
+        ],
+        "continent": "OA"
+    },
+    "SC": {
+        "name_en": "Seychelles",
+        "name_cn": "塞舌尔",
+        "population": 121.35,
+        "birth_rate": 11,
+        "position": [
+            55.452883,
+            -4.651018
+        ],
+        "continent": "AF"
+    },
+    "SD": {
+        "name_en": "Sudan",
+        "name_cn": "苏丹",
+        "population": 50448.96,
+        "birth_rate": 32.996,
+        "position": [
+            30.217636,
+            12.862807
+        ],
+        "continent": "AF"
+    },
+    "SE": {
+        "name_en": "Sweden",
+        "name_cn": "瑞典",
+        "population": 10569.71,
+        "birth_rate": 9.3,
+        "position": [
+            18.643501,
+            60.12816100000001
+        ],
+        "continent": "EU"
+    },
+    "SG": {
+        "name_en": "Singapore",
+        "name_cn": "新加坡",
+        "population": 6036.86,
+        "birth_rate": 7.4,
+        "position": [
+            103.86123,
+            1.356423
+        ],
+        "continent": "AS"
+    },
+    "SI": {
+        "name_en": "Slovenia",
+        "name_cn": "斯洛文尼亚",
+        "population": 2127.4,
+        "birth_rate": 7.9,
+        "position": [
+            14.995463,
+            46.151241
+        ],
+        "continent": "EU"
+    },
+    "SK": {
+        "name_en": "Slovak Republic",
+        "name_cn": "斯洛伐克",
+        "population": 5422.07,
+        "birth_rate": 8.5,
+        "position": [
+            19.699024,
+            48.669026
+        ],
+        "continent": "EU"
+    },
+    "SL": {
+        "name_en": "Sierra Leone",
+        "name_cn": "塞拉利昂",
+        "population": 8642.02,
+        "birth_rate": 30.108,
+        "position": [
+            -11.779889,
+            8.460555
+        ],
+        "continent": "AF"
+    },
+    "SM": {
+        "name_en": "San Marino",
+        "name_cn": "圣马力诺",
+        "population": 33.98,
+        "birth_rate": 4.2,
+        "position": [
+            12.3,
+            43.55
+        ],
+        "continent": "EU"
+    },
+    "AS": {
+        "name_en": "American Samoa",
+        "name_cn": "东萨摩亚(美)",
+        "population": 46.77,
+        "birth_rate": 14.994,
+        "position": [
+            -170.43,
+            -14.16
+        ],
+        "continent": "OA"
+    },
+    "WS": {
+        "name_en": "Samoa",
+        "name_cn": "西萨摩亚",
+        "population": 218.02,
+        "birth_rate": 24.969,
+        "position": [
+            -171.5,
+            -13.5
+        ],
+        "continent": "OA"
+    },
+    "SN": {
+        "name_en": "Senegal",
+        "name_cn": "塞内加尔",
+        "population": 18501.98,
+        "birth_rate": 29.184,
+        "position": [
+            -14.452362,
+            14.497401
+        ],
+        "continent": "AF"
+    },
+    "SO": {
+        "name_en": "Somalia",
+        "name_cn": "索马里",
+        "population": 19009.15,
+        "birth_rate": 42.346,
+        "position": [
+            46.199616,
+            5.152149
+        ],
+        "continent": "AF"
+    },
+    "SR": {
+        "name_en": "Suriname",
+        "name_cn": "苏里南",
+        "population": 634.43,
+        "birth_rate": 17.152,
+        "position": [
+            -56.027783,
+            3.919305
+        ],
+        "continent": "SA"
+    },
+    "ST": {
+        "name_en": "Sao Tome and Principe",
+        "name_cn": "圣多美和普林西比",
+        "population": 235.54,
+        "birth_rate": 28.094,
+        "position": [
+            6.39,
+            0.1
+        ],
+        "continent": "AF"
+    },
+    "SV": {
+        "name_en": "El Salvador",
+        "name_cn": "萨尔瓦多",
+        "population": 6338.19,
+        "birth_rate": 15.597,
+        "position": [
+            -88.89653,
+            13.794185
+        ],
+        "continent": "NA"
+    },
+    "SY": {
+        "name_en": "Syrian Arab Republic",
+        "name_cn": "叙利亚",
+        "population": 24672.76,
+        "birth_rate": 23.162,
+        "position": [
+            38.996815,
+            34.80207499999999
+        ],
+        "continent": "AS"
+    },
+    "SZ": {
+        "name_en": "Eswatini",
+        "name_cn": "斯威士兰",
+        "population": 1242.82,
+        "birth_rate": 23.648,
+        "position": [
+            31.465866,
+            -26.522503
+        ],
+        "continent": "AF"
+    },
+    "TD": {
+        "name_en": "Chad",
+        "name_cn": "乍得",
+        "population": 20299.12,
+        "birth_rate": 43.264,
+        "position": [
+            18.732207,
+            15.454166
+        ],
+        "continent": "AF"
+    },
+    "TG": {
+        "name_en": "Togo",
+        "name_cn": "多哥",
+        "population": 8406.56,
+        "birth_rate": 32.061,
+        "position": [
+            0.824782,
+            8.619543
+        ],
+        "continent": "AF"
+    },
+    "TH": {
+        "name_en": "Thailand",
+        "name_cn": "泰国",
+        "population": 71668.01,
+        "birth_rate": 8.116,
+        "position": [
+            100.992541,
+            15.870032
+        ],
+        "continent": "AS"
+    },
+    "TJ": {
+        "name_en": "Tajikistan",
+        "name_cn": "塔吉克斯坦",
+        "population": 10590.93,
+        "birth_rate": 25.333,
+        "position": [
+            71.276093,
+            38.861034
+        ],
+        "continent": "AS"
+    },
+    "TM": {
+        "name_en": "Turkmenistan",
+        "name_cn": "土库曼斯坦",
+        "population": 7494.5,
+        "birth_rate": 20.906,
+        "position": [
+            59.556278,
+            38.969719
+        ],
+        "continent": "AS"
+    },
+    "TN": {
+        "name_en": "Tunisia",
+        "name_cn": "突尼斯",
+        "population": 12277.11,
+        "birth_rate": 13.37,
+        "position": [
+            9.537499,
+            33.886917
+        ],
+        "continent": "AF"
+    },
+    "TO": {
+        "name_en": "Tonga",
+        "name_cn": "汤加",
+        "population": 104.18,
+        "birth_rate": 23.04,
+        "position": [
+            -174.0,
+            -21.1
+        ],
+        "continent": "OA"
+    },
+    "TR": {
+        "name_en": "Turkiye",
+        "name_cn": "土耳其",
+        "population": 85518.66,
+        "birth_rate": 11,
+        "position": [
+            35.243322,
+            38.963745
+        ],
+        "continent": "AS"
+    },
+    "TT": {
+        "name_en": "Trinidad and Tobago",
+        "name_cn": "特立尼达和多巴哥",
+        "population": 1368.33,
+        "birth_rate": 10.543,
+        "position": [
+            -61.275187,
+            10.468494
+        ],
+        "continent": "NA"
+    },
+    "TZ": {
+        "name_en": "Tanzania",
+        "name_cn": "坦桑尼亚",
+        "population": 68560.16,
+        "birth_rate": 34.801,
+        "position": [
+            35.45,
+            -6.08
+        ],
+        "continent": "AF"
+    },
+    "UA": {
+        "name_en": "Ukraine",
+        "name_cn": "乌克兰",
+        "population": 37860.22,
+        "birth_rate": 5.466,
+        "position": [
+            31.16558,
+            48.379433
+        ],
+        "continent": "EU"
+    },
+    "UG": {
+        "name_en": "Uganda",
+        "name_cn": "乌干达",
+        "population": 50015.09,
+        "birth_rate": 34.436,
+        "position": [
+            32.290275,
+            1.373333
+        ],
+        "continent": "AF"
+    },
+    "US": {
+        "name_en": "United States",
+        "name_cn": "美国",
+        "population": 340003.8,
+        "birth_rate": 10.6,
+        "position": [
+            -95.712891,
+            37.09024
+        ],
+        "continent": "NA"
+    },
+    "UY": {
+        "name_en": "Uruguay",
+        "name_cn": "乌拉圭",
+        "population": 3386.59,
+        "birth_rate": 9.802,
+        "position": [
+            -55.765835,
+            -32.522779
+        ],
+        "continent": "SA"
+    },
+    "UZ": {
+        "name_en": "Uzbekistan",
+        "name_cn": "乌兹别克斯坦",
+        "population": 36361.86,
+        "birth_rate": 25.557,
+        "position": [
+            64.585262,
+            41.377491
+        ],
+        "continent": "AS"
+    },
+    "VE": {
+        "name_en": "Venezuela RB",
+        "name_cn": "委内瑞拉",
+        "population": 28405.54,
+        "birth_rate": 15.231,
+        "position": [
+            -66.58973,
+            6.42375
+        ],
+        "continent": "SA"
+    },
+    "VN": {
+        "name_en": "Vietnam",
+        "name_cn": "越南",
+        "population": 100987.69,
+        "birth_rate": 13.423,
+        "position": [
+            108.277199,
+            14.058324
+        ],
+        "continent": "AS"
+    },
+    "YE": {
+        "name_en": "Yemen Rep.",
+        "name_cn": "也门",
+        "population": 40583.16,
+        "birth_rate": 34.359,
+        "position": [
+            48.516388,
+            15.552727
+        ],
+        "continent": "AS"
+    },
+    "RS": {
+        "name_en": "Serbia",
+        "name_cn": "塞尔维亚",
+        "population": 6586.48,
+        "birth_rate": 9.2,
+        "position": [
+            20.922496,
+            44.018803
+        ],
+        "continent": "EU"
+    },
+    "ZA": {
+        "name_en": "South Africa",
+        "name_cn": "南非",
+        "population": 64007.19,
+        "birth_rate": 18.48,
+        "position": [
+            22.937506,
+            -30.559482
+        ],
+        "continent": "AF"
+    },
+    "ZM": {
+        "name_en": "Zambia",
+        "name_cn": "赞比亚",
+        "population": 21314.96,
+        "birth_rate": 32.724,
+        "position": [
+            27.849332,
+            -13.133897
+        ],
+        "continent": "AF"
+    },
+    "ZW": {
+        "name_en": "Zimbabwe",
+        "name_cn": "津巴布韦",
+        "population": 16634.37,
+        "birth_rate": 29.891,
+        "position": [
+            29.154857,
+            -19.015438
+        ],
+        "continent": "AF"
+    },
+    "GL": {
+        "name_en": "Greenland",
+        "name_cn": "格陵兰",
+        "population": 56.84,
+        "birth_rate": 12,
+        "position": [
+            -42.604303,
+            71.706936
+        ],
+        "continent": "NA"
+    },
+    "GW": {
+        "name_en": "Guinea-Bissau",
+        "name_cn": "几内亚比绍",
+        "population": 2201.35,
+        "birth_rate": 29.56,
+        "position": [
+            -15.180413,
+            11.803749
+        ],
+        "continent": "AF"
+    },
+    "KI": {
+        "name_en": "Kiribati",
+        "name_cn": "基里巴斯",
+        "population": 134.52,
+        "birth_rate": 25.309,
+        "position": [
+            173.0,
+            1.3
+        ],
+        "continent": "OA"
+    },
+    "XO": {
+        "name_en": "Kosovo",
+        "name_cn": "科索沃",
+        "population": 1594.35,
+        "birth_rate": 11.852,
+        "position": [
+            20.902977,
+            42.6026359
+        ],
+        "continent": "EU"
+    },
+    "MR": {
+        "name_en": "Mauritania",
+        "name_cn": "毛里塔尼亚",
+        "population": 5169.4,
+        "birth_rate": 34.03,
+        "position": [
+            -10.940835,
+            21.00789
+        ],
+        "continent": "AF"
+    },
+    "FM": {
+        "name_en": "Micronesia Fed. Sts.",
+        "name_cn": "密克罗尼西亚联邦",
+        "population": 113.16,
+        "birth_rate": 22.318,
+        "position": [
+            158.09,
+            6.55
+        ],
+        "continent": "OA"
+    },
+    "ME": {
+        "name_en": "Montenegro",
+        "name_cn": "黑山",
+        "population": 623.53,
+        "birth_rate": 11.2,
+        "position": [
+            19.37439,
+            42.708678
+        ],
+        "continent": "EU"
+    },
+    "NC": {
+        "name_en": "New Caledonia",
+        "name_cn": "新喀里多尼亚",
+        "population": 292.64,
+        "birth_rate": 14.03,
+        "position": [
+            165.618042,
+            -20.904305
+        ],
+        "continent": "OA"
+    },
+    "MK": {
+        "name_en": "North Macedonia",
+        "name_cn": "马其顿",
+        "population": 1824.36,
+        "birth_rate": 8.8,
+        "position": [
+            21.745275,
+            41.608635
+        ],
+        "continent": "EU"
+    },
+    "PW": {
+        "name_en": "Palau",
+        "name_cn": "帕劳",
+        "population": 17.7,
+        "birth_rate": 10.687,
+        "position": [
+            134.28,
+            7.2
+        ],
+        "continent": "OA"
+    },
+    "RW": {
+        "name_en": "Rwanda",
+        "name_cn": "卢旺达",
+        "population": 14256.57,
+        "birth_rate": 28.062,
+        "position": [
+            29.873888,
+            -1.940278
+        ],
+        "continent": "AF"
+    },
+    "SS": {
+        "name_en": "South Sudan",
+        "name_cn": "南苏丹",
+        "population": 11943.41,
+        "birth_rate": 29.222,
+        "position": [
+            31.3069788,
+            6.876991899999999
+        ],
+        "continent": "AF"
+    },
+    "KN": {
+        "name_en": "St. Kitts and Nevis",
+        "name_cn": "圣基茨和尼维斯",
+        "population": 46.84,
+        "birth_rate": 11.741,
+        "position": [
+            -62.43,
+            17.17
+        ],
+        "continent": "NA"
+    },
+    "VC": {
+        "name_en": "St. Vincent and the Grenadines",
+        "name_cn": "圣文森特和格林纳丁斯",
+        "population": 100.62,
+        "birth_rate": 11.955,
+        "position": [
+            -61.1,
+            13.1
+        ],
+        "continent": "NA"
+    },
+    "VI": {
+        "name_en": "Virgin Islands (U.S.)",
+        "name_cn": "美属维尔京群岛",
+        "population": 104.38,
+        "birth_rate": 11.1,
+        "position": [
+            -64.56,
+            18.21
+        ],
+        "continent": "NA"
+    },
+    "TL": {
+        "name_en": "Timor-Leste",
+        "name_cn": "东帝汶",
+        "population": 1400.64,
+        "birth_rate": 21.768,
+        "position": [
+            125.727539,
+            -8.874217
+        ],
+        "continent": "AS"
+    },
+    "VU": {
+        "name_en": "Vanuatu",
+        "name_cn": "瓦努阿图",
+        "population": 327.78,
+        "birth_rate": 27.651,
+        "position": [
+            166.959158,
+            -15.376706
+        ],
+        "continent": "OA"
+    },
+    "TW": {
+        "name_en": "Taiwan",
+        "name_cn": "台湾（中国）",
+        "population": 23186.28,
+        "birth_rate": 8.39,
+        "position": [
+            120.967428,
+            23.880654
+        ],
+        "continent": "AS"
+    }
+}

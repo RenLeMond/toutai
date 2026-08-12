@@ -25,6 +25,8 @@ function HomeClient() {
   const [isPressing, setIsPressing] = useState(false);
 
   const pressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchActiveRef = useRef(false);
+  const ignoreClickRef = useRef(false);
 
   useEffect(() => {
     const rehydrate = async () => {
@@ -34,11 +36,7 @@ function HomeClient() {
     rehydrate();
   }, []);
 
-  const { activate, deactivate, setShareInfo } = useShareModal(state => ({
-    activate: state.activate,
-    deactivate: state.deactivate,
-    setShareInfo: state.setShareInfo
-  }));
+  const openShare = useShareModal(state => state.openShare);
 
   const { addBirthResult, getBirthResultsCount } = useBirth(state => ({
     addBirthResult: state.addBirthResult,
@@ -56,19 +54,40 @@ function HomeClient() {
     }
   };
 
+  const clearPressInterval = () => {
+    if (pressIntervalRef.current) {
+      clearInterval(pressIntervalRef.current);
+      pressIntervalRef.current = null;
+    }
+  };
+
   const startPress = () => {
+    if (pressIntervalRef.current) return;
+    ignoreClickRef.current = false;
     setIsPressing(true);
     pressIntervalRef.current = setInterval(() => {
+      ignoreClickRef.current = true;
       handleRebirth();
     }, 150);
   };
 
   const endPress = () => {
     setIsPressing(false);
-    if (pressIntervalRef.current) {
-      clearInterval(pressIntervalRef.current);
-      pressIntervalRef.current = null;
+    clearPressInterval();
+  };
+
+  useEffect(() => {
+    return () => {
+      clearPressInterval();
+    };
+  }, []);
+
+  const handleClickRebirth = () => {
+    if (ignoreClickRef.current) {
+      ignoreClickRef.current = false;
+      return;
     }
+    handleRebirth();
   };
 
   const showRebirthToast = (birthResult: BirthResult, count: number) => {
@@ -79,8 +98,8 @@ function HomeClient() {
           <Button
             variant="ghost"
             onClick={() => {
-              activate();
-              setShareInfo({
+              openShare({
+                mode: 'china',
                 count: countAtCreation,
                 region: birthResult.province,
                 category: birthResult.category,
@@ -204,20 +223,33 @@ function HomeClient() {
             <View width={64}>
               <div
                 onMouseDown={event => {
+                  if (touchActiveRef.current) return;
                   if (event.button === 0) {
                     startPress();
                   }
                 }}
                 onMouseUp={endPress}
                 onMouseLeave={endPress}
-                onTouchStart={startPress}
-                onTouchEnd={endPress}
+                onTouchStart={() => {
+                  touchActiveRef.current = true;
+                  startPress();
+                }}
+                onTouchEnd={() => {
+                  endPress();
+                  window.setTimeout(() => {
+                    touchActiveRef.current = false;
+                  }, 400);
+                }}
+                onTouchCancel={() => {
+                  endPress();
+                  touchActiveRef.current = false;
+                }}
               >
                 <Button
                   color="primary"
                   rounded
                   fullWidth
-                  onClick={handleRebirth}
+                  onClick={handleClickRebirth}
                 >
                   投胎
                 </Button>

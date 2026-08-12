@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 export const siteUrl = 'https://toutai.online';
 export const siteName = '投胎模拟器';
+export const chinaEditionTitle = `${siteName} 「中国版」`;
+export const worldEditionTitle = `${siteName} 「世界版」`;
 
 export const defaultDescription =
   '如果来世还在种花家，你会出生在哪里？根据最新人口普查数据，模拟你在中国的出生省份、性别与家庭排行。';
@@ -26,44 +28,59 @@ type PageSeo = {
 
 const pages: Record<string, PageSeo> = {
   home: {
-    title: siteName,
+    title: chinaEditionTitle,
     description: defaultDescription,
     path: '/',
     keywords: defaultKeywords
   },
   about: {
-    title: `关于 - ${siteName}`,
+    title: `关于 - ${chinaEditionTitle}`,
     description:
-      '了解投胎模拟器中国版与世界版：根据全国出生人口与世界银行全球数据，计算出生在各省份或各国的可能性。',
+      '了解投胎模拟器中国版：根据全国出生人口数据，计算你出生在各省份的可能性。',
     path: '/about',
-    keywords: [
-      '投胎模拟器',
-      '关于',
-      '出生概率计算',
-      '投胎模拟器中国版',
-      '投胎模拟器世界版'
-    ]
+    keywords: ['投胎模拟器', '关于', '出生概率计算', '投胎模拟器中国版']
   },
   data: {
-    title: `数据来源 - ${siteName}`,
+    title: `数据来源 - ${chinaEditionTitle}`,
     description:
-      '投胎模拟器使用的数据来源：第七次全国人口普查及港澳台最新人口统计。',
+      '投胎模拟器中国版使用的数据来源：第七次全国人口普查及港澳台统计。',
     path: '/data',
     keywords: ['人口普查', '出生人口数据', '统计数据来源']
   },
+  worldData: {
+    title: `数据来源 - ${worldEditionTitle}`,
+    description:
+      '投胎模拟器世界版使用的数据来源：世界银行 2024 年全球人口与粗出生率统计。',
+    path: '/world/data',
+    keywords: ['World Bank', '全球出生人口', '统计数据来源', '投胎模拟器世界版']
+  },
   probability: {
-    title: `概率计算器 - ${siteName}`,
+    title: `概率计算器 - ${chinaEditionTitle}`,
     description:
       '计算你出生在指定省份的概率。输入目标地区，查看出生可能性与数学公式。',
     path: '/probability',
     keywords: ['出生概率计算器', '省份概率', '概率计算']
   },
   world: {
-    title: `世界版 - ${siteName}`,
+    title: worldEditionTitle,
     description:
       '如果来世随机投胎到世界上，你会出生在哪里？根据世界银行全球出生人口数据，模拟你在各国家的出生可能性。',
     path: '/world',
     keywords: ['投胎模拟器世界版', '全球出生概率', '国家出生概率', 'Reborn']
+  },
+  worldAbout: {
+    title: `关于 - ${worldEditionTitle}`,
+    description:
+      '了解投胎模拟器世界版：根据世界银行全球出生人口数据，计算你出生在各国的可能性。',
+    path: '/world/about',
+    keywords: ['投胎模拟器世界版', '关于', '全球出生概率']
+  },
+  worldProbability: {
+    title: `概率计算器 - ${worldEditionTitle}`,
+    description:
+      '计算你出生在指定国家的概率。选择目标国家，查看出生可能性与数学公式。',
+    path: '/world/probability',
+    keywords: ['全球出生概率计算器', '国家概率', '概率计算']
   }
 };
 
@@ -106,6 +123,9 @@ export const jsonLd = {
 export const sitemapEntries = [
   { path: '/', priority: 1 },
   { path: '/world', priority: 0.9 },
+  { path: '/world/probability', priority: 0.85 },
+  { path: '/world/about', priority: 0.6 },
+  { path: '/world/data', priority: 0.6 },
   { path: '/probability', priority: 0.8 },
   { path: '/about', priority: 0.6 },
   { path: '/data', priority: 0.6 }

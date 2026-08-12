@@ -1,12 +1,15 @@
 import { create } from 'zustand';
 
 export interface ShareInfo {
+  mode: 'china' | 'world';
   count: number;
   region: string;
   category: string;
   gender: string;
   order: string;
   probability: number;
+  continent?: string;
+  position?: [number, number];
 }
 
 interface ShareModalState {
@@ -15,21 +18,26 @@ interface ShareModalState {
   activate: () => void;
   deactivate: () => void;
   setShareInfo: (info: ShareInfo) => void;
+  openShare: (info: ShareInfo) => void;
 }
+
+const defaultShareInfo: ShareInfo = {
+  mode: 'china',
+  count: 0,
+  region: '',
+  category: '',
+  gender: '',
+  order: '',
+  probability: 0
+};
 
 const useShareModal = create<ShareModalState>(set => ({
   active: false,
-  shareInfo: {
-    count: 0,
-    region: '',
-    category: '',
-    gender: '',
-    order: '',
-    probability: 0
-  },
+  shareInfo: defaultShareInfo,
   activate: () => set({ active: true }),
   deactivate: () => set({ active: false }),
-  setShareInfo: (info: ShareInfo) => set({ shareInfo: info })
+  setShareInfo: (info: ShareInfo) => set({ shareInfo: info }),
+  openShare: (info: ShareInfo) => set({ shareInfo: info, active: true })
 }));
 
 export default useShareModal;

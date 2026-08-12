@@ -43,6 +43,13 @@ export interface WorldBirthResult {
   position: [number, number];
 }
 
+export interface WorldCountryOption {
+  cn: string;
+  en: string;
+  continent: string;
+  probability: number;
+}
+
 const countries = (worldData as WorldDataRecord[]).filter(
   (item): item is WorldCountryRecord =>
     'birth_rate' in item && typeof item.birth_rate === 'number'
@@ -53,6 +60,15 @@ const totalBirthRate = countries.reduce(
   0
 );
 
+export const worldCountryOptions: WorldCountryOption[] = countries
+  .map(country => ({
+    cn: country.cn,
+    en: country.en,
+    continent: CONTINENT_MAP[country.continent] ?? country.continent,
+    probability: country.birth_rate
+  }))
+  .sort((a, b) => b.probability - a.probability);
+
 export function simulateWorldBirth(): WorldBirthResult {
   const randomNumber = Math.random() * totalBirthRate;
   let cumulativeRate = 0;
@@ -60,24 +76,36 @@ export function simulateWorldBirth(): WorldBirthResult {
   for (const country of countries) {
     cumulativeRate += country.birth_rate;
     if (cumulativeRate > randomNumber) {
-      return {
-        country: country.cn,
-        countryEn: country.en,
-        continent: CONTINENT_MAP[country.continent] ?? country.continent,
-        continentCode: country.continent,
-        probability: country.birth_rate,
-        position: country.position
-      };
+      return toBirthResult(country);
     }
   }
 
-  const fallback = countries[countries.length - 1];
+  return toBirthResult(countries[countries.length - 1]);
+}
+
+function toBirthResult(country: WorldCountryRecord): WorldBirthResult {
   return {
-    country: fallback.cn,
-    countryEn: fallback.en,
-    continent: CONTINENT_MAP[fallback.continent] ?? fallback.continent,
-    continentCode: fallback.continent,
-    probability: fallback.birth_rate,
-    position: fallback.position
+    country: country.cn,
+    countryEn: country.en,
+    continent: CONTINENT_MAP[country.continent] ?? country.continent,
+    continentCode: country.continent,
+    probability: country.birth_rate,
+    position: country.position
   };
+}
+
+export function getCountryProbability(countryEn: string) {
+  const country = countries.find(item => item.en === countryEn);
+  if (!country) return null;
+
+  return {
+    country: country.cn,
+    countryEn: country.en,
+    continent: CONTINENT_MAP[country.continent] ?? country.continent,
+    probability: country.birth_rate
+  };
+}
+
+export function formatWorldProbability(probability: number) {
+  return `${probability.toFixed(4)}%`;
 }

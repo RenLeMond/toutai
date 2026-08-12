@@ -13,77 +13,42 @@ function Navbar() {
   const activeVersion = resolveAppVersion(pathname, storedVersion);
   const isWorldVersion = activeVersion === 'world';
 
-  const aboutLink = (
-    <Link href="/about">
+  const dataHref = isWorldVersion ? '/world/data' : '/data';
+  const probabilityHref = isWorldVersion ? '/world/probability' : '/probability';
+  const aboutHref = isWorldVersion ? '/world/about' : '/about';
+
+  const navLink = (href: string, label: string) => (
+    <Link href={href}>
       <Text
         variant="body-2"
         weight="medium"
         className="hover:text-primary hover:cursor-pointer"
       >
-        关于
+        {label}
       </Text>
     </Link>
   );
 
-  if (isWorldVersion) {
-    return (
-      <>
-        <Hidden hide={{ s: true, m: false }}>
-          <View direction="row" gap={5} align="center" as="nav">
-            {aboutLink}
-          </View>
-        </Hidden>
-        <Hidden hide={{ s: false, m: true }}>
-          <Popover position="bottom-end" padding={1} width="140px">
-            <Popover.Trigger>
-              {attributes => (
-                <Button
-                  attributes={attributes}
-                  icon={<Icon size={4} svg={<Menu />} />}
-                />
-              )}
-            </Popover.Trigger>
-            <Popover.Content>
-              <Link href="/about" className="block">
-                <MenuItem roundedCorners>
-                  <Text
-                    variant="body-3"
-                    className="hover:text-primary hover:cursor-pointer"
-                  >
-                    关于
-                  </Text>
-                </MenuItem>
-              </Link>
-            </Popover.Content>
-          </Popover>
-        </Hidden>
-      </>
-    );
-  }
+  const menuItem = (href: string, label: string) => (
+    <Link href={href} className="block">
+      <MenuItem roundedCorners>
+        <Text
+          variant="body-3"
+          className="hover:text-primary hover:cursor-pointer"
+        >
+          {label}
+        </Text>
+      </MenuItem>
+    </Link>
+  );
 
   return (
     <>
       <Hidden hide={{ s: true, m: false }}>
         <View direction="row" gap={5} align="center" as="nav">
-          <Link href="/data">
-            <Text
-              variant="body-2"
-              weight="medium"
-              className="hover:text-primary hover:cursor-pointer"
-            >
-              数据来源
-            </Text>
-          </Link>
-          <Link href="/probability">
-            <Text
-              variant="body-2"
-              weight="medium"
-              className="hover:text-primary hover:cursor-pointer"
-            >
-              概率计算器
-            </Text>
-          </Link>
-          {aboutLink}
+          {navLink(dataHref, '数据来源')}
+          {navLink(probabilityHref, '概率计算器')}
+          {navLink(aboutHref, '关于')}
         </View>
       </Hidden>
       <Hidden hide={{ s: false, m: true }}>
@@ -97,36 +62,9 @@ function Navbar() {
             )}
           </Popover.Trigger>
           <Popover.Content>
-            <Link href="/data" className="block">
-              <MenuItem roundedCorners>
-                <Text
-                  variant="body-3"
-                  className="hover:text-primary hover:cursor-pointer"
-                >
-                  数据来源
-                </Text>
-              </MenuItem>
-            </Link>
-            <Link href="/probability" className="block">
-              <MenuItem roundedCorners>
-                <Text
-                  variant="body-3"
-                  className="hover:text-primary hover:cursor-pointer"
-                >
-                  概率计算器
-                </Text>
-              </MenuItem>
-            </Link>
-            <Link href="/about" className="block">
-              <MenuItem roundedCorners>
-                <Text
-                  variant="body-3"
-                  className="hover:text-primary hover:cursor-pointer"
-                >
-                  关于
-                </Text>
-              </MenuItem>
-            </Link>
+            {menuItem(dataHref, '数据来源')}
+            {menuItem(probabilityHref, '概率计算器')}
+            {menuItem(aboutHref, '关于')}
           </Popover.Content>
         </Popover>
       </Hidden>

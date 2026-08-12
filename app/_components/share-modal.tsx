@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Button, Dismissible, Icon, Modal, Tabs, Text, View } from 'reshaped';
+import dynamic from 'next/dynamic';
+import { Button, Dismissible, Icon, Loader, Modal, Tabs, Text, View } from 'reshaped';
 import useShareModal, { ShareInfo } from '@/lib/store/useShareModal';
 import html2canvas from 'html2canvas';
 import { CarrotIcon } from '@/components/title';
@@ -11,6 +12,184 @@ import { toast } from 'sonner';
 import { X } from 'lucide-react';
 import ChinaMap from '@/components/icon';
 import { translateGenderChild } from '@/lib/rebirth';
+import { formatWorldProbability } from '@/lib/world-rebirth';
+
+const ShareWorldMap = dynamic(() => import('@/components/share-world-map'), {
+  ssr: false,
+  loading: () => (
+    <View
+      direction="row"
+      gap={2}
+      align="center"
+      justify="center"
+      height={40}
+      width="100%"
+    >
+      <Loader />
+      <Text>地图加载中</Text>
+    </View>
+  )
+});
+
+const WORLD_SHARE_URL = 'https://toutai.online/world';
+
+function WorldShareQr({ bgColor }: { bgColor: string }) {
+  return (
+    <QRCode
+      value={WORLD_SHARE_URL}
+      bgColor={bgColor}
+      fgColor="#000000"
+      level="L"
+      size={256}
+      className="w-12 h-12"
+    />
+  );
+}
+
+function WorldShareFooter({ bgColor }: { bgColor: string }) {
+  return (
+    <View direction="row" justify="space-between" align="center">
+      <View direction="row" gap={2} align="center">
+        <CarrotIcon size={40} />
+        <View direction="column">
+          <Text color="primary" weight="medium" variant="body-1">
+            投胎模拟器
+          </Text>
+          <Text color="primary" weight="medium">
+            toutai.online/world
+          </Text>
+        </View>
+      </View>
+      <WorldShareQr bgColor={bgColor} />
+    </View>
+  );
+}
+
+function WorldShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
+  return (
+    <div
+      className="w-full bg-orange-200 relative aspect-square"
+      id="shareContent"
+    >
+      <View
+        direction="column"
+        padding={6}
+        justify="space-between"
+        height="100%"
+      >
+        {shareInfo.position && <ShareWorldMap position={shareInfo.position} />}
+        <Text variant="body-2" weight="medium">
+          我在投胎模拟器世界版第{' '}
+          <span className="text-[#ba3700] font-medium">{shareInfo.count}</span>{' '}
+          次投胎在
+          <span className="text-[#ba3700] font-medium">{shareInfo.region}</span>
+          （
+          <span className="text-[#ba3700] font-medium">
+            {shareInfo.continent}
+          </span>
+          ），概率只有{' '}
+          <span className="text-[#ba3700] font-medium">
+            {formatWorldProbability(shareInfo.probability)}
+          </span>
+          ，你也来试试吧！
+        </Text>
+        <WorldShareFooter bgColor="#fed8aa" />
+      </View>
+    </div>
+  );
+}
+
+function WorldShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
+  return (
+    <div
+      className="w-full bg-[#f5f3ef] relative aspect-square"
+      id="shareContent"
+    >
+      <View direction="column" padding={6} height="100%">
+        {shareInfo.position && (
+          <div className="absolute right-0 top-8 w-44 h-32 opacity-25 pointer-events-none overflow-hidden rounded-xl">
+            <ShareWorldMap position={shareInfo.position} />
+          </div>
+        )}
+        <View direction="column" justify="center" grow paddingTop={6}>
+          <Text variant="body-2" weight="medium" className="z-10">
+            第{' '}
+            <span className="text-[#ba3700] font-medium">{shareInfo.count}</span>{' '}
+            次
+          </Text>
+          <Text variant="body-2" weight="medium" className="z-10">
+            我投胎在了
+            <span className="text-[#ba3700] font-medium">{shareInfo.region}</span>
+          </Text>
+          <Text variant="body-2" weight="medium" className="z-10">
+            大洲
+            <span className="text-[#ba3700] font-medium">
+              {shareInfo.continent}
+            </span>
+          </Text>
+          <Text variant="body-2" weight="medium" className="z-10">
+            概率只有{' '}
+            <span className="text-[#ba3700] font-medium">
+              {formatWorldProbability(shareInfo.probability)}
+            </span>
+          </Text>
+        </View>
+        <WorldShareFooter bgColor="#f5f3ef" />
+      </View>
+    </div>
+  );
+}
+
+function WorldShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
+  return (
+    <div
+      className="w-full bg-[#f5f3ef] relative aspect-square"
+      id="shareContent"
+    >
+      <View
+        direction="column"
+        padding={6}
+        height="100%"
+        justify="space-between"
+      >
+        {shareInfo.position && <ShareWorldMap position={shareInfo.position} />}
+        <View direction="row" justify="space-between" paddingBottom={4}>
+          <View direction="column">
+            <Text variant="body-2" weight="medium" className="z-10">
+              第{' '}
+              <span className="text-[#ba3700] font-medium">
+                {shareInfo.count}
+              </span>{' '}
+              次
+            </Text>
+            <Text variant="body-2" weight="medium" className="z-10">
+              我投胎在了
+              <span className="text-[#ba3700] font-medium">
+                {shareInfo.region}
+              </span>
+            </Text>
+            <Text variant="body-2" weight="medium" className="z-10">
+              大洲
+              <span className="text-[#ba3700] font-medium">
+                {shareInfo.continent}
+              </span>
+            </Text>
+            <Text variant="body-2" weight="medium" className="z-10">
+              概率只有{' '}
+              <span className="text-[#ba3700] font-medium">
+                {formatWorldProbability(shareInfo.probability)}
+              </span>
+            </Text>
+          </View>
+          <View justify="end" height="100%">
+            <Text color="neutral-faded">#投胎 #重开</Text>
+          </View>
+        </View>
+        <WorldShareFooter bgColor="#f5f3ef" />
+      </View>
+    </div>
+  );
+}
 
 function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
   return (
@@ -312,35 +491,51 @@ function ModalFooter({
   );
 }
 
+async function waitForShareMapReady(root: HTMLElement, timeoutMs = 2500) {
+  await new Promise(resolve =>
+    requestAnimationFrame(() => requestAnimationFrame(resolve))
+  );
+  if (root.querySelector('canvas')) return;
+  if (!root.textContent?.includes('地图加载中')) return;
+
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    if (root.querySelector('canvas')) return;
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+}
+
 function ShareModal() {
   const { active, deactivate, shareInfo } = useShareModal();
 
-  function handleSaveAsImage() {
+  async function handleSaveAsImage() {
     const shareContent = document.getElementById('shareContent');
+    if (!shareContent) return;
 
-    if (shareContent) {
-      html2canvas(shareContent, { scale: 3 })
-        .then(canvas => {
-          const link = document.createElement('a');
-          link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
-          link.href = canvas.toDataURL('image/png');
-          link.click();
+    await waitForShareMapReady(shareContent);
 
-          toast.custom(t => (
-            <div className="relative bg-green-100 w-full sm:w-[354px] p-5 border-green-500 border rounded-xl">
-              <div className="flex flex-row justify-between">
-                <Text color="positive">图片保存成功！</Text>
-              </div>
-              <button
-                className="absolute top-2 right-3"
-                onClick={() => toast.dismiss(t)}
-              >
-                <Icon color="positive" size={4} svg={<X />} />
-              </button>
-            </div>
-          ));
-        })
-        .catch(err => console.error('Error capturing image:', err));
+    try {
+      const canvas = await html2canvas(shareContent, { scale: 3 });
+      const link = document.createElement('a');
+      link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      toast.custom(t => (
+        <div className="relative bg-green-100 w-full sm:w-[354px] p-5 border-green-500 border rounded-xl">
+          <div className="flex flex-row justify-between">
+            <Text color="positive">图片保存成功！</Text>
+          </div>
+          <button
+            className="absolute top-2 right-3"
+            onClick={() => toast.dismiss(t)}
+          >
+            <Icon color="positive" size={4} svg={<X />} />
+          </button>
+        </div>
+      ));
+    } catch (err) {
+      console.error('Error capturing image:', err);
     }
   }
 
@@ -351,26 +546,49 @@ function ShareModal() {
           <Modal.Title>分享</Modal.Title>
           <Modal.Subtitle>分享你的投胎结果</Modal.Subtitle>
         </Dismissible>
-        <Tabs variant="pills">
-          <View gap={3}>
-            <View>
-              <Tabs.Panel value="1">
-                <ShareStyle1 shareInfo={shareInfo} />
-              </Tabs.Panel>
-              <Tabs.Panel value="2">
-                <ShareStyle2 shareInfo={shareInfo} />
-              </Tabs.Panel>
-              <Tabs.Panel value="3">
-                <ShareStyle3 shareInfo={shareInfo} />
-              </Tabs.Panel>
+        {shareInfo.mode === 'world' ? (
+          <Tabs variant="pills">
+            <View gap={3}>
+              <View>
+                <Tabs.Panel value="1">
+                  <WorldShareStyle1 shareInfo={shareInfo} />
+                </Tabs.Panel>
+                <Tabs.Panel value="2">
+                  <WorldShareStyle2 shareInfo={shareInfo} />
+                </Tabs.Panel>
+                <Tabs.Panel value="3">
+                  <WorldShareStyle3 shareInfo={shareInfo} />
+                </Tabs.Panel>
+              </View>
+              <Tabs.List>
+                <Tabs.Item value="1">样式一</Tabs.Item>
+                <Tabs.Item value="2">样式二</Tabs.Item>
+                <Tabs.Item value="3">样式三</Tabs.Item>
+              </Tabs.List>
             </View>
-            <Tabs.List>
-              <Tabs.Item value="1">样式一</Tabs.Item>
-              <Tabs.Item value="2">样式二</Tabs.Item>
-              <Tabs.Item value="3">样式三</Tabs.Item>
-            </Tabs.List>
-          </View>
-        </Tabs>
+          </Tabs>
+        ) : (
+          <Tabs variant="pills">
+            <View gap={3}>
+              <View>
+                <Tabs.Panel value="1">
+                  <ShareStyle1 shareInfo={shareInfo} />
+                </Tabs.Panel>
+                <Tabs.Panel value="2">
+                  <ShareStyle2 shareInfo={shareInfo} />
+                </Tabs.Panel>
+                <Tabs.Panel value="3">
+                  <ShareStyle3 shareInfo={shareInfo} />
+                </Tabs.Panel>
+              </View>
+              <Tabs.List>
+                <Tabs.Item value="1">样式一</Tabs.Item>
+                <Tabs.Item value="2">样式二</Tabs.Item>
+                <Tabs.Item value="3">样式三</Tabs.Item>
+              </Tabs.List>
+            </View>
+          </Tabs>
+        )}
         <ModalFooter onCancel={deactivate} onSave={handleSaveAsImage} />
       </View>
     </Modal>

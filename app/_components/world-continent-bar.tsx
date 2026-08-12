@@ -40,7 +40,9 @@ function WorldContinentBar() {
       continent,
       count: counts[continent],
       probability: counts[continent] / total
-    })).sort((a, b) => b.probability - a.probability);
+    }))
+      .filter(item => item.count > 0)
+      .sort((a, b) => b.probability - a.probability);
   }, [birthResults]);
 
   const maxProbability =

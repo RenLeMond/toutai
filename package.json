@@ -11,7 +11,9 @@
     "start": "next start",
     "lint": "eslint .",
     "build:themes": "reshaped theming --output app/_themes",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "world-data:fetch": "node scripts/world-data/fetch-world-bank.mjs",
+    "world-data:check": "node scripts/world-data/check-geo-aliases.mjs"
   },
   "dependencies": {
     "@types/katex": "^0.16.7",
