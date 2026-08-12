@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 export const siteUrl = 'https://toutai.online';
 export const siteName = '投胎模拟器';
+export const siteIcon = '/icons/app-icon.png';
 export const chinaEditionTitle = `${siteName} 「中国版」`;
 export const worldEditionTitle = `${siteName} 「世界版」`;
 
@@ -101,12 +102,21 @@ export function createPageMetadata(pageKey: keyof typeof pages): Metadata {
       url,
       siteName,
       title: page.title,
-      description: page.description
+      description: page.description,
+      images: [
+        {
+          url: siteIcon,
+          width: 1024,
+          height: 1024,
+          alt: siteName
+        }
+      ]
     },
     twitter: {
       card: 'summary_large_image',
       title: page.title,
-      description: page.description
+      description: page.description,
+      images: [siteIcon]
     }
   };
 }
