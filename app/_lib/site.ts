@@ -2,10 +2,19 @@ import type { Metadata } from 'next';
 
 export const siteUrl = 'https://toutai.online';
 export const siteName = '投胎模拟器';
+
+/** Bump when icon assets change to bust browser/PWA cache. */
+export const iconVersion = '2';
+
+function versionedIcon(path: string) {
+  return `${path}?v=${iconVersion}`;
+}
+
 /** Favicon / OG / PWA large icon */
-export const siteIcon = '/icons/app-icon-512.png';
+export const siteIcon = versionedIcon('/icons/app-icon-512.png');
 /** Nav bar & share card small icon */
-export const siteIconSmall = '/icons/app-icon-64.png';
+export const siteIconSmall = versionedIcon('/icons/app-icon-64.png');
+export const siteIcon192 = versionedIcon('/icons/app-icon-192.png');
 export const chinaEditionTitle = `${siteName} 「中国版」`;
 export const worldEditionTitle = `${siteName} 「世界版」`;
 

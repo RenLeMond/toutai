@@ -8,6 +8,8 @@ import type { Metadata } from 'next';
 import {
   createPageMetadata,
   jsonLd,
+  siteIcon192,
+  siteIconSmall,
   siteUrl
 } from '@/_lib/site';
 
@@ -20,6 +22,10 @@ const baiduSiteVerification = process.env.NEXT_PUBLIC_BAIDU_SITE_VERIFICATION;
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   ...createPageMetadata('home'),
+  icons: {
+    icon: [{ url: siteIconSmall, type: 'image/png' }],
+    apple: [{ url: siteIcon192, type: 'image/png' }]
+  },
   ...(googleSiteVerification && {
     verification: { google: googleSiteVerification }
   }),

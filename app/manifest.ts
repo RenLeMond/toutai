@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { siteName } from '@/lib/site';
+import { siteIcon, siteIcon192, siteName } from '@/lib/site';
 
 export const dynamic = 'force-static';
 
@@ -14,12 +14,12 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#ff4f04',
     icons: [
       {
-        src: '/icons/app-icon-192.png',
+        src: siteIcon192,
         sizes: '192x192',
         type: 'image/png'
       },
       {
-        src: '/icons/app-icon-512.png',
+        src: siteIcon,
         sizes: '512x512',
         type: 'image/png'
       }
