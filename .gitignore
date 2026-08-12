@@ -15,6 +15,7 @@ bun.lockb
 /out/
 .open-next/
 .wrangler/
+.deploy-batches/
 
 # production
 /build

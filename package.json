@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "npm run build && npx wrangler dev",
+    "deploy": "npm run build && npx wrangler pages deploy out --project-name=toutai --branch=main",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "start": "next start",
     "lint": "eslint .",
@@ -31,7 +31,6 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.6.5",
     "wrangler": "^4.33.0",
     "typescript": "^5",
     "@types/node": "^20",

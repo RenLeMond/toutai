@@ -1,9 +1,9 @@
-import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
-
-initOpenNextCloudflareForDev();
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  images: {
+    unoptimized: true
+  },
   transpilePackages: ['reshaped'],
   experimental: {
     optimizePackageImports: ['reshaped']
