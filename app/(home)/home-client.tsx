@@ -212,8 +212,6 @@ function HomeClient() {
             </View>
           </View>
 
-          {birthCount > 0 && <ChinaStatsPanel />}
-
           <View width="100%" paddingBottom={2} paddingTop={4}>
             <Divider />
           </View>
@@ -225,6 +223,7 @@ function HomeClient() {
                   <Tabs.Item value="province">地区分布</Tabs.Item>
                   <Tabs.Item value="gender">性别分布</Tabs.Item>
                   <Tabs.Item value="first">第一次出现</Tabs.Item>
+                  <Tabs.Item value="stats">个人统计</Tabs.Item>
                 </Tabs.List>
               </View>
               <Tabs.Panel value="record">
@@ -245,6 +244,11 @@ function HomeClient() {
               <Tabs.Panel value="first">
                 <RebirthTabPanel count={birthCount} isLoading={isLoading}>
                   <FirstTimeTable />
+                </RebirthTabPanel>
+              </Tabs.Panel>
+              <Tabs.Panel value="stats">
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <ChinaStatsPanel />
                 </RebirthTabPanel>
               </Tabs.Panel>
             </Tabs>

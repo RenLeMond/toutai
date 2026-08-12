@@ -19,7 +19,7 @@ function ChinaStatsPanel() {
   const progress = (stats.uniqueProvinces / stats.totalProvinces) * 100;
 
   return (
-    <View gap={2} width="100%" paddingBlock={2}>
+    <View width="100%">
       <View
         backgroundColor="neutral-faded"
         className="rounded-xl"

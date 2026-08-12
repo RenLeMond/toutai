@@ -2,19 +2,22 @@
 
 import china from '@/data/china.json';
 import echarts from '@/lib/echarts';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Text } from 'reshaped';
+import { useEffect, useMemo, useRef } from 'react';
 import { useBirth } from '@/lib/store/useBirth';
 import { BirthResult } from '@/lib/rebirth';
-import ProvinceDetailModal from '@/components/province-detail-modal';
+import { getProvinceStats } from '@/lib/china-stats';
 
 const Map = () => {
   const birthResults = useBirth(
     (state: { birthResults: BirthResult[] }) => state.birthResults
   );
-  const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const chartInstanceRef = useRef<ReturnType<typeof echarts.init> | null>(null);
+  const birthResultsRef = useRef(birthResults);
+
+  useEffect(() => {
+    birthResultsRef.current = birthResults;
+  }, [birthResults]);
 
   const dataList = useMemo(() => {
     const provinceMap: { [key: string]: number } = {};
@@ -38,10 +41,6 @@ const Map = () => {
   const bottomNumber =
     dataList.length > 0 ? Math.min(...dataList.map(item => item.value)) : 0;
 
-  const handleProvinceClick = useCallback((provinceName: string) => {
-    setSelectedProvince(provinceName);
-  }, []);
-
   useEffect(() => {
     if (!chartRef.current) return;
 
@@ -61,6 +60,24 @@ const Map = () => {
       : null;
 
     myChart.setOption({
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: { name?: string; seriesType?: string }) => {
+          if (params.seriesType === 'effectScatter') return '';
+
+          const provinceName = params.name ?? '';
+          if (!provinceName) return '';
+
+          const stats = getProvinceStats(birthResultsRef.current, provinceName);
+
+          return [
+            stats.province,
+            `出生次数：${stats.count} 次`,
+            `经验概率：${(stats.empiricalRate * 100).toFixed(2)}%`,
+            `理论概率：${(stats.theoreticalRate * 100).toFixed(2)}%`
+          ].join('<br/>');
+        }
+      },
       visualMap: {
         min: 0,
         max: 5,
@@ -94,6 +111,9 @@ const Map = () => {
           itemStyle: {
             areaColor: '#afd8af'
           }
+        },
+        tooltip: {
+          show: true
         }
       },
       series: [
@@ -112,6 +132,9 @@ const Map = () => {
             itemStyle: {
               color: '#01ca78'
             },
+            tooltip: {
+              show: false
+            },
             data: markPointData
               ? [
                   {
@@ -124,20 +147,7 @@ const Map = () => {
         }
       ]
     });
-
-    const onClick = (params: { name?: string }) => {
-      if (params.name) {
-        handleProvinceClick(params.name);
-      }
-    };
-
-    myChart.off('click');
-    myChart.on('click', onClick);
-
-    return () => {
-      myChart.off('click', onClick);
-    };
-  }, [bottomNumber, dataList, handleProvinceClick, topNumber]);
+  }, [bottomNumber, dataList, topNumber]);
 
   useEffect(() => {
     const chartElement = chartRef.current;
@@ -150,16 +160,10 @@ const Map = () => {
   }, []);
 
   return (
-    <>
-      <div
-        className="flex flex-row space-x-2 items-center justify-center md:min-h-[460px] min-h-[320px] md:w-[600px] w-full px-2"
-        ref={chartRef}
-      />
-      <ProvinceDetailModal
-        province={selectedProvince}
-        onClose={() => setSelectedProvince(null)}
-      />
-    </>
+    <div
+      className="flex flex-row space-x-2 items-center justify-center md:min-h-[460px] min-h-[320px] md:w-[600px] w-full px-2"
+      ref={chartRef}
+    />
   );
 };
 
