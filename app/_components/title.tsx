@@ -1,6 +1,11 @@
+'use client';
+
 import React from 'react';
-import { Text, View } from 'reshaped';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Text, View } from 'reshaped';
+import { resolveAppVersion, useAppVersion } from '@/lib/store/useAppVersion';
+import VersionSwitcher from '@/components/version-switcher';
 
 export function CarrotIcon({ size = 28, color = '#FF4F04' }) {
   return (
@@ -38,24 +43,23 @@ export function CarrotIcon({ size = 28, color = '#FF4F04' }) {
 }
 
 function Title() {
+  const pathname = usePathname();
+  const version = useAppVersion(state => state.version);
+  const activeVersion = resolveAppVersion(pathname, version);
+  const homeHref = activeVersion === 'world' ? '/world' : '/';
+
   return (
-    <>
-      <View direction="row" align="center" gap={2}>
-        <Link href="/">
-          <View direction="row" align="center" gap={2}>
-            <CarrotIcon />
-            <Text variant="body-1" weight="medium">
-              投胎模拟器
-            </Text>
-          </View>
-        </Link>
-        <div className="bg-[#01ca78] px-2 py-1 rounded-xl hover:cursor-default">
-          <Text className="text-white" weight="medium" variant="caption-1">
-            中国版
+    <View direction="row" align="center" gap={2}>
+      <Link href={homeHref}>
+        <View direction="row" align="center" gap={2}>
+          <CarrotIcon />
+          <Text variant="body-1" weight="medium">
+            投胎模拟器
           </Text>
-        </div>
-      </View>
-    </>
+        </View>
+      </Link>
+      <VersionSwitcher />
+    </View>
   );
 }
 

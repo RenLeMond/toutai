@@ -34,9 +34,15 @@ const pages: Record<string, PageSeo> = {
   about: {
     title: `关于 - ${siteName}`,
     description:
-      '了解投胎模拟器中国版：根据全国出生人口数据，计算你出生在各省份的可能性。',
+      '了解投胎模拟器中国版与世界版：根据全国出生人口与世界银行全球数据，计算出生在各省份或各国的可能性。',
     path: '/about',
-    keywords: ['投胎模拟器', '关于', '出生概率计算']
+    keywords: [
+      '投胎模拟器',
+      '关于',
+      '出生概率计算',
+      '投胎模拟器中国版',
+      '投胎模拟器世界版'
+    ]
   },
   data: {
     title: `数据来源 - ${siteName}`,
@@ -51,6 +57,13 @@ const pages: Record<string, PageSeo> = {
       '计算你出生在指定省份的概率。输入目标地区，查看出生可能性与数学公式。',
     path: '/probability',
     keywords: ['出生概率计算器', '省份概率', '概率计算']
+  },
+  world: {
+    title: `世界版 - ${siteName}`,
+    description:
+      '如果来世随机投胎到世界上，你会出生在哪里？根据世界银行全球出生人口数据，模拟你在各国家的出生可能性。',
+    path: '/world',
+    keywords: ['投胎模拟器世界版', '全球出生概率', '国家出生概率', 'Reborn']
   }
 };
 
@@ -92,6 +105,7 @@ export const jsonLd = {
 
 export const sitemapEntries = [
   { path: '/', priority: 1 },
+  { path: '/world', priority: 0.9 },
   { path: '/probability', priority: 0.8 },
   { path: '/about', priority: 0.6 },
   { path: '/data', priority: 0.6 }

@@ -4,15 +4,24 @@ import React from 'react';
 import { Button, Dismissible, Modal, Text, View } from 'reshaped';
 import useResetModal from '@/lib/store/useResetModal';
 import { useBirth } from '@/lib/store/useBirth';
+import { resolveAppVersion, useAppVersion } from '@/lib/store/useAppVersion';
+import { usePathname } from 'next/navigation';
 
 function ResetModal() {
+  const pathname = usePathname();
+  const storedVersion = useAppVersion(state => state.version);
+  const activeVersion = resolveAppVersion(pathname, storedVersion);
   const { active, deactivate } = useResetModal();
-  const { clearBirthResults } = useBirth(state => ({
-    clearBirthResults: state.clearBirthResults
-  }));
+  const clearChinaBirthResults = useBirth(state => state.clearBirthResults);
+  const isWorldVersion = activeVersion === 'world';
 
-  function handleReset() {
-    clearBirthResults();
+  async function handleReset() {
+    if (isWorldVersion) {
+      const { useWorldBirth } = await import('@/lib/store/useWorldBirth');
+      useWorldBirth.getState().clearBirthResults();
+    } else {
+      clearChinaBirthResults();
+    }
     deactivate();
   }
 
@@ -25,7 +34,11 @@ function ResetModal() {
           closeAriaLabel="Close modal"
         >
           <Modal.Title>确定要重置数据？</Modal.Title>
-          <Modal.Subtitle>此操作将清空所有数据，不可恢复</Modal.Subtitle>
+          <Modal.Subtitle>
+            {isWorldVersion
+              ? '此操作将清空世界版投胎记录，不可恢复'
+              : '此操作将清空中国版投胎记录，不可恢复'}
+          </Modal.Subtitle>
         </Dismissible>
         <View key="actions" gap={2} direction="row">
           <View.Item key="cancel" columns={6}>

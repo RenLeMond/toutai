@@ -2,115 +2,185 @@
 
 import world from '@/data/world.json';
 import * as echarts from 'echarts';
-import { useCallback, useEffect, useRef } from 'react';
-import { Loader2 } from 'lucide-react';
-import { Text } from 'reshaped';
-import { useBirth } from '@/lib/store/useBirth';
+import { useEffect, useRef } from 'react';
+import { WorldBirthResult } from '@/lib/world-rebirth';
 
-const WorldMap = () => {
+const DEFAULT_CENTER: [number, number] = [17.228331, 26.3351];
+const DEFAULT_ZOOM = 1.25;
+const FOCUS_ZOOM = 2;
+
+interface WorldMapProps {
+  latestResult?: WorldBirthResult | null;
+}
+
+function WorldMap({ latestResult }: WorldMapProps) {
   const chartRef = useRef<HTMLDivElement | null>(null);
-
-  const echartsMapClick = useCallback(() => {}, []);
-
-  const mapOption = useCallback(
-    (mapName: any, data: any) => {
-      if (!chartRef.current) return;
-
-      const myChart =
-        echarts.getInstanceByDom(chartRef.current) ??
-        echarts.init(chartRef.current);
-
-      echarts.registerMap(mapName, data);
-
-      const option = {
-        radius: '100%',
-        tooltip: {
-          trigger: 'item',
-          padding: [5, 10],
-          backgroundColor: '#ffffff', // tooltip 背景颜色
-          borderColor: '#e1e1e1', // tooltip 边框颜色
-          borderWidth: 1, // tooltip 边框宽度
-          textStyle: {
-            color: '#666', // tooltip 文字颜色
-            fontSize: 14 // tooltip 字体大小
-          },
-          extraCssText: 'box-shadow: 0 0 0px rgba(0, 0, 0, 0.3);'
-        },
-        legend: {
-          orient: 'horizontal', // 图例的排列方向
-          // textStyle: { color: '#1a1e45' },
-          x: 'left', //图例的位置
-          y: '-20000000000000'
-        },
-        visualMap: {
-          //颜色的设置  dataRange
-          // textStyle: { color: '#1a1e45' },
-          x: 'left',
-          y: 'bottom',
-          // splitList: [{ start: 0, end: 150000 }],
-          show: false,
-          // text:['高','低'],// 文本，默认为数值文本
-          color: ['#1a1e45']
-        },
-        geo: {
-          map: 'world', // 此处需与注册地图命名保持一致
-          type: 'map',
-          zoom: 1.2,
-          label: {
-            show: false,
-            color: '#FFFFFF'
-          },
-          roam: true, // 是否允许缩放
-          scaleLimit: {
-            // 设置缩放的最小和最大比例
-            min: 1.2,
-            max: 5
-          },
-          itemStyle: {
-            color: '#fcfcfd', // 地图背景色，用到组件配置的变量
-            borderColor: '#bebfc0' // 省市边界线
-          },
-          emphasis: {
-            label: {
-              show: false
-            },
-            itemStyle: {
-              areaColor: '#afd8af' // 悬浮背景
-            }
-          },
-          data: []
-        }
-      };
-      myChart.setOption(option);
-
-      myChart.getZr().off('click');
-      myChart.getZr().on('click', params => {
-        if (params.target) {
-          myChart.on('click', echartsMapClick);
-        }
-      });
-    },
-    [echartsMapClick]
-  );
+  const chartInstanceRef = useRef<echarts.ECharts | null>(null);
 
   useEffect(() => {
-    mapOption('world', world);
-    return () => {
-      if (chartRef.current) {
-        echarts.getInstanceByDom(chartRef.current)?.dispose();
-      }
+    if (!chartRef.current) return;
+
+    const chart =
+      echarts.getInstanceByDom(chartRef.current) ??
+      echarts.init(chartRef.current);
+    chartInstanceRef.current = chart;
+    echarts.registerMap('world', world as never);
+
+    const handleResize = () => {
+      chart.resize();
     };
-  }, [mapOption]);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      chart.dispose();
+      chartInstanceRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const chart = chartInstanceRef.current;
+    if (!chart) return;
+
+    const coordinate = latestResult?.position ?? DEFAULT_CENTER;
+    const center = latestResult?.position ?? DEFAULT_CENTER;
+    const zoom = latestResult ? FOCUS_ZOOM : DEFAULT_ZOOM;
+
+    chart.setOption({
+      backgroundColor: '#f5f3ef',
+      geo: {
+        map: 'world',
+        roam: true,
+        zoom,
+        center,
+        scaleLimit: {
+          min: 1,
+          max: 8
+        },
+        label: {
+          show: false
+        },
+        itemStyle: {
+          areaColor: '#fcfcfd',
+          borderColor: '#bebfc0'
+        },
+        emphasis: {
+          label: {
+            show: false
+          },
+          itemStyle: {
+            areaColor: '#afd8af'
+          }
+        }
+      },
+      series: latestResult
+        ? [
+            {
+              type: 'custom',
+              coordinateSystem: 'geo',
+              geoIndex: 0,
+              zlevel: 1,
+              data: [coordinate],
+              renderItem(
+                params: echarts.CustomSeriesRenderItemParams,
+                api: echarts.CustomSeriesRenderItemAPI
+              ) {
+                const coord = api.coord([
+                  api.value(0, params.dataIndex),
+                  api.value(1, params.dataIndex)
+                ]);
+                const circles = [];
+
+                for (let i = 0; i < 5; i++) {
+                  circles.push({
+                    type: 'circle',
+                    shape: {
+                      cx: 0,
+                      cy: 0,
+                      r: 30
+                    },
+                    style: {
+                      stroke: '#ff4f04',
+                      fill: 'none',
+                      lineWidth: 2
+                    },
+                    keyframeAnimation: {
+                      duration: 4000,
+                      loop: true,
+                      delay: (-i / 4) * 4000,
+                      keyframes: [
+                        {
+                          percent: 0,
+                          scaleX: 0,
+                          scaleY: 0,
+                          style: {
+                            opacity: 1
+                          }
+                        },
+                        {
+                          percent: 1,
+                          scaleX: 1,
+                          scaleY: 0.4,
+                          style: {
+                            opacity: 0
+                          }
+                        }
+                      ]
+                    }
+                  });
+                }
+
+                return {
+                  type: 'group',
+                  x: coord[0],
+                  y: coord[1],
+                  children: [
+                    ...circles,
+                    {
+                      type: 'path',
+                      shape: {
+                        d: 'M16 0c-5.523 0-10 4.477-10 10 0 10 10 22 10 22s10-12 10-22c0-5.523-4.477-10-10-10zM16 16c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z',
+                        x: -10,
+                        y: -35,
+                        width: 20,
+                        height: 40
+                      },
+                      style: {
+                        fill: '#ff4f04'
+                      },
+                      keyframeAnimation: {
+                        duration: 1000,
+                        loop: true,
+                        delay: Math.random() * 1000,
+                        keyframes: [
+                          {
+                            y: -10,
+                            percent: 0.5,
+                            easing: 'cubicOut'
+                          },
+                          {
+                            y: 0,
+                            percent: 1,
+                            easing: 'bounceOut'
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                };
+              }
+            }
+          ]
+        : []
+    });
+  }, [latestResult]);
 
   return (
     <div
-      className="flex flex-row space-x-1.5 items-center justify-center md:min-h-[460px] min-h-[320px] md:w-[600px] w-full px-2"
+      className="md:min-h-[460px] min-h-[320px] md:w-[600px] w-full px-2"
       ref={chartRef}
-    >
-      <Loader2 size={16} className="animate-spin" />
-      <Text>地图加载中</Text>
-    </div>
+    />
   );
-};
+}
 
 export default WorldMap;

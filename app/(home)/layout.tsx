@@ -5,6 +5,7 @@ import Title from '@/components/title';
 import Navbar from '@/components/navbar';
 import ResetModal from '@/components/reset-modal';
 import ShareModal from '@/components/share-modal';
+import AppVersionHydrator from '@/components/app-version-hydrator';
 import { createPageMetadata } from '@/_lib/site';
 
 export const metadata: Metadata = createPageMetadata('home');
@@ -16,6 +17,7 @@ export default function HomepageLayout({
 }>) {
   return (
     <>
+      <AppVersionHydrator />
       <ResetModal />
       <ShareModal />
       <Container width="640px" padding={1}>
