@@ -23,16 +23,6 @@ npm run build:themes
 npm run build
 ```
 
-### 环境变量（可选）
-
-复制 `.env.example` 为 `.env.local` 并填写：
-
-| 变量 | 说明 |
-|------|------|
-| `NEXT_PUBLIC_ADSENSE_CLIENT` | Google AdSense 发布商 ID |
-| `NEXT_PUBLIC_ADSENSE_SLOT` | AdSense 广告位 ID |
-| `NEXT_PUBLIC_CF_BEACON_TOKEN` | Cloudflare Web Analytics Token |
-
 ### 致谢
 
 - 灵感来源：[uahh.site/reborn](https://uahh.site/reborn)
