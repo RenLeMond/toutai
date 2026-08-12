@@ -1,12 +1,14 @@
-import { Inter } from 'next/font/google';
 import './globals.css';
 import './_themes/orangeTheme/theme.css';
 import ReshapedProvider from '@/components/reshaped-provider';
 import React from 'react';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/next';
+import type { Metadata } from 'next';
 
-const inter = Inter({ subsets: ['latin'] });
+export const metadata: Metadata = {
+  metadataBase: new URL('https://toutai.online')
+};
 
 export default function RootLayout({
   children
@@ -15,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-rs-theme="orangeTheme" data-rs-color-mode="light">
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         <Toaster position="bottom-center" />
         <ReshapedProvider>{children}</ReshapedProvider>
         <Analytics />

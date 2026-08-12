@@ -72,12 +72,12 @@ function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
                 投胎模拟器
               </Text>
               <Text color="primary" weight="medium">
-                toutai.cc
+                toutai.online
               </Text>
             </View>
           </View>
           <QRCode
-            value="https://toutai.cc"
+            value="https://toutai.online"
             bgColor="#fed8aa"
             fgColor="#000000"
             level="L"
@@ -167,12 +167,12 @@ function ShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
                 投胎模拟器
               </Text>
               <Text color="primary" weight="medium">
-                toutai.cc
+                toutai.online
               </Text>
             </View>
           </View>
           <QRCode
-            value="https://toutai.cc"
+            value="https://toutai.online"
             bgColor="#f5f3ef"
             fgColor="#000000"
             level="L"
@@ -271,12 +271,12 @@ function ShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
                 投胎模拟器
               </Text>
               <Text color="primary" weight="medium">
-                toutai.cc
+                toutai.online
               </Text>
             </View>
           </View>
           <QRCode
-            value="https://toutai.cc"
+            value="https://toutai.online"
             bgColor="#f5f3ef"
             fgColor="#000000"
             level="L"

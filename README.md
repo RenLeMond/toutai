@@ -1,6 +1,6 @@
 ![banner.png](images%2Fbanner.png)
 
-**项目网站**：https://toutai.cc/
+**项目网站**：https://toutai.online/
 
 本项目根据公布的最新出生人口数据，同时包括了性别，计算出生在某地区的可能性。
 
