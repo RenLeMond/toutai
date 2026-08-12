@@ -2,16 +2,40 @@
 
 import world from '@/data/world.json';
 import * as echarts from 'echarts';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Loader, Text } from 'reshaped';
+import { toGeoName } from '@/lib/world-geo-aliases';
+import { useWorldBirth } from '@/lib/store/useWorldBirth';
 
 interface ShareWorldMapProps {
   position: [number, number];
+  countryEn?: string;
 }
 
-function ShareWorldMap({ position }: ShareWorldMapProps) {
+function ShareWorldMap({ position, countryEn }: ShareWorldMapProps) {
+  const birthResults = useWorldBirth(state => state.birthResults);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const chartInstanceRef = useRef<echarts.ECharts | null>(null);
+
+  const heatData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    birthResults.forEach(result => {
+      const geoName = toGeoName(result.countryEn);
+      counts[geoName] = (counts[geoName] || 0) + 1;
+    });
+
+    if (countryEn) {
+      const currentGeo = toGeoName(countryEn);
+      if (!counts[currentGeo]) {
+        counts[currentGeo] = 1;
+      }
+    }
+
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [birthResults, countryEn]);
+
+  const maxHeat =
+    heatData.length > 0 ? Math.max(...heatData.map(item => item.value)) : 1;
 
   const mapOption = useCallback(() => {
     if (!chartRef.current) return;
@@ -25,10 +49,18 @@ function ShareWorldMap({ position }: ShareWorldMapProps) {
 
     chart.setOption({
       backgroundColor: '#fcfcfd',
+      visualMap: {
+        min: 0,
+        max: maxHeat,
+        show: false,
+        inRange: {
+          color: ['#f5e1d6', '#ff4f04']
+        }
+      },
       geo: {
         map: 'world',
         roam: false,
-        zoom: 1.25,
+        zoom: 1.6,
         center: position,
         label: { show: false },
         itemStyle: {
@@ -42,9 +74,17 @@ function ShareWorldMap({ position }: ShareWorldMapProps) {
       },
       series: [
         {
+          name: '次数',
+          type: 'map',
+          geoIndex: 0,
+          data: heatData,
+          select: { disabled: true }
+        },
+        {
           type: 'custom',
           coordinateSystem: 'geo',
           geoIndex: 0,
+          zlevel: 2,
           data: [position],
           renderItem(
             params: echarts.CustomSeriesRenderItemParams,
@@ -77,7 +117,7 @@ function ShareWorldMap({ position }: ShareWorldMapProps) {
         }
       ]
     });
-  }, [position]);
+  }, [heatData, maxHeat, position]);
 
   useEffect(() => {
     mapOption();

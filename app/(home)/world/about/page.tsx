@@ -2,7 +2,6 @@ import React from 'react';
 import { Divider, Text, View } from 'reshaped';
 import MathComponent from '@/components/math-component';
 import Reset from '@/components/reset';
-import worldMeta from '@/data/world_meta.json';
 
 function Page() {
   return (
@@ -30,9 +29,6 @@ function Page() {
               世界版根据世界银行公布的全球出生人口数据，计算出生在某国家的可能性，使用了以下公式：
             </Text>
             <MathComponent formula="\displaystyle{\text{出生在该国家的可能性} = \frac{\text{该国出生人口}}{\text{全球总出生人口}}}" />
-            <Text variant="body-3" color="neutral-faded">
-              {worldMeta.note}
-            </Text>
           </View>
         </View>
         <View paddingBlock={8}>

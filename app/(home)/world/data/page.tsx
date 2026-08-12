@@ -27,9 +27,6 @@ function Page() {
         </Text>
         <Text variant="body-2">出生概率计算公式：</Text>
         <MathComponent formula="\displaystyle{\text{出生在该国家的可能性} = \frac{\text{该国出生人口}}{\text{全球总出生人口}}}" />
-        <Text variant="body-3" color="neutral-faded">
-          原始数据与处理脚本见项目内 scripts/world-data/ 目录。
-        </Text>
       </View>
     </View>
   );

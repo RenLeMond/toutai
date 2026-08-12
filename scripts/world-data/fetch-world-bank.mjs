@@ -174,10 +174,7 @@ async function main() {
   const meta = {
     source: 'World Bank',
     dataYear: year,
-    note:
-      fallback.length > 0
-        ? `数据来自世界银行 ${year} 年人口与粗出生率统计（${fallback.join('、')} 等缺项沿用既有数值）。`
-        : `数据来自世界银行 ${year} 年人口与粗出生率统计。`,
+    note: `数据来自世界银行 ${year} 年人口与粗出生率统计。`,
     fallbackRegions: fallback
   };
 

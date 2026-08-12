@@ -77,7 +77,12 @@ function WorldShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
         justify="space-between"
         height="100%"
       >
-        {shareInfo.position && <ShareWorldMap position={shareInfo.position} />}
+        {shareInfo.position && (
+          <ShareWorldMap
+            position={shareInfo.position}
+            countryEn={shareInfo.countryEn}
+          />
+        )}
         <Text variant="body-2" weight="medium">
           我在投胎模拟器世界版第{' '}
           <span className="text-[#ba3700] font-medium">{shareInfo.count}</span>{' '}
@@ -108,7 +113,10 @@ function WorldShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
       <View direction="column" padding={6} height="100%">
         {shareInfo.position && (
           <div className="absolute right-0 top-8 w-44 h-32 opacity-25 pointer-events-none overflow-hidden rounded-xl">
-            <ShareWorldMap position={shareInfo.position} />
+            <ShareWorldMap
+              position={shareInfo.position}
+              countryEn={shareInfo.countryEn}
+            />
           </div>
         )}
         <View direction="column" justify="center" grow paddingTop={6}>
@@ -152,7 +160,12 @@ function WorldShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
         height="100%"
         justify="space-between"
       >
-        {shareInfo.position && <ShareWorldMap position={shareInfo.position} />}
+        {shareInfo.position && (
+          <ShareWorldMap
+            position={shareInfo.position}
+            countryEn={shareInfo.countryEn}
+          />
+        )}
         <View direction="row" justify="space-between" paddingBottom={4}>
           <View direction="column">
             <Text variant="body-2" weight="medium" className="z-10">

@@ -10,6 +10,7 @@ export interface ShareInfo {
   probability: number;
   continent?: string;
   position?: [number, number];
+  countryEn?: string;
 }
 
 interface ShareModalState {

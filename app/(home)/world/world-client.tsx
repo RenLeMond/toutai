@@ -22,7 +22,6 @@ import WorldContinentBar from '@/components/world-continent-bar';
 import WorldFirstTimeTable from '@/components/world-first-time-table';
 import WorldNameLangSwitch from '@/components/world-name-lang-switch';
 import Ads from '@/components/ads';
-import worldMeta from '@/data/world_meta.json';
 
 const WorldMap = dynamic(() => import('@/components/world-map'), {
   ssr: false,
@@ -85,7 +84,8 @@ function WorldClient() {
                 order: '',
                 probability: birthResult.probability,
                 continent: birthResult.continent,
-                position: birthResult.position
+                position: birthResult.position,
+                countryEn: birthResult.countryEn
               });
             }}
           >
@@ -193,10 +193,7 @@ function WorldClient() {
   return (
     <>
       <View paddingInline={4} paddingBottom={9} className="select-none">
-        <View paddingBlock={2} direction="row" justify="space-between" align="center">
-          <Text variant="caption-1" color="neutral-faded">
-            {worldMeta.note}
-          </Text>
+        <View paddingBlock={2} direction="row" justify="end" align="center">
           <WorldNameLangSwitch />
         </View>
         <View paddingBlock={4}>

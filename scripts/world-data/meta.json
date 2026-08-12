@@ -1,6 +1,6 @@
 {
   "source": "World Bank",
   "dataYear": 2024,
-  "note": "数据来自世界银行 2024 年人口与粗出生率统计（Taiwan 等缺项沿用既有数值）。",
+  "note": "数据来自世界银行 2024 年人口与粗出生率统计。",
   "fallbackRegions": ["Taiwan"]
 }
