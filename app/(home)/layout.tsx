@@ -5,11 +5,9 @@ import Title from '@/components/title';
 import Navbar from '@/components/navbar';
 import ResetModal from '@/components/reset-modal';
 import ShareModal from '@/components/share-modal';
+import { createPageMetadata } from '@/_lib/site';
 
-export const metadata: Metadata = {
-  title: '投胎模拟器',
-  description: '如果来世还在种花家，你会出生在哪里？'
-};
+export const metadata: Metadata = createPageMetadata('home');
 
 export default function HomepageLayout({
   children

@@ -5,14 +5,27 @@ import React from 'react';
 import { Toaster } from 'sonner';
 import Script from 'next/script';
 import type { Metadata } from 'next';
+import {
+  createPageMetadata,
+  jsonLd,
+  siteUrl
+} from '@/_lib/site';
 
 const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 const cfBeacon = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
+const googleSiteVerification =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+const baiduSiteVerification = process.env.NEXT_PUBLIC_BAIDU_SITE_VERIFICATION;
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://toutai.online'),
-  title: '投胎模拟器',
-  description: '如果来世还在种花家，你会出生在哪里？'
+  metadataBase: new URL(siteUrl),
+  ...createPageMetadata('home'),
+  ...(googleSiteVerification && {
+    verification: { google: googleSiteVerification }
+  }),
+  ...(baiduSiteVerification && {
+    other: { 'baidu-site-verification': baiduSiteVerification }
+  })
 };
 
 export default function RootLayout({
@@ -23,6 +36,10 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" data-rs-theme="orangeTheme" data-rs-color-mode="light">
       <body className="font-sans antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Toaster position="bottom-center" />
         <ReshapedProvider>{children}</ReshapedProvider>
         {adsenseClient && (
