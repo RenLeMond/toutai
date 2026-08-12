@@ -1,7 +1,10 @@
 'use client';
 
 import world from '@/data/world.json';
-import * as echarts from 'echarts';
+import echarts, {
+  type CustomSeriesRenderItemAPI,
+  type CustomSeriesRenderItemParams
+} from '@/lib/echarts';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Loader, Text } from 'reshaped';
 import { toGeoName } from '@/lib/world-geo-aliases';
@@ -15,7 +18,7 @@ interface ShareWorldMapProps {
 function ShareWorldMap({ position, countryEn }: ShareWorldMapProps) {
   const birthResults = useWorldBirth(state => state.birthResults);
   const chartRef = useRef<HTMLDivElement | null>(null);
-  const chartInstanceRef = useRef<echarts.ECharts | null>(null);
+  const chartInstanceRef = useRef<ReturnType<typeof echarts.init> | null>(null);
 
   const heatData = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -87,8 +90,8 @@ function ShareWorldMap({ position, countryEn }: ShareWorldMapProps) {
           zlevel: 2,
           data: [position],
           renderItem(
-            params: echarts.CustomSeriesRenderItemParams,
-            api: echarts.CustomSeriesRenderItemAPI
+            params: CustomSeriesRenderItemParams,
+            api: CustomSeriesRenderItemAPI
           ) {
             const coord = api.coord([
               api.value(0, params.dataIndex),

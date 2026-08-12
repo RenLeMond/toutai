@@ -7,12 +7,28 @@ import useShareModal, { ShareInfo } from '@/lib/store/useShareModal';
 import html2canvas from 'html2canvas';
 import { CarrotIcon } from '@/components/title';
 import QRCode from 'react-qr-code';
-import ShareMap from '@/components/share-map';
 import { toast } from 'sonner';
 import { X } from 'lucide-react';
 import ChinaMap from '@/components/icon';
 import { translateGenderChild } from '@/lib/rebirth';
 import { formatWorldProbability } from '@/lib/world-rebirth';
+
+const ShareMap = dynamic(() => import('@/components/share-map'), {
+  ssr: false,
+  loading: () => (
+    <View
+      direction="row"
+      gap={2}
+      align="center"
+      justify="center"
+      height={40}
+      width="100%"
+    >
+      <Loader />
+      <Text>地图加载中</Text>
+    </View>
+  )
+});
 
 const ShareWorldMap = dynamic(() => import('@/components/share-world-map'), {
   ssr: false,

@@ -1,7 +1,10 @@
 'use client';
 
 import world from '@/data/world.json';
-import * as echarts from 'echarts';
+import echarts, {
+  type CustomSeriesRenderItemAPI,
+  type CustomSeriesRenderItemParams
+} from '@/lib/echarts';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   WorldBirthResult,
@@ -57,9 +60,7 @@ function WorldMap({ latestResult, rapidMode = false }: WorldMapProps) {
   const birthResults = useWorldBirth(state => state.birthResults);
   const nameLang = useWorldLocale(state => state.nameLang);
   const chartRef = useRef<HTMLDivElement | null>(null);
-  const chartInstanceRef = useRef<echarts.ECharts | null>(null);
-  const lastFlushedLengthRef = useRef(0);
-  const prevRapidModeRef = useRef(false);
+  const chartInstanceRef = useRef<ReturnType<typeof echarts.init> | null>(null);
   const nameLangRef = useRef(nameLang);
   const heatByGeoRef = useRef(new Map<string, HeatDatum>());
 
@@ -68,7 +69,39 @@ function WorldMap({ latestResult, rapidMode = false }: WorldMapProps) {
     [birthResults]
   );
 
-  const [displayHeatData, setDisplayHeatData] = useState<HeatDatum[]>([]);
+  const resultCount = birthResults.length;
+  const [displayHeatData, setDisplayHeatData] = useState(fullHeatData);
+  const [heatSync, setHeatSync] = useState({
+    rapidMode,
+    resultCount,
+    fullHeatData,
+    flushedLength: resultCount
+  });
+
+  // Adjust heat snapshot while rendering (React-recommended alternative to
+  // setState-in-effect) so rapid press can throttle map repaints.
+  if (
+    rapidMode !== heatSync.rapidMode ||
+    resultCount !== heatSync.resultCount ||
+    fullHeatData !== heatSync.fullHeatData
+  ) {
+    const wasRapid = heatSync.rapidMode;
+    const shouldFlush =
+      !rapidMode ||
+      !wasRapid ||
+      resultCount - heatSync.flushedLength >= HEAT_FLUSH_INTERVAL;
+
+    setHeatSync({
+      rapidMode,
+      resultCount,
+      fullHeatData,
+      flushedLength: shouldFlush ? resultCount : heatSync.flushedLength
+    });
+
+    if (shouldFlush) {
+      setDisplayHeatData(fullHeatData);
+    }
+  }
 
   useEffect(() => {
     nameLangRef.current = nameLang;
@@ -79,29 +112,6 @@ function WorldMap({ latestResult, rapidMode = false }: WorldMapProps) {
     displayHeatData.forEach(item => map.set(item.name, item));
     heatByGeoRef.current = map;
   }, [displayHeatData]);
-
-  useEffect(() => {
-    const resultCount = birthResults.length;
-    const wasRapid = prevRapidModeRef.current;
-    prevRapidModeRef.current = rapidMode;
-
-    if (!rapidMode) {
-      setDisplayHeatData(fullHeatData);
-      lastFlushedLengthRef.current = resultCount;
-      return;
-    }
-
-    if (!wasRapid) {
-      lastFlushedLengthRef.current = resultCount;
-      setDisplayHeatData(fullHeatData);
-      return;
-    }
-
-    if (resultCount - lastFlushedLengthRef.current >= HEAT_FLUSH_INTERVAL) {
-      setDisplayHeatData(fullHeatData);
-      lastFlushedLengthRef.current = resultCount;
-    }
-  }, [birthResults.length, fullHeatData, rapidMode]);
 
   const maxHeat =
     displayHeatData.length > 0
@@ -146,8 +156,8 @@ function WorldMap({ latestResult, rapidMode = false }: WorldMapProps) {
             zlevel: 2,
             data: [coordinate],
             renderItem(
-              params: echarts.CustomSeriesRenderItemParams,
-              api: echarts.CustomSeriesRenderItemAPI
+              params: CustomSeriesRenderItemParams,
+              api: CustomSeriesRenderItemAPI
             ) {
               const coord = api.coord([
                 api.value(0, params.dataIndex),

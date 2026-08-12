@@ -1,8 +1,8 @@
 'use client';
 
-import { Button, View, Divider, Tabs, Text, Icon, Loader } from 'reshaped';
-import Map from '@/components/map';
-import React, { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { Button, Divider, Icon, Loader, Tabs, Text, View } from 'reshaped';
+import React, { useCallback, useEffect, useState } from 'react';
 import ResultTable from '@/components/result-table';
 import { toast } from 'sonner';
 import { Share2, X } from 'lucide-react';
@@ -17,16 +17,30 @@ import Piechart from '@/components/piechart';
 import FirstTimeTable from '@/components/first-time-table';
 import useShareModal from '@/lib/store/useShareModal';
 import Ads from '@/components/ads';
+import { useRebirthPress } from '@/hooks/useRebirthPress';
+import RebirthTabPanel from '@/components/rebirth-tab-panel';
+import ChinaStatsPanel from '@/components/china-stats-panel';
+
+const Map = dynamic(() => import('@/components/map'), {
+  ssr: false,
+  loading: () => (
+    <View
+      direction="row"
+      gap={2}
+      align="center"
+      justify="center"
+      paddingBlock={16}
+    >
+      <Loader />
+      <Text>地图加载中</Text>
+    </View>
+  )
+});
 
 const hasStillbirthOutcome = () => Math.random() < 0.0031;
 
 function HomeClient() {
   const [isLoading, setIsLoading] = useState(true);
-  const [isPressing, setIsPressing] = useState(false);
-
-  const pressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const touchActiveRef = useRef(false);
-  const ignoreClickRef = useRef(false);
 
   useEffect(() => {
     const rehydrate = async () => {
@@ -38,130 +52,89 @@ function HomeClient() {
 
   const openShare = useShareModal(state => state.openShare);
 
-  const { addBirthResult, getBirthResultsCount } = useBirth(state => ({
-    addBirthResult: state.addBirthResult,
-    getBirthResultsCount: state.getBirthResultsCount
-  }));
+  const { addBirthResult, getBirthResultsCount, consumeTrimNotice } = useBirth(
+    state => ({
+      addBirthResult: state.addBirthResult,
+      getBirthResultsCount: state.getBirthResultsCount,
+      consumeTrimNotice: state.consumeTrimNotice
+    })
+  );
 
-  const handleRebirth = () => {
-    if (hasStillbirthOutcome()) {
-      // 31 out of 10000 is 3.1‰
-      showRebirthErrorToast();
-    } else {
-      const birthResult = simulateBirth();
-      addBirthResult(birthResult);
-      showRebirthToast(birthResult, getBirthResultsCount());
-    }
-  };
+  const showRebirthToast = useCallback(
+    (birthResult: BirthResult, count: number) => {
+      const countAtCreation = count;
+      toast.custom(t => (
+        <div className="relative bg-white w-full sm:w-[354px] py-5 pl-3 pr-5 border-neutral-faded border rounded-xl">
+          <div className="flex flex-row justify-start space-x-2 items-center">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                openShare({
+                  mode: 'china',
+                  count: countAtCreation,
+                  region: birthResult.province,
+                  category: birthResult.category,
+                  gender: birthResult.gender,
+                  order: birthResult.order,
+                  probability: birthResult.probability
+                });
+              }}
+            >
+              <Icon size={4} color="neutral-faded" svg={<Share2 />} />
+            </Button>
+            <Text>
+              第{' '}
+              <span className="font-medium text-primary">{countAtCreation}</span>{' '}
+              次投胎，
+              {['香港', '澳门', '台湾'].includes(birthResult.province) ? (
+                <>
+                  你出生在
+                  <span className="font-medium text-primary">
+                    {birthResult.province}
+                  </span>
+                  ，是一个
+                  <span className="font-medium text-primary">
+                    {translateGenderChild(birthResult.gender)}
+                  </span>
+                  。
+                </>
+              ) : (
+                <>
+                  你出生在
+                  <span className="font-medium text-primary">
+                    {birthResult.province}
+                  </span>
+                  的
+                  <span className="font-medium text-primary">
+                    {birthResult.category}
+                  </span>
+                  ，是一个
+                  <span className="font-medium text-primary">
+                    {translateGenderChild(birthResult.gender)}
+                  </span>
+                  ，你是这个家庭
+                  <span className="font-medium text-primary">
+                    第{birthResult.order}个
+                  </span>
+                  孩子。
+                </>
+              )}
+            </Text>
+          </div>
 
-  const clearPressInterval = () => {
-    if (pressIntervalRef.current) {
-      clearInterval(pressIntervalRef.current);
-      pressIntervalRef.current = null;
-    }
-  };
-
-  const startPress = () => {
-    if (pressIntervalRef.current) return;
-    ignoreClickRef.current = false;
-    setIsPressing(true);
-    pressIntervalRef.current = setInterval(() => {
-      ignoreClickRef.current = true;
-      handleRebirth();
-    }, 150);
-  };
-
-  const endPress = () => {
-    setIsPressing(false);
-    clearPressInterval();
-  };
-
-  useEffect(() => {
-    return () => {
-      clearPressInterval();
-    };
-  }, []);
-
-  const handleClickRebirth = () => {
-    if (ignoreClickRef.current) {
-      ignoreClickRef.current = false;
-      return;
-    }
-    handleRebirth();
-  };
-
-  const showRebirthToast = (birthResult: BirthResult, count: number) => {
-    const countAtCreation = count;
-    toast.custom(t => (
-      <div className="relative bg-white w-full sm:w-[354px] py-5 pl-3 pr-5 border-neutral-faded border rounded-xl">
-        <div className="flex flex-row justify-start space-x-2 items-center">
-          <Button
-            variant="ghost"
-            onClick={() => {
-              openShare({
-                mode: 'china',
-                count: countAtCreation,
-                region: birthResult.province,
-                category: birthResult.category,
-                gender: birthResult.gender,
-                order: birthResult.order,
-                probability: birthResult.probability
-              });
-            }}
+          <button
+            className="absolute top-2 right-3"
+            onClick={() => toast.dismiss(t)}
           >
-            <Icon size={4} color="neutral-faded" svg={<Share2 />} />
-          </Button>
-          <Text>
-            第{' '}
-            <span className="font-medium text-primary">{countAtCreation}</span>{' '}
-            次投胎，
-            {['香港', '澳门', '台湾'].includes(birthResult.province) ? (
-              <>
-                你出生在
-                <span className="font-medium text-primary">
-                  {birthResult.province}
-                </span>
-                ，是一个
-                <span className="font-medium text-primary">
-                  {translateGenderChild(birthResult.gender)}
-                </span>
-                。
-              </>
-            ) : (
-              <>
-                你出生在
-                <span className="font-medium text-primary">
-                  {birthResult.province}
-                </span>
-                的
-                <span className="font-medium text-primary">
-                  {birthResult.category}
-                </span>
-                ，是一个
-                <span className="font-medium text-primary">
-                  {translateGenderChild(birthResult.gender)}
-                </span>
-                ，你是这个家庭
-                <span className="font-medium text-primary">
-                  第{birthResult.order}个
-                </span>
-                孩子。
-              </>
-            )}
-          </Text>
+            <Icon size={4} color="neutral-faded" svg={<X />} />
+          </button>
         </div>
+      ));
+    },
+    [openShare]
+  );
 
-        <button
-          className="absolute top-2 right-3"
-          onClick={() => toast.dismiss(t)}
-        >
-          <Icon size={4} color="neutral-faded" svg={<X />} />
-        </button>
-      </div>
-    ));
-  };
-
-  const showRebirthErrorToast = () => {
+  const showRebirthErrorToast = useCallback(() => {
     toast.custom(t => (
       <div className="relative bg-red-100 w-full sm:w-[354px] p-5 border-red-500 border rounded-xl">
         <div className="flex flex-row justify-between">
@@ -177,33 +150,37 @@ function HomeClient() {
         </button>
       </div>
     ));
-  };
+  }, []);
 
-  const renderTabPanel = (component: React.ReactNode) => {
-    return getBirthResultsCount() > 0 ? (
-      component
-    ) : (
-      <>
-        {isLoading ? (
-          <View
-            direction="row"
-            gap={2}
-            align="center"
-            paddingBlock={4}
-            height={64}
-            justify="center"
-          >
-            <Loader />
-            <Text>数据加载中</Text>
-          </View>
-        ) : (
-          <View align="center" paddingBlock={4} height={64} justify="center">
-            <Text color="neutral">暂无投胎记录，点击投胎按钮开始！</Text>
-          </View>
-        )}
-      </>
-    );
-  };
+  const handleRebirth = useCallback(() => {
+    if (hasStillbirthOutcome()) {
+      showRebirthErrorToast();
+      return;
+    }
+
+    const birthResult = simulateBirth();
+    addBirthResult(birthResult);
+
+    if (consumeTrimNotice()) {
+      toast.message('历史记录已达上限，最早记录已自动清理');
+    }
+
+    showRebirthToast(birthResult, getBirthResultsCount());
+  }, [
+    addBirthResult,
+    consumeTrimNotice,
+    getBirthResultsCount,
+    showRebirthErrorToast,
+    showRebirthToast
+  ]);
+
+  const { pressHandlers, handleClickRebirth } = useRebirthPress({
+    interval: 150,
+    onRebirth: handleRebirth,
+    disabled: isLoading
+  });
+
+  const birthCount = getBirthResultsCount();
 
   return (
     <>
@@ -221,34 +198,12 @@ function HomeClient() {
             width="100%"
           >
             <View width={64}>
-              <div
-                onMouseDown={event => {
-                  if (touchActiveRef.current) return;
-                  if (event.button === 0) {
-                    startPress();
-                  }
-                }}
-                onMouseUp={endPress}
-                onMouseLeave={endPress}
-                onTouchStart={() => {
-                  touchActiveRef.current = true;
-                  startPress();
-                }}
-                onTouchEnd={() => {
-                  endPress();
-                  window.setTimeout(() => {
-                    touchActiveRef.current = false;
-                  }, 400);
-                }}
-                onTouchCancel={() => {
-                  endPress();
-                  touchActiveRef.current = false;
-                }}
-              >
+              <div {...pressHandlers}>
                 <Button
                   color="primary"
                   rounded
                   fullWidth
+                  disabled={isLoading}
                   onClick={handleClickRebirth}
                 >
                   投胎
@@ -256,6 +211,9 @@ function HomeClient() {
               </div>
             </View>
           </View>
+
+          {birthCount > 0 && <ChinaStatsPanel />}
+
           <View width="100%" paddingBottom={2} paddingTop={4}>
             <Divider />
           </View>
@@ -270,16 +228,24 @@ function HomeClient() {
                 </Tabs.List>
               </View>
               <Tabs.Panel value="record">
-                {renderTabPanel(<ResultTable />)}
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <ResultTable />
+                </RebirthTabPanel>
               </Tabs.Panel>
               <Tabs.Panel value="province">
-                {renderTabPanel(<BarList />)}
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <BarList />
+                </RebirthTabPanel>
               </Tabs.Panel>
               <Tabs.Panel value="gender">
-                {renderTabPanel(<Piechart />)}
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <Piechart />
+                </RebirthTabPanel>
               </Tabs.Panel>
               <Tabs.Panel value="first">
-                {renderTabPanel(<FirstTimeTable />)}
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <FirstTimeTable />
+                </RebirthTabPanel>
               </Tabs.Panel>
             </Tabs>
           </View>

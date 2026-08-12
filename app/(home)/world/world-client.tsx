@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Divider, Icon, Loader, Tabs, Text, View } from 'reshaped';
 import { toast } from 'sonner';
 import { Share2, X } from 'lucide-react';
@@ -22,6 +22,8 @@ import WorldContinentBar from '@/components/world-continent-bar';
 import WorldFirstTimeTable from '@/components/world-first-time-table';
 import WorldNameLangSwitch from '@/components/world-name-lang-switch';
 import Ads from '@/components/ads';
+import { useRebirthPress } from '@/hooks/useRebirthPress';
+import RebirthTabPanel from '@/components/rebirth-tab-panel';
 
 const WorldMap = dynamic(() => import('@/components/world-map'), {
   ssr: false,
@@ -41,10 +43,6 @@ const WorldMap = dynamic(() => import('@/components/world-map'), {
 
 function WorldClient() {
   const [isLoading, setIsLoading] = useState(true);
-  const [isPressing, setIsPressing] = useState(false);
-  const pressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const touchActiveRef = useRef(false);
-  const ignoreClickRef = useRef(false);
 
   const nameLang = useWorldLocale(state => state.nameLang);
   const openShare = useShareModal(state => state.openShare);
@@ -64,131 +62,87 @@ function WorldClient() {
   );
   const birthCount = useWorldBirth(state => state.birthResults.length);
   const addBirthResult = useWorldBirth(state => state.addBirthResult);
+  const consumeTrimNotice = useWorldBirth(state => state.consumeTrimNotice);
+  const getBirthResultsCount = useWorldBirth(
+    state => state.getBirthResultsCount
+  );
 
-  const showRebirthToast = (birthResult: WorldBirthResult, count: number) => {
-    const countAtCreation = count;
-    const countryLabel = formatCountryName(birthResult, nameLang);
+  const showRebirthToast = useCallback(
+    (birthResult: WorldBirthResult, count: number) => {
+      const countAtCreation = count;
+      const countryLabel = formatCountryName(birthResult, nameLang);
 
-    toast.custom(t => (
-      <div className="relative bg-white w-full sm:w-[354px] py-5 pl-3 pr-5 border-neutral-faded border rounded-xl">
-        <div className="flex flex-row justify-start space-x-2 items-center">
-          <Button
-            variant="ghost"
-            onClick={() => {
-              openShare({
-                mode: 'world',
-                count: countAtCreation,
-                region: countryLabel,
-                category: '',
-                gender: '',
-                order: '',
-                probability: birthResult.probability,
-                continent: birthResult.continent,
-                position: birthResult.position,
-                countryEn: birthResult.countryEn
-              });
-            }}
+      toast.custom(t => (
+        <div className="relative bg-white w-full sm:w-[354px] py-5 pl-3 pr-5 border-neutral-faded border rounded-xl">
+          <div className="flex flex-row justify-start space-x-2 items-center">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                openShare({
+                  mode: 'world',
+                  count: countAtCreation,
+                  region: countryLabel,
+                  category: '',
+                  gender: '',
+                  order: '',
+                  probability: birthResult.probability,
+                  continent: birthResult.continent,
+                  position: birthResult.position,
+                  countryEn: birthResult.countryEn
+                });
+              }}
+            >
+              <Icon size={4} color="neutral-faded" svg={<Share2 />} />
+            </Button>
+            <Text>
+              第{' '}
+              <span className="font-medium text-primary">{countAtCreation}</span>{' '}
+              次投胎，你出生在
+              <span className="font-medium text-primary">{countryLabel}</span>
+              （
+              <span className="font-medium text-primary">
+                {birthResult.continent}
+              </span>
+              ），概率{' '}
+              <span className="font-medium text-primary">
+                {formatWorldProbability(birthResult.probability)}
+              </span>
+              。
+            </Text>
+          </div>
+          <button
+            className="absolute top-2 right-3"
+            onClick={() => toast.dismiss(t)}
           >
-            <Icon size={4} color="neutral-faded" svg={<Share2 />} />
-          </Button>
-          <Text>
-            第{' '}
-            <span className="font-medium text-primary">{countAtCreation}</span>{' '}
-            次投胎，你出生在
-            <span className="font-medium text-primary">{countryLabel}</span>
-            （
-            <span className="font-medium text-primary">
-              {birthResult.continent}
-            </span>
-            ），概率{' '}
-            <span className="font-medium text-primary">
-              {formatWorldProbability(birthResult.probability)}
-            </span>
-            。
-          </Text>
+            <Icon size={4} color="neutral-faded" svg={<X />} />
+          </button>
         </div>
-        <button
-          className="absolute top-2 right-3"
-          onClick={() => toast.dismiss(t)}
-        >
-          <Icon size={4} color="neutral-faded" svg={<X />} />
-        </button>
-      </div>
-    ));
-  };
+      ));
+    },
+    [nameLang, openShare]
+  );
 
-  const handleRebirth = () => {
-    if (isLoading) return;
-
+  const handleRebirth = useCallback(() => {
     const birthResult = simulateWorldBirth();
     addBirthResult(birthResult);
-    showRebirthToast(
-      birthResult,
-      useWorldBirth.getState().getBirthResultsCount()
-    );
-  };
 
-  const clearPressInterval = () => {
-    if (pressIntervalRef.current) {
-      clearInterval(pressIntervalRef.current);
-      pressIntervalRef.current = null;
+    if (consumeTrimNotice()) {
+      toast.message('历史记录已达上限，最早记录已自动清理');
     }
-  };
 
-  const startPress = () => {
-    if (pressIntervalRef.current) return;
-    ignoreClickRef.current = false;
-    setIsPressing(true);
-    pressIntervalRef.current = setInterval(() => {
-      ignoreClickRef.current = true;
-      handleRebirth();
-    }, 400);
-  };
+    showRebirthToast(birthResult, getBirthResultsCount());
+  }, [
+    addBirthResult,
+    consumeTrimNotice,
+    getBirthResultsCount,
+    showRebirthToast
+  ]);
 
-  const endPress = () => {
-    setIsPressing(false);
-    clearPressInterval();
-  };
-
-  useEffect(() => {
-    return () => {
-      clearPressInterval();
-    };
-  }, []);
-
-  const handleClickRebirth = () => {
-    if (ignoreClickRef.current) {
-      ignoreClickRef.current = false;
-      return;
-    }
-    handleRebirth();
-  };
-
-  const renderTabPanel = (component: React.ReactNode) => {
-    return birthCount > 0 ? (
-      component
-    ) : (
-      <>
-        {isLoading ? (
-          <View
-            direction="row"
-            gap={2}
-            align="center"
-            paddingBlock={4}
-            height={64}
-            justify="center"
-          >
-            <Loader />
-            <Text>数据加载中</Text>
-          </View>
-        ) : (
-          <View align="center" paddingBlock={4} height={64} justify="center">
-            <Text color="neutral">暂无投胎记录，点击投胎按钮开始！</Text>
-          </View>
-        )}
-      </>
-    );
-  };
+  const { isPressing, pressHandlers, handleClickRebirth } = useRebirthPress({
+    interval: 400,
+    onRebirth: handleRebirth,
+    disabled: isLoading
+  });
 
   return (
     <>
@@ -209,30 +163,7 @@ function WorldClient() {
             width="100%"
           >
             <View width={64}>
-              <div
-                onMouseDown={event => {
-                  if (touchActiveRef.current) return;
-                  if (event.button === 0) {
-                    startPress();
-                  }
-                }}
-                onMouseUp={endPress}
-                onMouseLeave={endPress}
-                onTouchStart={() => {
-                  touchActiveRef.current = true;
-                  startPress();
-                }}
-                onTouchEnd={() => {
-                  endPress();
-                  window.setTimeout(() => {
-                    touchActiveRef.current = false;
-                  }, 400);
-                }}
-                onTouchCancel={() => {
-                  endPress();
-                  touchActiveRef.current = false;
-                }}
-              >
+              <div {...pressHandlers}>
                 <Button
                   color="primary"
                   rounded
@@ -265,13 +196,19 @@ function WorldClient() {
                 </Tabs.List>
               </View>
               <Tabs.Panel value="record">
-                {renderTabPanel(<WorldResultTable />)}
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <WorldResultTable />
+                </RebirthTabPanel>
               </Tabs.Panel>
               <Tabs.Panel value="continent">
-                {renderTabPanel(<WorldContinentBar />)}
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <WorldContinentBar />
+                </RebirthTabPanel>
               </Tabs.Panel>
               <Tabs.Panel value="first">
-                {renderTabPanel(<WorldFirstTimeTable />)}
+                <RebirthTabPanel count={birthCount} isLoading={isLoading}>
+                  <WorldFirstTimeTable />
+                </RebirthTabPanel>
               </Tabs.Panel>
             </Tabs>
           </View>

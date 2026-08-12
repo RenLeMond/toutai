@@ -1,7 +1,7 @@
 'use client';
 
 import china from '@/data/china.json';
-import * as echarts from 'echarts';
+import echarts from '@/lib/echarts';
 import { useCallback, useEffect, useRef, useMemo } from 'react';
 import { Loader, Text } from 'reshaped';
 import { useBirth } from '@/lib/store/useBirth';

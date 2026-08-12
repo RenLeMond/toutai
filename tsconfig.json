@@ -23,6 +23,7 @@
       "@/data/*": ["_data/*"],
       "@/lib/*": ["_lib/*"],
       "@/components/*": ["_components/*"],
+      "@/hooks/*": ["_hooks/*"],
       "@/themes/*": ["_themes/*"]
     },
     "target": "ES2017"

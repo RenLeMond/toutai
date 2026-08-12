@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button, FormControl, Select, Text, View } from 'reshaped';
-import { calculateBirthProbability } from '@/lib/rebirth';
+import { calculateBirthProbability, provinceOptions } from '@/lib/rebirth';
 
 type Gender = 'male' | 'female';
 type Category = 'city' | 'countryside' | 'town';
@@ -35,39 +35,7 @@ function Calculator() {
             <Select
               name="province"
               placeholder="选择出生地"
-              options={[
-                { label: '北京', value: 'bei_jing' },
-                { label: '天津', value: 'tian_jin' },
-                { label: '河北', value: 'he_bei' },
-                { label: '山西', value: 'shan_xi_2' },
-                { label: '内蒙古', value: 'nei_meng_gu' },
-                { label: '辽宁', value: 'liao_ning' },
-                { label: '吉林', value: 'ji_lin' },
-                { label: '黑龙江', value: 'hei_long_jiang' },
-                { label: '上海', value: 'shang_hai' },
-                { label: '江苏', value: 'jiang_su' },
-                { label: '浙江', value: 'zhe_jiang' },
-                { label: '安徽', value: 'an_hui' },
-                { label: '福建', value: 'fu_jian' },
-                { label: '江西', value: 'jiang_xi' },
-                { label: '山东', value: 'shan_dong' },
-                { label: '河南', value: 'he_nan' },
-                { label: '湖北', value: 'hu_bei' },
-                { label: '湖南', value: 'hu_nan' },
-                { label: '广东', value: 'guang_dong' },
-                { label: '广西', value: 'guang_xi' },
-                { label: '海南', value: 'hai_nan' },
-                { label: '重庆', value: 'chong_qing' },
-                { label: '四川', value: 'si_chuan' },
-                { label: '贵州', value: 'gui_zhou' },
-                { label: '云南', value: 'yun_nan' },
-                { label: '西藏', value: 'xi_zang' },
-                { label: '陕西', value: 'shan_xi_1' },
-                { label: '甘肃', value: 'gan_su' },
-                { label: '青海', value: 'qing_hai' },
-                { label: '宁夏', value: 'ning_xia' },
-                { label: '新疆', value: 'xin_jiang' }
-              ]}
+              options={provinceOptions}
               onChange={event => setProvince(event.value)}
               attributes={{
                 'aria-autocomplete': 'none'

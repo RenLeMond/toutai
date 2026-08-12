@@ -60,6 +60,19 @@ const totalBirthRate = countries.reduce(
   0
 );
 
+type CountryDistributionEntry = {
+  country: WorldCountryRecord;
+  cumulative: number;
+};
+
+const countryDistribution: CountryDistributionEntry[] = (() => {
+  let cumulativeRate = 0;
+  return countries.map(country => {
+    cumulativeRate += country.birth_rate;
+    return { country, cumulative: cumulativeRate };
+  });
+})();
+
 export const worldCountryOptions: WorldCountryOption[] = countries
   .map(country => ({
     cn: country.cn,
@@ -68,20 +81,6 @@ export const worldCountryOptions: WorldCountryOption[] = countries
     probability: country.birth_rate
   }))
   .sort((a, b) => b.probability - a.probability);
-
-export function simulateWorldBirth(): WorldBirthResult {
-  const randomNumber = Math.random() * totalBirthRate;
-  let cumulativeRate = 0;
-
-  for (const country of countries) {
-    cumulativeRate += country.birth_rate;
-    if (cumulativeRate > randomNumber) {
-      return toBirthResult(country);
-    }
-  }
-
-  return toBirthResult(countries[countries.length - 1]);
-}
 
 function toBirthResult(country: WorldCountryRecord): WorldBirthResult {
   return {
@@ -92,6 +91,27 @@ function toBirthResult(country: WorldCountryRecord): WorldBirthResult {
     probability: country.birth_rate,
     position: country.position
   };
+}
+
+function pickCountry(randomNumber: number): WorldCountryRecord {
+  let low = 0;
+  let high = countryDistribution.length - 1;
+
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2);
+    if (countryDistribution[mid].cumulative > randomNumber) {
+      high = mid;
+    } else {
+      low = mid + 1;
+    }
+  }
+
+  return countryDistribution[low]?.country ?? countries[countries.length - 1];
+}
+
+export function simulateWorldBirth(): WorldBirthResult {
+  const randomNumber = Math.random() * totalBirthRate;
+  return toBirthResult(pickCountry(randomNumber));
 }
 
 export function getCountryProbability(countryEn: string) {

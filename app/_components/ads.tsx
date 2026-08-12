@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useSyncExternalStore } from 'react';
 
 declare global {
   interface Window {
@@ -10,11 +10,11 @@ const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 const adsenseSlot = process.env.NEXT_PUBLIC_ADSENSE_SLOT;
 
 const Ads = () => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   useEffect(() => {
     if (!mounted || !adsenseClient || !adsenseSlot) return;
