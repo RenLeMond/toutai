@@ -44,9 +44,9 @@ function Page() {
                 项目 GitHub 链接：
                 <Actionable
                   className="underline hover:underline hover:text-primary hover:cursor-pointer"
-                  href="https://github.com/hahahumble/rebirth"
+                  href="https://github.com/RenLeMond/toutai"
                 >
-                  投胎模拟器
+                  toutai
                 </Actionable>
               </Text>
             </View>

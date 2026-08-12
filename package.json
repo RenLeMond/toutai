@@ -1,5 +1,5 @@
 {
-  "name": "rebirth",
+  "name": "toutai",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@types/katex": "^0.16.7",
-    "@vercel/analytics": "^1.5.0",
     "echarts": "^5.5.0",
     "html2canvas": "^1.4.1",
     "katex": "^0.16.9",
