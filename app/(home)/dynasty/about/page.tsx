@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Text, View } from 'reshaped';
+import { Actionable, Divider, Text, View } from 'reshaped';
 import MathComponent from '@/components/math-component';
 import Reset from '@/components/reset';
 import {
@@ -39,7 +39,24 @@ function Page() {
               阶级概率为示意性历史分层，非人口普查数据；分裂政权已合并为三国、晋、南北朝、宋等条目，仅供娱乐体验。
             </Text>
             <Text variant="body-2">
-              图鉴共 78 格（13 朝 × 6 阶），未抽中为灰显，点击卡片可翻面查看历世记录。
+              图鉴共 78 格（13 朝 × 6 阶），未抽中为灰显，点击卡片可翻面查看历世记录。抽中后可分享结果卡海报。
+            </Text>
+            <Text variant="body-2">
+              另有
+              <Actionable
+                className="underline hover:underline hover:text-primary hover:cursor-pointer"
+                href="/"
+              >
+                中国版
+              </Actionable>
+              与
+              <Actionable
+                className="underline hover:underline hover:text-primary hover:cursor-pointer"
+                href="/world"
+              >
+                世界版
+              </Actionable>
+              ，可在顶部切换。
             </Text>
           </View>
         </View>
