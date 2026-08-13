@@ -17,6 +17,7 @@ export const SPIN_KEYFRAME_STEPS = 64;
 export interface SpinKeyframe {
   transform: string;
   offset: number;
+  [property: string]: string | number | null | undefined;
 }
 
 export interface SpinConfig {
