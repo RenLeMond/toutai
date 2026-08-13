@@ -3,12 +3,14 @@ import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react
 interface UseRebirthPressOptions {
   interval: number;
   onRebirth: () => void;
+  onHoldRebirth?: () => void;
   disabled?: boolean;
 }
 
 export function useRebirthPress({
   interval,
   onRebirth,
+  onHoldRebirth,
   disabled = false
 }: UseRebirthPressOptions) {
   const [isPressing, setIsPressing] = useState(false);
@@ -16,10 +18,15 @@ export function useRebirthPress({
   const touchActiveRef = useRef(false);
   const ignoreClickRef = useRef(false);
   const onRebirthRef = useRef(onRebirth);
+  const onHoldRebirthRef = useRef(onHoldRebirth);
 
   useEffect(() => {
     onRebirthRef.current = onRebirth;
   }, [onRebirth]);
+
+  useEffect(() => {
+    onHoldRebirthRef.current = onHoldRebirth;
+  }, [onHoldRebirth]);
 
   const clearPressInterval = useCallback(() => {
     if (pressIntervalRef.current) {
@@ -35,7 +42,7 @@ export function useRebirthPress({
     setIsPressing(true);
     pressIntervalRef.current = setInterval(() => {
       ignoreClickRef.current = true;
-      onRebirthRef.current();
+      (onHoldRebirthRef.current ?? onRebirthRef.current)();
     }, interval);
   }, [disabled, interval]);
 

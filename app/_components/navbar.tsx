@@ -12,13 +12,26 @@ function Navbar() {
   const storedVersion = useAppVersion(state => state.version);
   const activeVersion = resolveAppVersion(pathname, storedVersion);
   const isWorldVersion = activeVersion === 'world';
+  const isDynastyVersion = activeVersion === 'dynasty';
 
-  const dataHref = isWorldVersion ? '/world/data' : '/data';
-  const probabilityHref = isWorldVersion ? '/world/probability' : '/probability';
-  const aboutHref = isWorldVersion ? '/world/about' : '/about';
+  const dataHref = isWorldVersion
+    ? '/world/data'
+    : isDynastyVersion
+      ? '/dynasty/data'
+      : '/data';
+  const probabilityHref = isWorldVersion
+    ? '/world/probability'
+    : isDynastyVersion
+      ? '/dynasty/probability'
+      : '/probability';
+  const aboutHref = isWorldVersion
+    ? '/world/about'
+    : isDynastyVersion
+      ? '/dynasty/about'
+      : '/about';
 
   const navLink = (href: string, label: string) => (
-    <Link href={href}>
+    <Link key={href} href={href}>
       <Text
         variant="body-2"
         weight="medium"

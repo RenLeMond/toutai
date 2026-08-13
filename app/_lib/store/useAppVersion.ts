@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export type AppVersion = 'china' | 'world';
+export type AppVersion = 'china' | 'world' | 'dynasty';
 
 interface AppVersionState {
   version: AppVersion;
@@ -30,6 +30,10 @@ export const useAppVersion = create<AppVersionState>()(
 export function resolveAppVersion(pathname: string, storedVersion: AppVersion) {
   if (pathname === '/world' || pathname.startsWith('/world/')) {
     return 'world' as const;
+  }
+
+  if (pathname === '/dynasty' || pathname.startsWith('/dynasty/')) {
+    return 'dynasty' as const;
   }
 
   if (pathname === '/') {

@@ -11,7 +11,13 @@ import { toast } from 'sonner';
 import { X } from 'lucide-react';
 import ChinaMap from '@/components/icon';
 import { translateGenderChild } from '@/lib/rebirth';
+import {
+  CLASS_STAMPS,
+  formatDynastyProbability,
+  translateDynastyGender
+} from '@/lib/dynasty-rebirth';
 import { formatWorldProbability } from '@/lib/world-rebirth';
+import { siteUrl } from '@/lib/site';
 
 const ShareMap = dynamic(() => import('@/components/share-map'), {
   ssr: false,
@@ -78,6 +84,88 @@ function WorldShareFooter({ bgColor }: { bgColor: string }) {
       </View>
       <WorldShareQr bgColor={bgColor} />
     </View>
+  );
+}
+
+const DYNASTY_SHARE_URL = `${siteUrl}/dynasty`;
+
+function DynastyShareStyle({ shareInfo }: { shareInfo: ShareInfo }) {
+  const level = shareInfo.classLevel ?? 3;
+  const tier = CLASS_STAMPS[level];
+
+  return (
+    <div
+      className="w-full bg-[#f5f3ef] relative aspect-square"
+      id="shareContent"
+    >
+      <View
+        direction="column"
+        padding={6}
+        justify="space-between"
+        height="100%"
+      >
+        <View direction="column" gap={2} paddingTop={4}>
+          <Text variant="body-2" weight="medium">
+            第{' '}
+            <span className="text-[#ba3700] font-medium">{shareInfo.count}</span>{' '}
+            次投胎
+          </Text>
+          <Text variant="body-2" weight="medium">
+            我生于
+            <span className="text-[#ba3700] font-medium">
+              {shareInfo.dynastyName ?? shareInfo.region}
+            </span>
+          </Text>
+          <Text variant="body-2" weight="medium">
+            身为
+            <span className="text-[#ba3700] font-medium">
+              {shareInfo.className ?? shareInfo.category}
+            </span>
+            <span
+              className="inline-block ml-1 px-1.5 border rounded text-sm font-bold"
+              style={{
+                borderColor: tier.text,
+                color: tier.text,
+                transform: 'rotate(-3deg)'
+              }}
+            >
+              {shareInfo.order || tier.name}
+            </span>
+          </Text>
+          <Text variant="body-2" weight="medium">
+            性别{' '}
+            {translateDynastyGender(shareInfo.gender as 'male' | 'female')}
+          </Text>
+          <Text variant="body-2" weight="medium">
+            概率只有{' '}
+            <span className="text-[#ba3700] font-medium">
+              {formatDynastyProbability(shareInfo.probability)}
+            </span>
+          </Text>
+        </View>
+        <View direction="row" justify="space-between" align="center">
+          <View direction="row" gap={2} align="center">
+            <CarrotIcon size={40} />
+            <View direction="column">
+              <Text color="primary" weight="medium" variant="body-1">
+                投胎模拟器
+              </Text>
+              <Text color="primary" weight="medium">
+                toutai.online/dynasty
+              </Text>
+            </View>
+          </View>
+          <QRCode
+            value={DYNASTY_SHARE_URL}
+            bgColor="#f5f3ef"
+            fgColor="#000000"
+            level="L"
+            size={256}
+            className="w-12 h-12"
+          />
+        </View>
+      </View>
+    </div>
   );
 }
 
@@ -654,6 +742,8 @@ function ShareModal() {
               </Tabs.List>
             </View>
           </Tabs>
+        ) : shareInfo.mode === 'dynasty' ? (
+          <DynastyShareStyle shareInfo={shareInfo} />
         ) : (
           <Tabs variant="pills">
             <View gap={3}>

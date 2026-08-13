@@ -27,7 +27,12 @@ function Title() {
   const pathname = usePathname();
   const version = useAppVersion(state => state.version);
   const activeVersion = resolveAppVersion(pathname, version);
-  const homeHref = activeVersion === 'world' ? '/world' : '/';
+  const homeHref =
+    activeVersion === 'world'
+      ? '/world'
+      : activeVersion === 'dynasty'
+        ? '/dynasty'
+        : '/';
 
   return (
     <View direction="row" align="center" gap={2}>

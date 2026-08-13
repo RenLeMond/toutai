@@ -12,6 +12,7 @@ function Reset() {
   const activeVersion = resolveAppVersion(pathname, storedVersion);
   const { activate } = useResetModal();
   const isWorldVersion = activeVersion === 'world';
+  const isDynastyVersion = activeVersion === 'dynasty';
 
   return (
     <View direction="row" justify="space-between" paddingBlock={4}>
@@ -20,7 +21,9 @@ function Reset() {
         <Text variant="body-3" color="neutral-faded">
           {isWorldVersion
             ? '此操作将清空世界版投胎记录，不可恢复'
-            : '此操作将清空中国版投胎记录，不可恢复'}
+            : isDynastyVersion
+              ? '此操作将清空王朝版投胎记录与图鉴，不可恢复'
+              : '此操作将清空中国版投胎记录，不可恢复'}
         </Text>
       </View>
       <Button color="critical" onClick={activate} variant="faded">

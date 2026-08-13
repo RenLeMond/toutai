@@ -40,7 +40,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" data-rs-theme="orangeTheme" data-rs-color-mode="light">
+    <html
+      lang="zh-CN"
+      data-rs-theme="orangeTheme"
+      data-rs-color-mode="light"
+      suppressHydrationWarning
+    >
       <body className="font-sans antialiased">
         <script
           type="application/ld+json"

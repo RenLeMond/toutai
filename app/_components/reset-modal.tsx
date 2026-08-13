@@ -14,11 +14,15 @@ function ResetModal() {
   const { active, deactivate } = useResetModal();
   const clearChinaBirthResults = useBirth(state => state.clearBirthResults);
   const isWorldVersion = activeVersion === 'world';
+  const isDynastyVersion = activeVersion === 'dynasty';
 
   async function handleReset() {
     if (isWorldVersion) {
       const { useWorldBirth } = await import('@/lib/store/useWorldBirth');
       useWorldBirth.getState().clearBirthResults();
+    } else if (isDynastyVersion) {
+      const { useDynastyBirth } = await import('@/lib/store/useDynastyBirth');
+      useDynastyBirth.getState().clearBirthResults();
     } else {
       clearChinaBirthResults();
     }
@@ -37,7 +41,9 @@ function ResetModal() {
           <Modal.Subtitle>
             {isWorldVersion
               ? '此操作将清空世界版投胎记录，不可恢复'
-              : '此操作将清空中国版投胎记录，不可恢复'}
+              : isDynastyVersion
+                ? '此操作将清空王朝版投胎记录与图鉴，不可恢复'
+                : '此操作将清空中国版投胎记录，不可恢复'}
           </Modal.Subtitle>
         </Dismissible>
         <View key="actions" gap={2} direction="row">

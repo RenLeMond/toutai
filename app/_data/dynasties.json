@@ -1,0 +1,743 @@
+[
+  {
+    "id": "QIN",
+    "name": "秦",
+    "startYear": -221,
+    "endYear": -207,
+    "duration": 15,
+    "popWan": 2000.0,
+    "weight": 30000.0,
+    "capital": "咸阳",
+    "founder": "嬴政",
+    "feature": "首个中央集权帝国，郡县制，统一度量衡文字",
+    "classes": [
+      {
+        "id": "qin_1",
+        "name": "嬴姓宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "皇族血脉，享有最高特权。"
+      },
+      {
+        "id": "qin_2",
+        "name": "列侯封君",
+        "level": 2,
+        "prob": 0.015,
+        "desc": "军功封爵，食邑万户。"
+      },
+      {
+        "id": "qin_3",
+        "name": "公卿二千石",
+        "level": 3,
+        "prob": 0.02,
+        "desc": "三公九卿，掌中枢大权。"
+      },
+      {
+        "id": "qin_4",
+        "name": "军功爵户",
+        "level": 4,
+        "prob": 0.03,
+        "desc": "斩首授爵，免除部分徭役。"
+      },
+      {
+        "id": "qin_5",
+        "name": "编户齐民",
+        "level": 5,
+        "prob": 0.68,
+        "desc": "自耕农人，随时面临兵役与长城徭役。"
+      },
+      {
+        "id": "qin_6",
+        "name": "官工匠",
+        "level": 6,
+        "prob": 0.254,
+        "desc": "官府征发，修陵筑长城。"
+      }
+    ],
+    "dynastyProb": 0.00158198
+  },
+  {
+    "id": "WESTERN_HAN",
+    "name": "西汉",
+    "startYear": -202,
+    "endYear": 8,
+    "duration": 210,
+    "popWan": 3679.7,
+    "weight": 772737.0,
+    "capital": "长安",
+    "founder": "刘邦",
+    "feature": "文景之治，汉武盛世，丝绸之路开通",
+    "classes": [
+      {
+        "id": "western_han_1",
+        "name": "刘氏宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "汉室宗亲，封王封侯。"
+      },
+      {
+        "id": "western_han_2",
+        "name": "列侯勋贵",
+        "level": 2,
+        "prob": 0.02,
+        "desc": "功臣封侯，食邑传家。"
+      },
+      {
+        "id": "western_han_3",
+        "name": "公卿大夫",
+        "level": 3,
+        "prob": 0.035,
+        "desc": "三公九卿，经学入仕。"
+      },
+      {
+        "id": "western_han_4",
+        "name": "地方豪强",
+        "level": 4,
+        "prob": 0.05,
+        "desc": "兼并土地，拥有部曲。"
+      },
+      {
+        "id": "western_han_5",
+        "name": "编户自耕农",
+        "level": 5,
+        "prob": 0.68,
+        "desc": "承担算赋与口赋，抗灾能力微弱。"
+      },
+      {
+        "id": "western_han_6",
+        "name": "官营工匠",
+        "level": 6,
+        "prob": 0.214,
+        "desc": "盐铁官营体系下的手工业者。"
+      }
+    ],
+    "dynastyProb": 0.04074846
+  },
+  {
+    "id": "XIN",
+    "name": "新",
+    "startYear": 9,
+    "endYear": 23,
+    "duration": 15,
+    "popWan": 5007.3,
+    "weight": 75109.5,
+    "capital": "长安",
+    "founder": "王莽",
+    "feature": "托古改制，王田制，绿林赤眉起义",
+    "classes": [
+      {
+        "id": "xin_1",
+        "name": "王莽宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "新朝皇族，托古改制核心。"
+      },
+      {
+        "id": "xin_2",
+        "name": "新朝列侯",
+        "level": 2,
+        "prob": 0.01,
+        "desc": "改制受益者，地位不稳。"
+      },
+      {
+        "id": "xin_3",
+        "name": "新朝官僚",
+        "level": 3,
+        "prob": 0.02,
+        "desc": "托古改制执行者。"
+      },
+      {
+        "id": "xin_4",
+        "name": "豪强地主",
+        "level": 4,
+        "prob": 0.04,
+        "desc": "抵制王田制，暗中兼并。"
+      },
+      {
+        "id": "xin_5",
+        "name": "编户农民",
+        "level": 5,
+        "prob": 0.68,
+        "desc": "改制下负担沉重。"
+      },
+      {
+        "id": "xin_6",
+        "name": "官工匠",
+        "level": 6,
+        "prob": 0.249,
+        "desc": "五均六筦体系下的手工业者。"
+      }
+    ],
+    "dynastyProb": 0.00396072
+  },
+  {
+    "id": "EASTERN_HAN",
+    "name": "东汉",
+    "startYear": 25,
+    "endYear": 220,
+    "duration": 196,
+    "popWan": 5004.0,
+    "weight": 980784.0,
+    "capital": "洛阳",
+    "founder": "刘秀",
+    "feature": "光武中兴，豪强士族崛起，黄巾起义",
+    "classes": [
+      {
+        "id": "eastern_han_1",
+        "name": "刘氏宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "汉室宗亲，多已衰落。"
+      },
+      {
+        "id": "eastern_han_2",
+        "name": "外戚勋贵",
+        "level": 2,
+        "prob": 0.02,
+        "desc": "窦、梁、何、袁等世家。"
+      },
+      {
+        "id": "eastern_han_3",
+        "name": "经学官僚",
+        "level": 3,
+        "prob": 0.04,
+        "desc": "察举制下的士大夫。"
+      },
+      {
+        "id": "eastern_han_4",
+        "name": "州郡豪强",
+        "level": 4,
+        "prob": 0.09,
+        "desc": "兼并土地，拥有私人武装。"
+      },
+      {
+        "id": "eastern_han_5",
+        "name": "编户自耕农",
+        "level": 5,
+        "prob": 0.64,
+        "desc": "承担赋役，抗灾能力弱。"
+      },
+      {
+        "id": "eastern_han_6",
+        "name": "官营工匠",
+        "level": 6,
+        "prob": 0.209,
+        "desc": "盐铁恢复官营。"
+      }
+    ],
+    "dynastyProb": 0.05171932
+  },
+  {
+    "id": "THREE_KINGDOMS",
+    "name": "三国",
+    "startYear": 220,
+    "endYear": 280,
+    "duration": 60,
+    "popWan": 1464.0,
+    "weight": 87840.0,
+    "capital": "洛阳",
+    "founder": "曹丕",
+    "feature": "魏蜀吴鼎立，英雄辈出，乱世争雄",
+    "classes": [
+      {
+        "id": "three_kingdoms_1",
+        "name": "宗室皇族",
+        "level": 1,
+        "prob": 0.002,
+        "desc": "魏蜀吴各有宗室，享有特权。"
+      },
+      {
+        "id": "three_kingdoms_2",
+        "name": "公侯勋贵",
+        "level": 2,
+        "prob": 0.02728,
+        "desc": "开国功臣封侯，食邑传家。"
+      },
+      {
+        "id": "three_kingdoms_3",
+        "name": "官僚士族",
+        "level": 3,
+        "prob": 0.046023,
+        "desc": "九品中正，士族垄断仕途。"
+      },
+      {
+        "id": "three_kingdoms_4",
+        "name": "地方豪强",
+        "level": 4,
+        "prob": 0.05456,
+        "desc": "拥兵自重，割据一方。"
+      },
+      {
+        "id": "three_kingdoms_5",
+        "name": "屯田农户",
+        "level": 5,
+        "prob": 0.6,
+        "desc": "曹操屯田与江南自耕农。"
+      },
+      {
+        "id": "three_kingdoms_6",
+        "name": "官工匠",
+        "level": 6,
+        "prob": 0.270136,
+        "desc": "兵器铠甲与造船工匠。"
+      }
+    ],
+    "dynastyProb": 0.00463203
+  },
+  {
+    "id": "JIN",
+    "name": "晋",
+    "startYear": 265,
+    "endYear": 420,
+    "duration": 155,
+    "popWan": 1880.9,
+    "weight": 291539.5,
+    "capital": "洛阳",
+    "founder": "司马炎",
+    "feature": "太康之治，八王之乱，永嘉南渡，衣冠南渡",
+    "classes": [
+      {
+        "id": "jin_1",
+        "name": "司马宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "晋室宗亲，八王之乱与南渡核心。"
+      },
+      {
+        "id": "jin_2",
+        "name": "公侯勋贵",
+        "level": 2,
+        "prob": 0.038326,
+        "desc": "晋朝开国功臣之后。"
+      },
+      {
+        "id": "jin_3",
+        "name": "门阀士族",
+        "level": 3,
+        "prob": 0.053348,
+        "desc": "上品无寒门，侨姓吴姓共治。"
+      },
+      {
+        "id": "jin_4",
+        "name": "地方豪强",
+        "level": 4,
+        "prob": 0.113304,
+        "desc": "兼并土地，拥兵自重。"
+      },
+      {
+        "id": "jin_5",
+        "name": "编户农户",
+        "level": 5,
+        "prob": 0.533391,
+        "desc": "经战乱南渡，自耕与佃农并存。"
+      },
+      {
+        "id": "jin_6",
+        "name": "官工匠",
+        "level": 6,
+        "prob": 0.26063,
+        "desc": "兵器铠甲与建康手工业者。"
+      }
+    ],
+    "dynastyProb": 0.01537365
+  },
+  {
+    "id": "SOUTHERN_NORTHERN",
+    "name": "南北朝",
+    "startYear": 386,
+    "endYear": 589,
+    "duration": 203,
+    "popWan": 2537.9,
+    "weight": 515193.7,
+    "capital": "建康",
+    "founder": "拓跋珪",
+    "feature": "南北分裂，民族融合，均田制，文风鼎盛",
+    "classes": [
+      {
+        "id": "southern_northern_1",
+        "name": "皇室宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "南朝宋齐梁陈与北朝皇族。"
+      },
+      {
+        "id": "southern_northern_2",
+        "name": "鲜卑贵族",
+        "level": 2,
+        "prob": 0.036751,
+        "desc": "北魏至北周的核心统治集团。"
+      },
+      {
+        "id": "southern_northern_3",
+        "name": "门阀官僚",
+        "level": 3,
+        "prob": 0.052727,
+        "desc": "南北士族共治朝堂。"
+      },
+      {
+        "id": "southern_northern_4",
+        "name": "地方豪强",
+        "level": 4,
+        "prob": 0.084325,
+        "desc": "江南与关陇的地方势力。"
+      },
+      {
+        "id": "southern_northern_5",
+        "name": "均田农户",
+        "level": 5,
+        "prob": 0.558255,
+        "desc": "北魏均田与江南自耕农。"
+      },
+      {
+        "id": "southern_northern_6",
+        "name": "匠户",
+        "level": 6,
+        "prob": 0.266942,
+        "desc": "云冈龙门与建康营造工匠。"
+      }
+    ],
+    "dynastyProb": 0.02716752
+  },
+  {
+    "id": "SUI",
+    "name": "隋",
+    "startYear": 581,
+    "endYear": 618,
+    "duration": 38,
+    "popWan": 2604.0,
+    "weight": 98952.0,
+    "capital": "大兴（长安）",
+    "founder": "杨坚",
+    "feature": "开皇之治，科举制，大运河，速亡",
+    "classes": [
+      {
+        "id": "sui_1",
+        "name": "杨氏宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "隋朝皇族，开皇之治。"
+      },
+      {
+        "id": "sui_2",
+        "name": "公侯勋贵",
+        "level": 2,
+        "prob": 0.02,
+        "desc": "隋朝开国功臣。"
+      },
+      {
+        "id": "sui_3",
+        "name": "科举官僚",
+        "level": 3,
+        "prob": 0.04,
+        "desc": "科举制初创的官僚。"
+      },
+      {
+        "id": "sui_4",
+        "name": "地方豪强",
+        "level": 4,
+        "prob": 0.05,
+        "desc": "大运河沿线的势力。"
+      },
+      {
+        "id": "sui_5",
+        "name": "编户农民",
+        "level": 5,
+        "prob": 0.68,
+        "desc": "均田制下的自耕农。"
+      },
+      {
+        "id": "sui_6",
+        "name": "匠户",
+        "level": 6,
+        "prob": 0.209,
+        "desc": "大运河营造的工匠。"
+      }
+    ],
+    "dynastyProb": 0.005218
+  },
+  {
+    "id": "TANG",
+    "name": "唐",
+    "startYear": 618,
+    "endYear": 907,
+    "duration": 290,
+    "popWan": 7840.0,
+    "weight": 2273600.0,
+    "capital": "长安",
+    "founder": "李渊",
+    "feature": "贞观之治，开元盛世，安史之乱，藩镇割据",
+    "classes": [
+      {
+        "id": "tang_1",
+        "name": "李唐宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "五姓七望与李唐宗室，极具名望。"
+      },
+      {
+        "id": "tang_2",
+        "name": "五姓七望",
+        "level": 2,
+        "prob": 0.025,
+        "desc": "关陇贵族，门第最高。"
+      },
+      {
+        "id": "tang_3",
+        "name": "科举士大夫",
+        "level": 3,
+        "prob": 0.06,
+        "desc": "进士及第，朝堂新贵。"
+      },
+      {
+        "id": "tang_4",
+        "name": "形势户藩镇",
+        "level": 4,
+        "prob": 0.07,
+        "desc": "掌兵一方，朝堂新贵。"
+      },
+      {
+        "id": "tang_5",
+        "name": "均田农户",
+        "level": 5,
+        "prob": 0.61,
+        "desc": "长安洛阳均田农户，生活相对平稳。"
+      },
+      {
+        "id": "tang_6",
+        "name": "番匠",
+        "level": 6,
+        "prob": 0.234,
+        "desc": "官府征发的手工业者。"
+      }
+    ],
+    "dynastyProb": 0.11989292
+  },
+  {
+    "id": "SONG",
+    "name": "宋",
+    "startYear": 960,
+    "endYear": 1279,
+    "duration": 319,
+    "popWan": 9800.0,
+    "weight": 3126200.0,
+    "capital": "开封",
+    "founder": "赵匡胤",
+    "feature": "杯酒释兵权，重文轻武，靖康南渡，偏安江南",
+    "classes": [
+      {
+        "id": "song_1",
+        "name": "赵氏宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "两宋皇族，杯酒释兵权后。"
+      },
+      {
+        "id": "song_2",
+        "name": "公侯勋贵",
+        "level": 2,
+        "prob": 0.02,
+        "desc": "开国功臣与南渡勋贵。"
+      },
+      {
+        "id": "song_3",
+        "name": "科举士大夫",
+        "level": 3,
+        "prob": 0.066326,
+        "desc": "重文轻武，科举正途。"
+      },
+      {
+        "id": "song_4",
+        "name": "乡绅主户",
+        "level": 4,
+        "prob": 0.107347,
+        "desc": "汴京与江南的上等户。"
+      },
+      {
+        "id": "song_5",
+        "name": "乡村客户",
+        "level": 5,
+        "prob": 0.522653,
+        "desc": "佃农，租种土地。"
+      },
+      {
+        "id": "song_6",
+        "name": "工匠",
+        "level": 6,
+        "prob": 0.282674,
+        "desc": "汴京临安的手工业者。"
+      }
+    ],
+    "dynastyProb": 0.16485276
+  },
+  {
+    "id": "YUAN",
+    "name": "元",
+    "startYear": 1271,
+    "endYear": 1368,
+    "duration": 98,
+    "popWan": 6145.6,
+    "weight": 602268.8,
+    "capital": "大都（北京）",
+    "founder": "忽必烈（1271建元；蒙古帝国始于成吉思汗1206）",
+    "feature": "蒙古统一，民族四等，红巾军起义",
+    "classes": [
+      {
+        "id": "yuan_1",
+        "name": "黄金家族",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "蒙古皇族，享最高特权。"
+      },
+      {
+        "id": "yuan_2",
+        "name": "蒙古色目贵胄",
+        "level": 2,
+        "prob": 0.04,
+        "desc": "一二等民，政治经济特权。"
+      },
+      {
+        "id": "yuan_3",
+        "name": "汉人世侯",
+        "level": 3,
+        "prob": 0.03,
+        "desc": "降将之后的汉地贵族。"
+      },
+      {
+        "id": "yuan_4",
+        "name": "汉地士绅",
+        "level": 4,
+        "prob": 0.05,
+        "desc": "地方汉地地主。"
+      },
+      {
+        "id": "yuan_5",
+        "name": "汉南平民",
+        "level": 5,
+        "prob": 0.54,
+        "desc": "三四等民，赋税沉重。"
+      },
+      {
+        "id": "yuan_6",
+        "name": "世袭匠户",
+        "level": 6,
+        "prob": 0.339,
+        "desc": "专供官府打铁造物。"
+      }
+    ],
+    "dynastyProb": 0.03175922
+  },
+  {
+    "id": "MING",
+    "name": "明",
+    "startYear": 1368,
+    "endYear": 1644,
+    "duration": 277,
+    "popWan": 9823.5,
+    "weight": 2721109.5,
+    "capital": "南京→北京",
+    "founder": "朱元璋",
+    "feature": "洪武之治，郑和下西洋，内阁厂卫",
+    "classes": [
+      {
+        "id": "ming_1",
+        "name": "朱氏宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "朱氏宗室，享国家供养。"
+      },
+      {
+        "id": "ming_2",
+        "name": "勋贵功臣",
+        "level": 2,
+        "prob": 0.02,
+        "desc": "开国功臣之后，铁券护身。"
+      },
+      {
+        "id": "ming_3",
+        "name": "科举绅衿",
+        "level": 3,
+        "prob": 0.06,
+        "desc": "考取功名，免役免税。"
+      },
+      {
+        "id": "ming_4",
+        "name": "缙绅地主",
+        "level": 4,
+        "prob": 0.14,
+        "desc": "地方上有功名、有田产者。"
+      },
+      {
+        "id": "ming_5",
+        "name": "世袭民户",
+        "level": 5,
+        "prob": 0.54,
+        "desc": "普通民籍自耕农。"
+      },
+      {
+        "id": "ming_6",
+        "name": "匠户",
+        "level": 6,
+        "prob": 0.239,
+        "desc": "世袭匠籍，供官府造作。"
+      }
+    ],
+    "dynastyProb": 0.14349127
+  },
+  {
+    "id": "QING",
+    "name": "清",
+    "startYear": 1636,
+    "endYear": 1912,
+    "duration": 277,
+    "popWan": 26672.4,
+    "weight": 7388254.8,
+    "capital": "北京",
+    "founder": "努尔哈赤（1616建后金）→皇太极（1636改国号清）",
+    "feature": "康乾盛世，鸦片战争，辛亥革命",
+    "classes": [
+      {
+        "id": "qing_1",
+        "name": "爱新觉罗宗室",
+        "level": 1,
+        "prob": 0.001,
+        "desc": "宗室贵胄，享有铁杆花生米钱粮。"
+      },
+      {
+        "id": "qing_2",
+        "name": "满洲八旗王公",
+        "level": 2,
+        "prob": 0.03,
+        "desc": "满洲蒙古八旗上层。"
+      },
+      {
+        "id": "qing_3",
+        "name": "汉人官绅",
+        "level": 3,
+        "prob": 0.05,
+        "desc": "总督巡抚或地方士绅。"
+      },
+      {
+        "id": "qing_4",
+        "name": "缙绅地主",
+        "level": 4,
+        "prob": 0.1,
+        "desc": "地方上有田产有影响力者。"
+      },
+      {
+        "id": "qing_5",
+        "name": "自耕旗民",
+        "level": 5,
+        "prob": 0.59,
+        "desc": "编入八旗兵额或汉民自耕农。"
+      },
+      {
+        "id": "qing_6",
+        "name": "匠役",
+        "level": 6,
+        "prob": 0.229,
+        "desc": "供官府造作的手工业者。"
+      }
+    ],
+    "dynastyProb": 0.38960214
+  }
+]

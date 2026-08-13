@@ -1,7 +1,8 @@
 import { create } from 'zustand';
+import type { ClassLevel } from '@/lib/dynasty-rebirth';
 
 export interface ShareInfo {
-  mode: 'china' | 'world';
+  mode: 'china' | 'world' | 'dynasty';
   count: number;
   region: string;
   category: string;
@@ -11,6 +12,9 @@ export interface ShareInfo {
   continent?: string;
   position?: [number, number];
   countryEn?: string;
+  dynastyName?: string;
+  className?: string;
+  classLevel?: ClassLevel;
 }
 
 interface ShareModalState {

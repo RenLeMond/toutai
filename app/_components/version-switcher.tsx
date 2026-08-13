@@ -50,7 +50,13 @@ function VersionSwitcher() {
   const handleSwitch = (nextVersion: AppVersion) => {
     if (nextVersion === activeVersion) return;
     setVersion(nextVersion);
-    router.push(nextVersion === 'world' ? '/world' : '/');
+    if (nextVersion === 'world') {
+      router.push('/world');
+    } else if (nextVersion === 'dynasty') {
+      router.push('/dynasty');
+    } else {
+      router.push('/');
+    }
   };
 
   return (
@@ -64,6 +70,11 @@ function VersionSwitcher() {
         label="世界版"
         active={activeVersion === 'world'}
         onClick={() => handleSwitch('world')}
+      />
+      <VersionBadge
+        label="王朝版"
+        active={activeVersion === 'dynasty'}
+        onClick={() => handleSwitch('dynasty')}
       />
     </View>
   );

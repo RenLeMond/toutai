@@ -22,6 +22,8 @@ function AppVersionHydrator() {
         setVersion('china');
       } else if (pathname === '/world' || pathname.startsWith('/world/')) {
         setVersion('world');
+      } else if (pathname === '/dynasty' || pathname.startsWith('/dynasty/')) {
+        setVersion('dynasty');
       }
 
       if (!useAppVersion.getState().hasHydrated) {

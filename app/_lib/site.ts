@@ -17,6 +17,7 @@ export const siteIconSmall = versionedIcon('/icons/app-icon-64.png');
 export const siteIcon192 = versionedIcon('/icons/app-icon-192.png');
 export const chinaEditionTitle = `${siteName} 「中国版」`;
 export const worldEditionTitle = `${siteName} 「世界版」`;
+export const dynastyEditionTitle = `${siteName} 「王朝版」`;
 
 export const defaultDescription =
   '如果来世还在种花家，你会出生在哪里？根据最新人口普查数据，模拟你在中国的出生省份、性别与家庭排行。';
@@ -94,6 +95,34 @@ const pages: Record<string, PageSeo> = {
       '计算你出生在指定国家的概率。选择目标国家，查看出生可能性与数学公式。',
     path: '/world/probability',
     keywords: ['全球出生概率计算器', '国家概率', '概率计算']
+  },
+  dynasty: {
+    title: dynastyEditionTitle,
+    description:
+      '如果来世投胎到中国古代，你会成为王侯将相还是布衣百姓？秦至清 13 朝按国祚与人口加权开抽，收集图鉴。',
+    path: '/dynasty',
+    keywords: ['投胎模拟器王朝版', '古代投胎', '王朝投胎', '王侯将相']
+  },
+  dynastyAbout: {
+    title: `关于 - ${dynastyEditionTitle}`,
+    description:
+      '了解投胎模拟器王朝版：秦至清 13 朝按国祚与代表人口加权抽取，再按 6 阶社会分层模拟身份。',
+    path: '/dynasty/about',
+    keywords: ['投胎模拟器王朝版', '关于', '古代阶级']
+  },
+  dynastyData: {
+    title: `数据来源 - ${dynastyEditionTitle}`,
+    description:
+      '王朝版数据说明：13 朝 × 6 阶示意性分层模型，按国祚 × 代表人口加权，非人口普查数据。',
+    path: '/dynasty/data',
+    keywords: ['朝代数据', '历史阶级', '投胎模拟器王朝版']
+  },
+  dynastyProbability: {
+    title: `概率计算器 - ${dynastyEditionTitle}`,
+    description:
+      '计算你投胎在指定朝代与阶级的概率。选择目标朝代与身份，查看可能性。',
+    path: '/dynasty/probability',
+    keywords: ['朝代概率计算器', '阶级概率', '古代投胎概率']
   }
 };
 
@@ -145,9 +174,13 @@ export const jsonLd = {
 export const sitemapEntries = [
   { path: '/', priority: 1 },
   { path: '/world', priority: 0.9 },
+  { path: '/dynasty', priority: 0.9 },
   { path: '/world/probability', priority: 0.85 },
+  { path: '/dynasty/probability', priority: 0.85 },
   { path: '/world/about', priority: 0.6 },
   { path: '/world/data', priority: 0.6 },
+  { path: '/dynasty/about', priority: 0.6 },
+  { path: '/dynasty/data', priority: 0.6 },
   { path: '/probability', priority: 0.8 },
   { path: '/about', priority: 0.6 },
   { path: '/data', priority: 0.6 }
