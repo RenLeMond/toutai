@@ -20,7 +20,7 @@ function DynastyResultTable() {
 
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl overflow-x-auto">
+      <View backgroundColor="neutral-faded" className="rounded-xl overflow-hidden">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>
@@ -47,7 +47,7 @@ function DynastyResultTable() {
                 <Text align="center">{item.dynastyName}</Text>
               </Table.Cell>
               <Table.Cell padding={1}>
-                <Text align="center">
+                <Text align="center" className="break-words whitespace-normal">
                   {CLASS_STAMPS[item.classLevel].name} · {item.className}
                 </Text>
               </Table.Cell>
