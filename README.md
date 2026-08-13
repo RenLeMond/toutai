@@ -1,4 +1,4 @@
-![banner.png](images%2Fbanner.png)
+![投胎模拟器](./images/banner.png)
 
 **项目网站**：https://toutai.online/
 
