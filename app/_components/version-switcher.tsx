@@ -23,7 +23,7 @@ function VersionBadge({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`px-2 py-1 rounded-xl transition-colors ${
+      className={`px-1.5 py-1 rounded-xl transition-colors sm:px-2 ${
         active
           ? 'bg-[#01ca78] hover:cursor-default'
           : 'bg-[#e8e6e1] hover:bg-[#dedbd4] hover:cursor-pointer'

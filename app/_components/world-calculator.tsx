@@ -37,7 +37,7 @@ function WorldCalculator() {
         <WorldNameLangSwitch />
       </View>
       <View paddingBlock={4} direction={{ s: 'column', m: 'row' }} gap={4}>
-        <View.Item columns={{ s: 12, m: 6 }}>
+        <View.Item key="country" columns={{ s: 12, m: 6 }}>
           <FormControl>
             <FormControl.Label>出生国家</FormControl.Label>
             <Select
@@ -49,7 +49,7 @@ function WorldCalculator() {
             />
           </FormControl>
         </View.Item>
-        <View.Item columns={{ s: 12, m: 3 }}>
+        <View.Item key="calculate" columns={{ s: 12, m: 3 }}>
           <View paddingTop={{ s: 0, m: 6 }}>
             <Button color="primary" onClick={handleCalculate} fullWidth>
               计算

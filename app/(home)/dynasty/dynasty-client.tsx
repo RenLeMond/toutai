@@ -13,16 +13,17 @@ import {
 } from '@/lib/dynasty-rebirth';
 import { useDynastyBirth } from '@/lib/store/useDynastyBirth';
 import useShareModal from '@/lib/store/useShareModal';
+import { buildDynastyShareInfo } from '@/lib/dynasty-share';
 import Ads from '@/components/ads';
 import RebirthTabPanel from '@/components/rebirth-tab-panel';
 import DynastyFlipCard, { DynastyRevealPayload } from '@/components/dynasty-flip-card';
 import DynastyResultTable from '@/components/dynasty-result-table';
 import DynastyBar from '@/components/dynasty-bar';
 import DynastyAtlas from '@/components/dynasty-atlas';
-import { useRebirthPress } from '@/hooks/useRebirthPress';
 
 function DynastyClient() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isSpinning, setIsSpinning] = useState(false);
   const [reveal, setReveal] = useState<DynastyRevealPayload | null>(null);
   const revealSeqRef = useRef(0);
   const spinningRef = useRef(false);
@@ -62,18 +63,9 @@ function DynastyClient() {
             <Button
               variant="ghost"
               onClick={() => {
-                openShare({
-                  mode: 'dynasty',
-                  count: countAtCreation,
-                  region: birthResult.dynastyName,
-                  category: birthResult.className,
-                  gender: birthResult.gender,
-                  order: stamp,
-                  probability: birthResult.probability,
-                  dynastyName: birthResult.dynastyName,
-                  className: birthResult.className,
-                  classLevel: birthResult.classLevel
-                });
+                openShare(
+                  buildDynastyShareInfo(birthResult, countAtCreation, flavor)
+                );
               }}
             >
               <Icon size={4} color="neutral-faded" svg={<Share2 />} />
@@ -161,41 +153,24 @@ function DynastyClient() {
       if (seq !== revealSeqRef.current) return;
       commitPendingResult(true);
       spinningRef.current = false;
+      setIsSpinning(false);
     },
     [commitPendingResult]
   );
 
-  const startSpin = useCallback(
-    (rapid: boolean) => {
-      if (isLoading) return;
+  const startSpin = useCallback(() => {
+    if (isLoading || spinningRef.current) return;
 
-      if (pendingResultRef.current) {
-        commitPendingResult(true);
-      }
-
-      const birthResult = simulateDynastyBirth();
-      pendingResultRef.current = birthResult;
-      spinningRef.current = true;
-      revealSeqRef.current += 1;
-      setReveal({
-        seq: revealSeqRef.current,
-        result: birthResult,
-        rapid
-      });
-    },
-    [isLoading, commitPendingResult]
-  );
-
-  const handleClickRebirth = useCallback(() => {
-    startSpin(spinningRef.current);
-  }, [startSpin]);
-
-  const { pressHandlers, handleClickRebirth: handlePressClick } = useRebirthPress({
-    interval: 400,
-    onRebirth: handleClickRebirth,
-    onHoldRebirth: () => startSpin(true),
-    disabled: isLoading
-  });
+    const birthResult = simulateDynastyBirth();
+    pendingResultRef.current = birthResult;
+    spinningRef.current = true;
+    setIsSpinning(true);
+    revealSeqRef.current += 1;
+    setReveal({
+      seq: revealSeqRef.current,
+      result: birthResult
+    });
+  }, [isLoading]);
 
   if (isLoading) {
     return (
@@ -219,7 +194,8 @@ function DynastyClient() {
           <DynastyFlipCard
             result={latestResult}
             reveal={reveal}
-            onClick={handleClickRebirth}
+            disabled={isSpinning}
+            onClick={startSpin}
             onRevealComplete={handleRevealComplete}
           />
         </View>
@@ -233,17 +209,15 @@ function DynastyClient() {
             width="100%"
           >
             <View width={64}>
-              <div {...pressHandlers}>
-                <Button
-                  color="primary"
-                  rounded
-                  fullWidth
-                  disabled={isLoading}
-                  onClick={handlePressClick}
-                >
-                  投胎
-                </Button>
-              </div>
+              <Button
+                color="primary"
+                rounded
+                fullWidth
+                disabled={isLoading || isSpinning}
+                onClick={startSpin}
+              >
+                投胎
+              </Button>
             </View>
           </View>
 

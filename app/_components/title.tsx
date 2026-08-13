@@ -35,7 +35,7 @@ function Title() {
         : '/';
 
   return (
-    <View direction="row" align="center" gap={2}>
+    <View direction="row" align="center" gap={2} wrap className="min-w-0">
       <Link href={homeHref}>
         <View direction="row" align="center" gap={2}>
           <CarrotIcon />

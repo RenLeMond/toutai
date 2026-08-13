@@ -15,7 +15,8 @@ import {
 } from '@/lib/dynasty-rebirth';
 import { useDynastyBirth } from '@/lib/store/useDynastyBirth';
 import { CARD_HEIGHT, CARD_WIDTH } from '@/lib/dynasty-spin';
-import { DynastyCardShell, DynastyPatternDefs } from '@/components/dynasty-card-shell';
+import { DynastyCardShell } from '@/components/dynasty-card-shell';
+import { dynastyCardVars } from '@/lib/dynasty-card-style';
 import './dynasty-flip-card.css';
 
 interface AtlasRecord {
@@ -44,6 +45,7 @@ function AtlasCard({
   const [flipped, setFlipped] = useState(false);
   const dynasty = getDynastyById(dynastyId);
   const tier = CLASS_STAMPS[classLevel];
+  const cardVars = dynastyCardVars(classLevel) as React.CSSProperties;
   const newestFirst = [...records].sort(
     (a, b) => b.generation - a.generation
   );
@@ -64,13 +66,7 @@ function AtlasCard({
           <div className="dynasty-face dynasty-face-front">
             <div
               className={`dynasty-card is-preview tier-${classLevel} ${lit ? 'is-lit' : 'is-dim'}`}
-              style={
-                {
-                  '--tier-color': tier.border,
-                  '--tier-text': tier.text,
-                  '--tier-glow': tier.glow
-                } as React.CSSProperties
-              }
+              style={cardVars}
             >
               <DynastyCardShell dynastyId={dynastyId} />
               <div className="atlas-card-inner">
@@ -85,13 +81,7 @@ function AtlasCard({
           <div className="dynasty-face dynasty-face-back">
             <div
               className={`dynasty-card is-result tier-${classLevel}`}
-              style={
-                {
-                  '--tier-color': tier.border,
-                  '--tier-text': tier.text,
-                  '--tier-glow': tier.glow
-                } as React.CSSProperties
-              }
+              style={cardVars}
             >
               <DynastyCardShell dynastyId={dynastyId} />
               <div className="atlas-back-inner">
@@ -165,7 +155,6 @@ function DynastyAtlas() {
 
   return (
     <View gap={4}>
-      <DynastyPatternDefs />
       {DYNASTY_GROUPS.map(group => (
         <View key={group.label} gap={2}>
           <Text variant="body-2" weight="medium">

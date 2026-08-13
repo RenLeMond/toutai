@@ -11,9 +11,7 @@ import { Text, View } from 'reshaped';
 import {
   CLASS_STAMPS,
   ClassLevel,
-  DynastyBirthResult,
-  formatDynastyProbability,
-  translateDynastyGender
+  DynastyBirthResult
 } from '@/lib/dynasty-rebirth';
 import {
   CARD_HEIGHT,
@@ -24,25 +22,25 @@ import {
   buildIdleStrip,
   buildStrip,
   getCenteredIndex,
+  getLandingSchedule,
   getOffsetForIndex,
   getSpinConfig,
   getSpinKeyframes
 } from '@/lib/dynasty-spin';
-import {
-  DynastyCardShell,
-  DynastyPatternDefs
-} from '@/components/dynasty-card-shell';
+import { DynastyCardShell } from '@/components/dynasty-card-shell';
+import { DynastyResultCard } from '@/components/dynasty-result-card';
+import { dynastyCardVars } from '@/lib/dynasty-card-style';
 import './dynasty-flip-card.css';
 
 export interface DynastyRevealPayload {
   seq: number;
   result: DynastyBirthResult;
-  rapid?: boolean;
 }
 
 interface DynastyFlipCardProps {
   result: DynastyBirthResult | null;
   reveal: DynastyRevealPayload | null;
+  disabled?: boolean;
   onClick?: () => void;
   onRevealComplete?: (result: DynastyBirthResult, seq: number) => void;
 }
@@ -51,9 +49,9 @@ type Phase = 'prompt' | 'spinning' | 'revealed';
 type RareLevel = 1 | 2 | 3;
 
 const RARE_SHINE_MS: Record<RareLevel, number> = {
-  1: 3000,
-  2: 2100,
-  3: 1700
+  1: 1100,
+  2: 900,
+  3: 800
 };
 
 function isRareLevel(level: ClassLevel): level is RareLevel {
@@ -92,15 +90,6 @@ function RareShineOuter({ level }: { level: RareLevel }) {
   );
 }
 
-function cardStyle(classLevel: ClassLevel): React.CSSProperties {
-  const tier = CLASS_STAMPS[classLevel];
-  return {
-    '--tier-color': tier.border,
-    '--tier-text': tier.text,
-    '--tier-glow': tier.glow
-  } as React.CSSProperties;
-}
-
 function PreviewCard({
   dynastyId,
   dynastyName,
@@ -117,59 +106,12 @@ function PreviewCard({
   return (
     <div
       className={`dynasty-card is-preview tier-${classLevel}`}
-      style={cardStyle(classLevel)}
+      style={dynastyCardVars(classLevel)}
     >
       <DynastyCardShell dynastyId={dynastyId} />
       <View gap={3} padding={4} height="100%" justify="center" align="center">
         <p className="dynasty-card-title">{dynastyName}</p>
         <span className="dynasty-stamp">{stampTier.name}</span>
-      </View>
-      {rareFx ? <CardSweepFx level={rareFx} /> : null}
-    </div>
-  );
-}
-
-function ResultFace({
-  active,
-  rareFx
-}: {
-  active: DynastyBirthResult;
-  rareFx?: RareLevel;
-}) {
-  const stampTier = CLASS_STAMPS[active.classLevel];
-
-  return (
-    <div
-      className={`dynasty-card is-result tier-${active.classLevel}`}
-      style={cardStyle(active.classLevel)}
-    >
-      <DynastyCardShell dynastyId={active.dynastyId} />
-      <View className="dynasty-result-inner" gap={1} height="100%" justify="center">
-        <Text
-          variant="featured-3"
-          weight="medium"
-          align="center"
-          className="dynasty-card-title"
-        >
-          {active.dynastyName}
-        </Text>
-        <View align="center">
-          <span className="dynasty-stamp">{stampTier.name}</span>
-        </View>
-        <Text variant="caption-1" weight="medium" align="center" className="dynasty-card-class">
-          {active.className}
-        </Text>
-        <div className="dynasty-details">
-          <Text variant="caption-2" color="neutral-faded" align="center">
-            {translateDynastyGender(active.gender)}
-          </Text>
-          <Text variant="caption-1" align="center" className="dynasty-desc">
-            {active.classDesc}
-          </Text>
-          <Text variant="caption-1" align="center" className="dynasty-prob">
-            概率 {formatDynastyProbability(active.probability)}
-          </Text>
-        </div>
       </View>
       {rareFx ? <CardSweepFx level={rareFx} /> : null}
     </div>
@@ -197,7 +139,15 @@ function FlipCard({
           />
         </div>
         <div className="dynasty-face dynasty-face-back">
-          <ResultFace active={result} rareFx={rareFx} />
+          <DynastyResultCard
+            dynastyId={result.dynastyId}
+            dynastyName={result.dynastyName}
+            className={result.className}
+            classLevel={result.classLevel}
+            classDesc={result.classDesc}
+            gender={result.gender}
+            probability={result.probability}
+          />
         </div>
       </div>
     </div>
@@ -207,6 +157,7 @@ function FlipCard({
 const DynastyFlipCard = ({
   result,
   reveal,
+  disabled = false,
   onClick,
   onRevealComplete
 }: DynastyFlipCardProps) => {
@@ -214,12 +165,11 @@ const DynastyFlipCard = ({
     const offsetRef = useRef(0);
     const animRef = useRef<Animation | null>(null);
     const spinTimerRef = useRef<number | null>(null);
-    const detailsTimerRef = useRef<number | null>(null);
+    const beatTimersRef = useRef<number[]>([]);
     const rareShineTimerRef = useRef<number | null>(null);
     const passingRafRef = useRef<number | null>(null);
     const completedRef = useRef(false);
     const finalToRef = useRef(0);
-    const resultRef = useRef<DynastyBirthResult | null>(null);
     const passingIndexRef = useRef(-1);
     const onRevealCompleteRef = useRef(onRevealComplete);
 
@@ -242,6 +192,7 @@ const DynastyFlipCard = ({
       return getOffsetForIndex(buildStrip(result, 0).winIndex);
     });
     const [showPopFx, setShowPopFx] = useState(false);
+    const [popped, setPopped] = useState(Boolean(result));
     const [rareShineLevel, setRareShineLevel] = useState<RareLevel | null>(null);
     const [rareShinePlayId, setRareShinePlayId] = useState(0);
     const [flipped, setFlipped] = useState(Boolean(result));
@@ -267,6 +218,7 @@ const DynastyFlipCard = ({
       setWinIndex(nextWinIndex);
       setDisplayResult(reveal.result);
       setShowPopFx(false);
+      setPopped(reducedMotion);
       setRareShineLevel(null);
       setFlipped(reducedMotion);
       setPhase(reducedMotion ? 'revealed' : 'spinning');
@@ -278,6 +230,22 @@ const DynastyFlipCard = ({
         cancelAnimationFrame(passingRafRef.current);
         passingRafRef.current = null;
       }
+    };
+
+    const clearBeatTimers = () => {
+      beatTimersRef.current.forEach(id => window.clearTimeout(id));
+      beatTimersRef.current = [];
+    };
+
+    const clearRareShineTimer = () => {
+      if (rareShineTimerRef.current) {
+        window.clearTimeout(rareShineTimerRef.current);
+        rareShineTimerRef.current = null;
+      }
+    };
+
+    const scheduleBeat = (fn: () => void, ms: number) => {
+      beatTimersRef.current.push(window.setTimeout(fn, ms));
     };
 
     const startPassingTick = () => {
@@ -325,7 +293,8 @@ const DynastyFlipCard = ({
           .querySelector('.is-passing')
           ?.classList.remove('is-passing');
       }
-      if (detailsTimerRef.current) window.clearTimeout(detailsTimerRef.current);
+      clearBeatTimers();
+      clearRareShineTimer();
 
       const to = finalToRef.current;
       offsetRef.current = to;
@@ -334,36 +303,49 @@ const DynastyFlipCard = ({
       }
       setStripOffset(to);
       setPhase('revealed');
-      setShowPopFx(Boolean(options?.pop));
-      setFlipped(Boolean(options?.instantDetails));
 
-      if (rareShineTimerRef.current) {
-        window.clearTimeout(rareShineTimerRef.current);
-        rareShineTimerRef.current = null;
+      const skipCeremony =
+        Boolean(options?.instantDetails) || !options?.pop;
+      const beats = getLandingSchedule(resultToCommit.classLevel, skipCeremony);
+
+      if (skipCeremony) {
+        setShowPopFx(false);
+        setPopped(true);
+        setFlipped(true);
+        setRareShineLevel(null);
+        onRevealCompleteRef.current?.(resultToCommit, seq);
+        return;
       }
 
-      if (options?.pop && isRareLevel(resultToCommit.classLevel)) {
+      setShowPopFx(false);
+      setPopped(false);
+      setFlipped(false);
+      setRareShineLevel(null);
+
+      scheduleBeat(() => {
+        setShowPopFx(true);
+        if (!isRareLevel(resultToCommit.classLevel)) return;
+
         const level = resultToCommit.classLevel;
         setRareShineLevel(level);
         setRareShinePlayId(id => id + 1);
         rareShineTimerRef.current = window.setTimeout(() => {
           setRareShineLevel(null);
         }, RARE_SHINE_MS[level]);
-      } else {
-        setRareShineLevel(null);
-      }
+      }, beats.popAt);
 
-      if (options?.pop) {
-        window.setTimeout(() => setShowPopFx(false), 400);
-      }
+      scheduleBeat(() => {
+        setShowPopFx(false);
+        setPopped(true);
+      }, beats.poppedAt);
 
-      if (!options?.instantDetails) {
-        detailsTimerRef.current = window.setTimeout(() => {
-          setFlipped(true);
-        }, 90);
-      }
+      scheduleBeat(() => {
+        setFlipped(true);
+      }, beats.flipAt);
 
-      onRevealCompleteRef.current?.(resultToCommit, seq);
+      scheduleBeat(() => {
+        onRevealCompleteRef.current?.(resultToCommit, seq);
+      }, beats.completeAt);
     };
 
     const runSpin = (
@@ -371,10 +353,9 @@ const DynastyFlipCard = ({
       resultToCommit: DynastyBirthResult,
       seq: number,
       from: number,
-      to: number,
-      rapid: boolean
+      to: number
     ) => {
-      const config = getSpinConfig(rapid ? 'rapid' : 'normal');
+      const config = getSpinConfig();
       const totalMs = config.duration + config.tickMs;
       const frames = getSpinKeyframes(from, to, {
         overshootRatio: config.overshootRatio,
@@ -391,10 +372,7 @@ const DynastyFlipCard = ({
       animation.onfinish = () => {
         if (animRef.current !== animation) return;
         offsetRef.current = to;
-        settle(resultToCommit, seq, {
-          instantDetails: rapid,
-          pop: !rapid
-        });
+        settle(resultToCommit, seq, { pop: true });
       };
     };
 
@@ -404,15 +382,14 @@ const DynastyFlipCard = ({
       const { winIndex: nextWinIndex } = buildStrip(reveal.result, reveal.seq);
       const to = getOffsetForIndex(nextWinIndex);
       const startOffset = SPIN_START_OFFSET;
-      const rapid = Boolean(reveal.rapid);
       const reducedMotion = window.matchMedia(
         '(prefers-reduced-motion: reduce)'
       ).matches;
 
       completedRef.current = false;
       finalToRef.current = to;
-      resultRef.current = reveal.result;
       offsetRef.current = reducedMotion ? to : startOffset;
+      clearRareShineTimer();
 
       if (reducedMotion) {
         const previous = animRef.current;
@@ -435,8 +412,8 @@ const DynastyFlipCard = ({
         }
 
         strip.style.transform = `translate3d(${startOffset}px, 0, 0)`;
-        if (!rapid) startPassingTick();
-        runSpin(strip, resultToCommit, seq, startOffset, landingTo, rapid);
+        startPassingTick();
+        runSpin(strip, resultToCommit, seq, startOffset, landingTo);
       };
 
       spinTimerRef.current = window.setTimeout(beginSpin, 0);
@@ -447,6 +424,8 @@ const DynastyFlipCard = ({
         animRef.current = null;
         previous?.cancel();
         stopPassingTick();
+        clearBeatTimers();
+        clearRareShineTimer();
       };
       // Animation is driven by the reveal token.
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -456,14 +435,15 @@ const DynastyFlipCard = ({
       return () => {
         animRef.current?.cancel();
         if (spinTimerRef.current) window.clearTimeout(spinTimerRef.current);
-        if (detailsTimerRef.current) window.clearTimeout(detailsTimerRef.current);
-        if (rareShineTimerRef.current) window.clearTimeout(rareShineTimerRef.current);
+        clearBeatTimers();
+        clearRareShineTimer();
         if (passingRafRef.current) cancelAnimationFrame(passingRafRef.current);
       };
     }, []);
 
     const active = displayResult ?? result;
     const stampTier = active ? CLASS_STAMPS[active.classLevel] : null;
+    const landing = active ? getLandingSchedule(active.classLevel) : null;
     const showIdleLoop = phase === 'prompt' && !active;
     const showStrip = stripItems.length > 0 && !showIdleLoop;
 
@@ -474,6 +454,7 @@ const DynastyFlipCard = ({
       phase === 'revealed' && active ? `tier-${active.classLevel}` : '',
       phase === 'spinning' ? 'is-spinning' : '',
       showPopFx ? 'is-popping' : '',
+      popped && phase === 'revealed' ? 'is-popped' : '',
       rareShineLevel ? 'is-rare-shining' : ''
     ]
       .filter(Boolean)
@@ -483,12 +464,15 @@ const DynastyFlipCard = ({
       <button
         type="button"
         className={sceneClass}
+        disabled={disabled}
         onClick={onClick}
-        aria-label={phase === 'spinning' ? '开投中，再次点击可连抽' : '抽卡投胎'}
+        aria-label={disabled || phase === 'spinning' ? '开投中' : '抽卡投胎'}
         style={
           {
             '--csgo-card-width': `${CARD_WIDTH}px`,
             '--csgo-card-height': `${CARD_HEIGHT}px`,
+            '--dynasty-flip-ms': `${landing?.flip ?? 550}ms`,
+            '--csgo-pop-ms': `${landing?.pop || 350}ms`,
             ...(stampTier && phase === 'revealed'
               ? {
                   '--tier-color': stampTier.border,
@@ -499,7 +483,6 @@ const DynastyFlipCard = ({
           } as React.CSSProperties
         }
       >
-        <DynastyPatternDefs />
         <div className="csgo-track">
           <div className="csgo-vignette csgo-vignette-left" aria-hidden="true" />
           <div className="csgo-vignette csgo-vignette-right" aria-hidden="true" />
@@ -540,10 +523,6 @@ const DynastyFlipCard = ({
                   index === winIndex &&
                   item.kind === 'winner';
                 const isDimmed = phase === 'revealed' && !isWinner;
-                const rarePop =
-                  isWinner &&
-                  item.kind === 'winner' &&
-                  item.result.classLevel <= 3;
 
                 const shineLevel =
                   isWinner && rareShineLevel && item.kind === 'winner'
@@ -554,7 +533,7 @@ const DynastyFlipCard = ({
                   return (
                     <div
                       key={item.key}
-                      className={`csgo-slot ${isWinner ? 'is-winner' : ''} ${isDimmed ? 'is-dimmed' : ''} ${rarePop ? 'is-rare' : ''} ${shineLevel ? `is-rare-playing rare-l${shineLevel}` : ''}`}
+                      className={`csgo-slot ${isWinner ? 'is-winner' : ''} ${isDimmed ? 'is-dimmed' : ''} ${shineLevel ? `is-rare-playing rare-l${shineLevel}` : ''}`}
                     >
                       {shineLevel ? (
                         <RareShineOuter key={rareShinePlayId} level={shineLevel} />

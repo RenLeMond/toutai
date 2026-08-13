@@ -8,6 +8,7 @@ import {
   buildStrip,
   getCenteredIndex,
   getOffsetForIndex,
+  getLandingSchedule,
   getSpinConfig,
   getSpinKeyframes,
   pickDecoy,
@@ -36,32 +37,14 @@ describe('dynasty-spin', () => {
 
     expect(config.overshootRatio).toBeGreaterThan(0.12);
     expect(config.overshootRatio).toBeLessThan(0.3);
-    expect(config.duration).toBeGreaterThanOrEqual(2400);
-    expect(config.duration).toBeLessThanOrEqual(3000);
+    expect(config.duration).toBeGreaterThanOrEqual(1900);
+    expect(config.duration).toBeLessThanOrEqual(2400);
     expect(config.tickMs).toBeGreaterThanOrEqual(280);
-    expect(config.tickMs).toBeLessThanOrEqual(650);
+    expect(config.tickMs).toBeLessThanOrEqual(450);
     expect(spinProgress(0)).toBe(0);
     expect(spinProgress(0.14)).toBeCloseTo(0.1, 5);
     expect(spinProgress(0.14)).toBeLessThan(spinProgress(0.4));
     expect(spinProgress(1)).toBeCloseTo(1, 5);
-  });
-
-  it('uses a short spin without overshoot for rapid draws', () => {
-    const rapid = getSpinConfig('rapid');
-    const to = getOffsetForIndex(20);
-    const frames = getSpinKeyframes(0, to, {
-      overshootRatio: rapid.overshootRatio,
-      tickPortion: 0
-    });
-    const xs = frames.map(frame =>
-      Number(frame.transform.match(/translate3d\(([-\d.]+)px/)?.[1])
-    );
-
-    expect(rapid.duration).toBeGreaterThanOrEqual(200);
-    expect(rapid.duration).toBeLessThanOrEqual(400);
-    expect(rapid.overshootRatio).toBe(0);
-    expect(rapid.tickMs).toBe(0);
-    expect(Math.min(...xs)).toBeCloseTo(to, 5);
   });
 
   it('maps strip translate back to the centered card index', () => {
@@ -133,5 +116,33 @@ describe('dynasty-spin', () => {
     expect(winIndex).toBeLessThan(WIN_INDEX_BASE + 6);
     expect(items.length).toBe(winIndex + STRIP_TAIL);
     expect(items[winIndex - 1]?.kind).toBe('decoy');
+  });
+
+  it('holds the gold card on the front before flipping', () => {
+    const gold = getLandingSchedule(1);
+    const common = getLandingSchedule(5);
+
+    expect(common.freeze).toBe(120);
+    expect(common.pop).toBe(200);
+    expect(common.hold).toBe(0);
+    expect(common.flip).toBe(360);
+    expect(common.completeAt).toBe(680);
+
+    expect(gold.freeze).toBe(160);
+    expect(gold.hold).toBe(280);
+    expect(gold.flip).toBe(420);
+    expect(gold.flipAt).toBe(640);
+    expect(gold.completeAt).toBe(1060);
+    expect(getLandingSchedule(2).hold).toBe(200);
+    expect(getLandingSchedule(3).hold).toBe(140);
+  });
+
+  it('skips landing beats for reduced-motion draws', () => {
+    const skipped = getLandingSchedule(1, true);
+
+    expect(skipped.popAt).toBe(0);
+    expect(skipped.flipAt).toBe(0);
+    expect(skipped.completeAt).toBe(0);
+    expect(skipped.flip).toBe(420);
   });
 });

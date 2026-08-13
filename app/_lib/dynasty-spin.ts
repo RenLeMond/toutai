@@ -19,8 +19,6 @@ export interface SpinKeyframe {
   offset: number;
 }
 
-export type SpinTier = 'rapid' | 'normal';
-
 export interface SpinConfig {
   duration: number;
   overshootRatio: number;
@@ -44,19 +42,73 @@ export interface WinnerItem {
 
 export type StripItem = DecoyItem | WinnerItem;
 
-export function getSpinConfig(tier: SpinTier = 'normal'): SpinConfig {
-  if (tier === 'rapid') {
-    return {
-      duration: 320,
-      overshootRatio: 0,
-      tickMs: 0
-    };
-  }
+export function getSpinConfig(): SpinConfig {
+  return {
+    duration: 2100,
+    overshootRatio: 0.18,
+    tickMs: 360
+  };
+}
+
+export interface LandingSchedule {
+  freeze: number;
+  pop: number;
+  hold: number;
+  flip: number;
+  popAt: number;
+  poppedAt: number;
+  flipAt: number;
+  completeAt: number;
+}
+
+const LANDING_FREEZE_MS: Record<ClassLevel, number> = {
+  1: 160,
+  2: 140,
+  3: 120,
+  4: 120,
+  5: 120,
+  6: 120
+};
+
+const LANDING_POP_MS = 200;
+
+const LANDING_HOLD_MS: Record<ClassLevel, number> = {
+  1: 280,
+  2: 200,
+  3: 140,
+  4: 0,
+  5: 0,
+  6: 0
+};
+
+const LANDING_FLIP_MS: Record<ClassLevel, number> = {
+  1: 420,
+  2: 400,
+  3: 380,
+  4: 360,
+  5: 360,
+  6: 360
+};
+
+/** 停稳后：定住 → 弹出 →（稀有正面停留）→ 翻面。减少动效时跳过。 */
+export function getLandingSchedule(
+  level: ClassLevel,
+  skipCeremony = false
+): LandingSchedule {
+  const freeze = skipCeremony ? 0 : LANDING_FREEZE_MS[level];
+  const pop = skipCeremony ? 0 : LANDING_POP_MS;
+  const hold = skipCeremony ? 0 : LANDING_HOLD_MS[level];
+  const flip = LANDING_FLIP_MS[level];
 
   return {
-    duration: 2720,
-    overshootRatio: 0.18,
-    tickMs: 580
+    freeze,
+    pop,
+    hold,
+    flip,
+    popAt: freeze,
+    poppedAt: freeze + pop,
+    flipAt: freeze + pop + hold,
+    completeAt: skipCeremony ? 0 : freeze + pop + hold + flip
   };
 }
 

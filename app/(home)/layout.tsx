@@ -26,6 +26,8 @@ export default function HomepageLayout({
           direction="row"
           justify="space-between"
           align="center"
+          gap={2}
+          wrap
           as="header"
         >
           <Title />

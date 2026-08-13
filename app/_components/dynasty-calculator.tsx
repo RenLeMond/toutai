@@ -35,7 +35,7 @@ function DynastyCalculator() {
   return (
     <View gap={4}>
       <View paddingBlock={4} direction={{ s: 'column', m: 'row' }} gap={4}>
-        <View.Item columns={{ s: 12, m: 5 }}>
+        <View.Item key="dynasty" columns={{ s: 12, m: 5 }}>
           <FormControl>
             <FormControl.Label>朝代</FormControl.Label>
             <Select
@@ -51,7 +51,7 @@ function DynastyCalculator() {
             />
           </FormControl>
         </View.Item>
-        <View.Item columns={{ s: 12, m: 5 }}>
+        <View.Item key="class" columns={{ s: 12, m: 5 }}>
           <FormControl>
             <FormControl.Label>阶级</FormControl.Label>
             <Select
@@ -67,7 +67,7 @@ function DynastyCalculator() {
             />
           </FormControl>
         </View.Item>
-        <View.Item columns={{ s: 12, m: 2 }}>
+        <View.Item key="calculate" columns={{ s: 12, m: 2 }}>
           <View paddingTop={{ s: 0, m: 6 }}>
             <Button
               color="primary"

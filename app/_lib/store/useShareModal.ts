@@ -15,6 +15,9 @@ export interface ShareInfo {
   dynastyName?: string;
   className?: string;
   classLevel?: ClassLevel;
+  dynastyId?: string;
+  classDesc?: string;
+  flavor?: string;
 }
 
 interface ShareModalState {

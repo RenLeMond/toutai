@@ -20,7 +20,7 @@ function DynastyResultTable() {
 
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View backgroundColor="neutral-faded" className="rounded-xl overflow-x-auto">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>

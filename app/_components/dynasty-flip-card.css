@@ -9,14 +9,21 @@
   cursor: pointer;
   display: block;
   overflow: visible;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   --csgo-reel-scale: 0.9;
   --csgo-pass-scale: 1.06;
   --csgo-win-scale: 1.08;
+  --csgo-pop-scale: 1.16;
 }
 
 .csgo-scene:disabled,
 .csgo-scene.is-spinning {
   cursor: default;
+}
+
+.csgo-scene.is-revealed {
+  overflow: visible;
 }
 
 .csgo-track {
@@ -149,14 +156,41 @@
 }
 
 .csgo-scene.is-revealed .csgo-slot.is-winner {
-  transform: scale(var(--csgo-win-scale));
-  perspective: none;
+  transform: scale(var(--csgo-reel-scale));
   opacity: 1;
   filter: none;
   transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.28, 1),
     opacity 0.3s ease,
     filter 0.3s ease;
+}
+
+.csgo-scene.is-revealed.is-popping .csgo-slot.is-winner,
+.csgo-scene.is-revealed.is-popped .csgo-slot.is-winner {
+  transform: none;
+}
+
+.csgo-scene.is-revealed.is-popping .csgo-slot.is-winner .dynasty-flipper {
+  transform-origin: center center;
+  animation: csgo-win-pop var(--csgo-pop-ms, 350ms) cubic-bezier(0.22, 1, 0.28, 1)
+    forwards;
+}
+
+.csgo-scene.is-revealed.is-popped .csgo-slot.is-winner .dynasty-flipper {
+  transform: scale(var(--csgo-win-scale));
+}
+
+@keyframes csgo-win-pop {
+  0% {
+    transform: scale(var(--csgo-reel-scale));
+  }
+
+  38% {
+    transform: scale(var(--csgo-pop-scale));
+  }
+
+  100% {
+    transform: scale(var(--csgo-win-scale));
+  }
 }
 
 .csgo-slot.is-winner {
@@ -166,6 +200,8 @@
 .dynasty-flipper {
   width: 100%;
   height: 100%;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
 .dynasty-flipper-inner {
@@ -173,7 +209,17 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.62s cubic-bezier(0.22, 0.9, 0.28, 1);
+}
+
+.csgo-scene.is-spinning .dynasty-flipper-inner,
+.csgo-scene.is-idle .dynasty-flipper-inner {
+  transition: none;
+}
+
+.csgo-scene.is-revealed .csgo-slot.is-winner .dynasty-flipper-inner {
+  transition: transform var(--dynasty-flip-ms, 550ms) cubic-bezier(0.22, 0.9, 0.28, 1);
 }
 
 .dynasty-flipper.is-flipped .dynasty-flipper-inner {
@@ -185,10 +231,11 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .dynasty-face-back {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(0);
 }
 
 .csgo-pop-flash {
@@ -201,7 +248,7 @@
     color-mix(in srgb, var(--tier-color, #ff4f04) 28%, transparent) 0%,
     transparent 68%
   );
-  animation: csgo-pop-flash 0.55s ease-out forwards;
+  animation: csgo-pop-flash var(--csgo-pop-ms, 350ms) ease-out forwards;
 }
 
 @keyframes csgo-pop-flash {
@@ -229,6 +276,7 @@
   box-shadow: 0 0 12px rgba(232, 185, 35, 0.55);
   pointer-events: none;
   opacity: 0;
+  transition: opacity 0.25s ease, box-shadow 0.25s ease;
 }
 
 .csgo-scene.is-spinning .csgo-selector {
@@ -238,47 +286,19 @@
 
 .csgo-scene.is-revealed .csgo-selector,
 .csgo-scene.is-popping .csgo-selector {
-  transform: translate(-50%, -50%) scaleY(var(--csgo-win-scale));
-}
-
-.csgo-scene.is-popping .csgo-selector {
-  opacity: 1;
-  animation: csgo-selector-settle 0.38s cubic-bezier(0.22, 0.7, 0.28, 1) forwards;
-}
-
-@keyframes csgo-selector-settle {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scaleY(var(--csgo-reel-scale));
-    box-shadow: 0 0 14px rgba(232, 185, 35, 0.75);
-  }
-  35% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scaleY(var(--csgo-win-scale));
-    box-shadow: 0 0 14px rgba(232, 185, 35, 0.75);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scaleY(var(--csgo-win-scale));
-    box-shadow: 0 0 0 rgba(232, 185, 35, 0);
-  }
-}
-
-.csgo-slot.is-rare .dynasty-flipper-inner {
-  transition-duration: 0.76s;
-}
-
-.csgo-scene.is-revealed.is-rare-shining {
-  padding-block: 160px;
-  margin-block: -160px;
-  overflow: hidden;
+  opacity: 0;
+  transform: translate(-50%, -50%) scaleY(var(--csgo-reel-scale));
 }
 
 .csgo-scene.is-revealed.is-rare-shining .csgo-track {
-  overflow: visible;
+  overflow: hidden;
+  height: calc(var(--csgo-card-height, 280px) + 280px);
+  margin-block: -80px;
 }
 
 .csgo-slot.is-rare-playing {
+  overflow: visible;
+  z-index: 8;
   --shine: #f0c55a;
   --throw: 1.35;
 }
@@ -973,9 +993,9 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    color-mix(in srgb, var(--tier-color, #4b7bec) 88%, transparent) 0%,
-    color-mix(in srgb, var(--tier-color, #4b7bec) 52%, transparent) 24%,
-    color-mix(in srgb, var(--tier-color, #4b7bec) 16%, transparent) 46%,
+    var(--tier-wash-88, rgba(228, 174, 57, 0.88)) 0%,
+    var(--tier-wash-52, rgba(228, 174, 57, 0.52)) 24%,
+    var(--tier-wash-16, rgba(228, 174, 57, 0.16)) 46%,
     transparent 66%
   );
   pointer-events: none;
@@ -987,15 +1007,6 @@
   z-index: 2;
 }
 
-.dynasty-shell-defs {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
-
 .dynasty-shell-pattern,
 .dynasty-shell-ornament {
   position: absolute;
@@ -1003,6 +1014,10 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+
+.dynasty-shell-pattern {
+  background-repeat: repeat;
 }
 
 .dynasty-card > .dynasty-shell-pattern,
@@ -1027,9 +1042,9 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  color: rgba(245, 240, 230, 0.88);
-  background: linear-gradient(180deg, #2a3444 0%, #171d28 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  color: rgba(245, 240, 230, 0.9);
+  background: linear-gradient(180deg, #3a3228 0%, #241e18 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .dynasty-card.is-result {
@@ -1038,8 +1053,8 @@
   --rs-color-foreground-neutral-faded: #b4aea4;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--tier-color, #4b7bec) 18%, #2a3444) 0%,
-    #171d28 100%
+    var(--tier-result-bg, #3d362d) 0%,
+    #241e18 100%
   );
   box-shadow:
     0 14px 32px var(--tier-glow, rgba(0, 0, 0, 0.22)),
@@ -1053,7 +1068,7 @@
 }
 
 .dynasty-card.is-preview .dynasty-card-title {
-  color: #eef2f8;
+  color: #f2ebe2;
 }
 
 .dynasty-card-class {
@@ -1077,15 +1092,15 @@
   font-weight: 800;
   letter-spacing: 0.18em;
   transform: rotate(-8deg);
-  background: color-mix(in srgb, var(--tier-text, #78716c) 8%, transparent);
+  background: var(--tier-stamp-fill, rgba(120, 113, 108, 0.08));
 }
 
 .dynasty-card.is-preview .dynasty-stamp {
   font-size: 18px;
   padding: 10px 12px 10px calc(12px + 0.18em);
-  color: var(--tier-text, #eef2f8);
-  border-color: color-mix(in srgb, var(--tier-text, #eef2f8) 72%, transparent);
-  background: color-mix(in srgb, var(--tier-text, #eef2f8) 10%, transparent);
+  color: var(--tier-text, #f2ebe2);
+  border-color: var(--tier-stamp-border, rgba(242, 235, 226, 0.72));
+  background: var(--tier-stamp-fill, rgba(242, 235, 226, 0.1));
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
@@ -1106,9 +1121,9 @@
 .dynasty-card.is-result .dynasty-stamp {
   font-size: 13px;
   padding: 6px 8px 6px calc(8px + 0.18em);
-  color: var(--tier-text, #eef2f8);
-  border-color: color-mix(in srgb, var(--tier-text, #eef2f8) 72%, transparent);
-  background: color-mix(in srgb, var(--tier-text, #eef2f8) 10%, transparent);
+  color: var(--tier-text, #f2ebe2);
+  border-color: var(--tier-stamp-border, rgba(242, 235, 226, 0.72));
+  background: var(--tier-stamp-fill, rgba(242, 235, 226, 0.1));
 }
 
 .dynasty-result-inner {
@@ -1190,10 +1205,12 @@
   .csgo-scene.is-spinning .csgo-slot,
   .csgo-scene.is-spinning .csgo-slot.is-passing,
   .csgo-scene.is-revealed .csgo-slot.is-winner,
+  .csgo-scene.is-revealed .csgo-slot.is-winner .dynasty-flipper,
   .csgo-slot.is-dimmed {
     transform: none;
     opacity: 1;
     filter: none;
+    animation: none;
   }
 }
 
@@ -1212,6 +1229,8 @@
   width: 100%;
   max-width: var(--csgo-card-width, 200px);
   aspect-ratio: 5 / 7;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .atlas-flipper {
@@ -1289,14 +1308,14 @@
   font-size: 16px;
   line-height: 1;
   letter-spacing: 0.12em;
-  color: #eef2f8;
+  color: #f2ebe2;
   opacity: 0.7;
 }
 
 .atlas-count {
   font-size: 14px;
   line-height: 1;
-  color: #eef2f8;
+  color: #f2ebe2;
   opacity: 0.85;
   text-align: center;
 }
@@ -1308,4 +1327,34 @@
 
 .dynasty-card.is-lit {
   opacity: 1;
+}
+
+@media (max-width: 659px) {
+  .csgo-track {
+    height: calc(var(--csgo-card-height, 280px) + 72px);
+  }
+
+  .atlas-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .atlas-card-button {
+    max-width: none;
+  }
+
+  .atlas-card-inner,
+  .atlas-back-inner {
+    padding: 16px 8px 18px;
+    gap: 6px;
+  }
+
+  .dynasty-card.is-preview .atlas-card-inner .dynasty-card-title {
+    font-size: 16px;
+  }
+
+  .dynasty-card.is-preview .atlas-card-inner .dynasty-stamp {
+    font-size: 13px;
+    padding: 5px 6px 5px calc(6px + 0.18em);
+  }
 }
