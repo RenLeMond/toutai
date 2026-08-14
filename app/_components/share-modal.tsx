@@ -13,7 +13,10 @@ import ChinaMap from '@/components/icon';
 import { translateGenderChild } from '@/lib/rebirth';
 import { formatWorldProbability } from '@/lib/world-rebirth';
 import DynastySharePoster from '@/components/dynasty-share-poster';
-import { generateDynastyShareBlob } from '@/lib/dynasty-share-canvas';
+import {
+  generateDynastyShareBlob,
+  generateDynastyShareDataUrl
+} from '@/lib/dynasty-share-canvas';
 
 const ShareMap = dynamic(() => import('@/components/share-map'), {
   ssr: false,
@@ -597,18 +600,18 @@ function ShareModal() {
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   const handleClose = () => {
-    if (previewImageUrl) {
+    if (previewImageUrl?.startsWith('blob:')) {
       URL.revokeObjectURL(previewImageUrl);
-      setPreviewImageUrl(null);
     }
+    setPreviewImageUrl(null);
     deactivate();
   };
 
   const handleClosePreview = () => {
-    if (previewImageUrl) {
+    if (previewImageUrl?.startsWith('blob:')) {
       URL.revokeObjectURL(previewImageUrl);
-      setPreviewImageUrl(null);
     }
+    setPreviewImageUrl(null);
   };
 
   async function handleSaveAsImage() {
@@ -620,12 +623,14 @@ function ShareModal() {
 
     try {
       let blob: Blob | null = null;
+      let dataUrl = '';
       const filename =
         shareInfo.mode === 'dynasty'
           ? `投胎模拟器-王朝版-第${shareInfo.count}次.png`
           : `投胎模拟器-第${shareInfo.count}次.png`;
 
       if (shareInfo.mode === 'dynasty') {
+        dataUrl = await generateDynastyShareDataUrl(shareInfo);
         blob = await generateDynastyShareBlob(shareInfo);
       } else if (shareContent) {
         await waitForShareMapReady(shareContent);
@@ -656,13 +661,14 @@ function ShareModal() {
           }
         });
 
+        dataUrl = canvas.toDataURL('image/png');
         blob = await new Promise<Blob | null>(resolve =>
           canvas.toBlob(resolve, 'image/png')
         );
       }
 
-      if (!blob) {
-        throw new Error('Failed to generate image blob');
+      if (!dataUrl) {
+        throw new Error('Failed to generate image');
       }
 
       const isMobile =
@@ -680,6 +686,7 @@ function ShareModal() {
       if (
         isMobile &&
         !isWeChat &&
+        blob &&
         typeof navigator !== 'undefined' &&
         typeof File !== 'undefined'
       ) {
@@ -700,20 +707,17 @@ function ShareModal() {
         }
       }
 
-      // 2. On mobile (WeChat or navigator.share fallback), display preview for long-press saving
+      // 2. On mobile (WeChat or navigator.share fallback), display preview with base64 data URL for long-press saving
       if (isMobile) {
-        const blobUrl = URL.createObjectURL(blob);
-        setPreviewImageUrl(blobUrl);
+        setPreviewImageUrl(dataUrl);
         return;
       }
 
       // 3. On desktop, trigger standard download
-      const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.download = filename;
-      link.href = blobUrl;
+      link.href = dataUrl;
       link.click();
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
 
       toast.custom(t => (
         <div className="relative bg-green-100 w-full sm:w-[354px] p-5 border-green-500 border rounded-xl">

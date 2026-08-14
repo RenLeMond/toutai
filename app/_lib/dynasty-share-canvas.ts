@@ -206,7 +206,9 @@ function loadImage(src: string, timeoutMs = 4000): Promise<HTMLImageElement> {
       );
     }, timeoutMs);
 
-    img.crossOrigin = 'anonymous';
+    if (!src.startsWith('data:')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.onload = () => {
       clearTimeout(timer);
       resolve(img);
@@ -382,7 +384,7 @@ export async function generateDynastyShareCanvas(
       const pattern = ctx.createPattern(patternImg, 'repeat');
       if (pattern) {
         ctx.save();
-        ctx.globalAlpha = 0.26;
+        ctx.globalAlpha = 0.24;
         ctx.fillStyle = pattern;
         ctx.fillRect(CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
         ctx.restore();
@@ -397,29 +399,36 @@ export async function generateDynastyShareCanvas(
     const ornamentSvg = getDynastyOrnamentSvg(shareInfo.dynastyId);
     const ornamentDataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(ornamentSvg)}`;
     const ornamentImg = await loadImage(ornamentDataUri);
+    ctx.save();
+    ctx.globalAlpha = 0.65;
     ctx.drawImage(ornamentImg, CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+    ctx.restore();
   } catch (err) {
     console.warn('Could not load ornament SVG for share canvas:', err);
   }
 
-  // 5c. Card Bottom Gradient Wash
+  // 5c. Card Bottom Accent Glow (Subtle rim light matching web UI, not overpowering wash)
   const washGrad = ctx.createLinearGradient(
     0,
     CARD_Y + CARD_HEIGHT,
     0,
-    CARD_Y + CARD_HEIGHT * 0.34
+    CARD_Y + CARD_HEIGHT * 0.75
   );
-  washGrad.addColorStop(0, tierVars['--tier-wash-88'] || 'rgba(228, 174, 57, 0.88)');
-  washGrad.addColorStop(0.24, tierVars['--tier-wash-52'] || 'rgba(228, 174, 57, 0.52)');
-  washGrad.addColorStop(0.46, tierVars['--tier-wash-16'] || 'rgba(228, 174, 57, 0.16)');
-  washGrad.addColorStop(0.66, 'rgba(0, 0, 0, 0)');
+  washGrad.addColorStop(0, tierVars['--tier-wash-52'] || 'rgba(228, 174, 57, 0.4)');
+  washGrad.addColorStop(0.5, tierVars['--tier-wash-16'] || 'rgba(228, 174, 57, 0.12)');
+  washGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
   ctx.fillStyle = washGrad;
   ctx.fillRect(CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
 
-  // 5d. Bottom tier accent bar
+  // 5d. Outer card border stroke
+  ctx.strokeStyle = tierVars['--tier-border'] || stampTier.border;
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // 5e. Bottom tier accent bar
   ctx.fillStyle = tierVars['--tier-color'] || stampTier.border;
-  ctx.fillRect(CARD_X, CARD_Y + CARD_HEIGHT - 8, CARD_WIDTH, 8);
+  ctx.fillRect(CARD_X, CARD_Y + CARD_HEIGHT - 6, CARD_WIDTH, 6);
 
   // 5e. Unified Vertically-Centered Text Stack inside Card (Pill + Title + Desc + Meta)
   const badgeText = `${dynastyName} · ${stampTier.name}`;
@@ -592,6 +601,13 @@ export async function generateDynastyShareCanvas(
   drawQrCode(ctx, DYNASTY_SHARE_URL, qrX, qrY, qrSize);
 
   return canvas;
+}
+
+export async function generateDynastyShareDataUrl(
+  shareInfo: ShareInfo
+): Promise<string> {
+  const canvas = await generateDynastyShareCanvas(shareInfo);
+  return canvas.toDataURL('image/png');
 }
 
 export async function generateDynastyShareBlob(
