@@ -5,6 +5,13 @@ import {
   CARD_WIDTH,
   CARD_HEIGHT,
   CARD_Y,
+  CARD_SCALE,
+  CSS_TITLE_SIZE,
+  CSS_DESC_SIZE,
+  CSS_BADGE_SIZE,
+  TITLE_FONT_SIZE,
+  DESC_FONT_SIZE,
+  BADGE_FONT_SIZE,
   FONT_FAMILY,
   FOOTER_Y,
   TITLE_MAX_WIDTH,
@@ -55,6 +62,16 @@ describe('dynasty-share-canvas', () => {
     expect(CARD_WIDTH).toBe(700);
     expect(CARD_HEIGHT).toBe(980);
     expect(CARD_WIDTH / CARD_HEIGHT).toBeCloseTo(5 / 7);
+  });
+
+  it('scales canvas type from the 200px result-card CSS', () => {
+    expect(CARD_SCALE).toBe(3.5);
+    expect(TITLE_FONT_SIZE).toBe(CSS_TITLE_SIZE * CARD_SCALE);
+    expect(DESC_FONT_SIZE).toBe(CSS_DESC_SIZE * CARD_SCALE);
+    expect(BADGE_FONT_SIZE).toBe(CSS_BADGE_SIZE * CARD_SCALE);
+    expect(TITLE_FONT_SIZE).toBe(84);
+    expect(DESC_FONT_SIZE).toBeCloseTo(40.25);
+    expect(BADGE_FONT_SIZE).toBeCloseTo(38.5);
   });
 
   it('generates valid SVG ornaments for all 13 dynasties', () => {
@@ -116,24 +133,24 @@ describe('dynasty share font stack', () => {
 
 describe('fitFontSize', () => {
   it('keeps max size when the text already fits', () => {
-    expect(fitFontSize(emMeasure, '番匠', TITLE_MAX_WIDTH, 74, 44)).toBe(74);
+    expect(fitFontSize(emMeasure, '番匠', TITLE_MAX_WIDTH, 84, 58)).toBe(84);
   });
 
   it('shrinks until the text fits, not below min size', () => {
-    const size = fitFontSize(emMeasure, '一二三', 200, 74, 44);
-    expect(size).toBeGreaterThanOrEqual(44);
-    expect(size).toBeLessThan(74);
+    const size = fitFontSize(emMeasure, '一二三', 200, 84, 58);
+    expect(size).toBeGreaterThanOrEqual(58);
+    expect(size).toBeLessThan(84);
     expect(emMeasure('一二三', size)).toBeLessThanOrEqual(200);
   });
 });
 
 describe('wrapTextToWidth and clampWrappedLines', () => {
   it('wraps long copy and clamps to two lines with an ellipsis', () => {
-    const lines = wrapTextToWidth(emMeasure, LONG_CLASS_DESC, 34, 510);
+    const lines = wrapTextToWidth(emMeasure, LONG_CLASS_DESC, DESC_FONT_SIZE, 560);
     expect(lines.length).toBeGreaterThan(1);
 
     const clamped = clampWrappedLines(
-      wrapTextToWidth(emMeasure, LONG_CLASS_DESC.repeat(4), 34, 510),
+      wrapTextToWidth(emMeasure, LONG_CLASS_DESC.repeat(4), DESC_FONT_SIZE, 560),
       2
     );
     expect(clamped).toHaveLength(2);
@@ -142,7 +159,7 @@ describe('wrapTextToWidth and clampWrappedLines', () => {
 });
 
 describe('layoutDynastyShareCardText', () => {
-  it('keeps longest real card copy inside the card', () => {
+  it('uses 3.5x CSS type and keeps longest copy inside the card', () => {
     const layout = layoutDynastyShareCardText(
       emMeasure,
       emMeasure,
@@ -154,11 +171,14 @@ describe('layoutDynastyShareCardText', () => {
       }
     );
 
+    expect(layout.heroFontSize).toBeLessThanOrEqual(TITLE_FONT_SIZE);
+    expect(layout.badgeFontSize).toBeLessThanOrEqual(BADGE_FONT_SIZE);
+    expect(layout.titleLines.length).toBeGreaterThan(0);
+    expect(layout.titleLines.length).toBeLessThanOrEqual(2);
+    expect(layout.titleLineH).toBeCloseTo(layout.heroFontSize * 1.18);
     expect(layout.pillW).toBeLessThan(CARD_WIDTH);
-    expect(emMeasure(LONG_CLASS_NAME, layout.heroFontSize)).toBeLessThan(
-      TITLE_MAX_WIDTH
-    );
     expect(layout.descLines.length).toBeLessThanOrEqual(2);
+    expect(layout.descLineH).toBeCloseTo(DESC_FONT_SIZE * 1.45);
     expect(layout.stackH).toBeLessThanOrEqual(CARD_HEIGHT - 80);
     expect(layout.stackTop).toBeGreaterThanOrEqual(CARD_Y);
     expect(layout.stackTop + layout.stackH).toBeLessThanOrEqual(

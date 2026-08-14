@@ -13,19 +13,31 @@ import qrcode from 'qrcode-generator';
 
 export const POSTER_WIDTH = 1080;
 export const POSTER_HEIGHT = 1440;
+export const RESULT_CARD_CSS_WIDTH = 200;
 export const CARD_WIDTH = 700;
 export const CARD_HEIGHT = 980;
+export const CARD_SCALE = CARD_WIDTH / RESULT_CARD_CSS_WIDTH;
 export const CARD_X = (POSTER_WIDTH - CARD_WIDTH) / 2; // 190
 export const CARD_Y = 130;
 export const CARD_RADIUS = 36;
 export const DYNASTY_SHARE_URL = `${siteUrl}/dynasty`;
 export const FONT_FAMILY =
   'Inter, BlinkMacSystemFont, -apple-system, "Segoe UI", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif';
-export const TEXT_INSET = 40;
+export const CSS_BADGE_SIZE = 11;
+export const CSS_TITLE_SIZE = 24;
+export const CSS_DESC_SIZE = 11.5;
+export const CSS_META_SIZE = 11;
+export const CSS_PAD_X = 20;
+export const TEXT_INSET = CSS_PAD_X * CARD_SCALE;
 export const TITLE_MAX_WIDTH = CARD_WIDTH - TEXT_INSET * 2;
-export const DESC_MAX_WIDTH = 510;
+export const DESC_MAX_WIDTH = TITLE_MAX_WIDTH;
 export const DESC_MAX_LINES = 2;
-export const PILL_PAD_X = 56;
+export const TITLE_MAX_LINES = 2;
+export const PILL_PAD_X = 10 * CARD_SCALE * 2;
+export const TITLE_FONT_SIZE = CSS_TITLE_SIZE * CARD_SCALE;
+export const DESC_FONT_SIZE = CSS_DESC_SIZE * CARD_SCALE;
+export const BADGE_FONT_SIZE = CSS_BADGE_SIZE * CARD_SCALE;
+export const META_FONT_SIZE = CSS_META_SIZE * CARD_SCALE;
 export const FLAVOR_MAX_WIDTH = 720;
 export const FLAVOR_MAX_LINES = 2;
 export const FLAVOR_LINE_H = 48;
@@ -308,6 +320,8 @@ export type DynastyShareCardTextLayout = {
   pillW: number;
   pillH: number;
   heroFontSize: number;
+  titleLines: string[];
+  titleLineH: number;
   titleH: number;
   descLines: string[];
   descLineH: number;
@@ -320,6 +334,44 @@ export type DynastyShareCardTextLayout = {
   metaH: number;
 };
 
+function layoutHeroTitle(
+  measureTitle: MeasureTextFn,
+  className: string
+): Pick<
+  DynastyShareCardTextLayout,
+  'heroFontSize' | 'titleLines' | 'titleLineH' | 'titleH'
+> {
+  const minSize = TITLE_FONT_SIZE * 0.7;
+  let heroFontSize = TITLE_FONT_SIZE;
+  let titleLines: string[] = [];
+
+  while (heroFontSize >= minSize) {
+    titleLines = clampWrappedLines(
+      wrapTextToWidth(
+        measureTitle,
+        className,
+        heroFontSize,
+        TITLE_MAX_WIDTH
+      ),
+      TITLE_MAX_LINES
+    );
+    const fits = titleLines.every(
+      line => measureTitle(line, heroFontSize) <= TITLE_MAX_WIDTH
+    );
+    if (fits) break;
+    heroFontSize -= 1;
+  }
+
+  if (!titleLines.length && className) {
+    titleLines = [className];
+  }
+
+  const titleLineH = heroFontSize * 1.18;
+  const titleH = titleLines.length * titleLineH;
+
+  return { heroFontSize, titleLines, titleLineH, titleH };
+}
+
 export function layoutDynastyShareCardText(
   measureBadge: MeasureTextFn,
   measureTitle: MeasureTextFn,
@@ -330,44 +382,38 @@ export function layoutDynastyShareCardText(
     classDesc: string;
   }
 ): DynastyShareCardTextLayout {
-  const titleMax = input.className.length > 5 ? 58 : 74;
-  const heroFontSize = fitFontSize(
+  const { heroFontSize, titleLines, titleLineH, titleH } = layoutHeroTitle(
     measureTitle,
-    input.className,
-    TITLE_MAX_WIDTH,
-    titleMax,
-    44
+    input.className
   );
-  const titleH = heroFontSize * 1.18;
 
   const badgeFontSize = fitFontSize(
     measureBadge,
     input.badgeText,
     TITLE_MAX_WIDTH - PILL_PAD_X,
-    32,
-    18
+    BADGE_FONT_SIZE,
+    BADGE_FONT_SIZE * 0.7
   );
   const pillW = Math.min(
     measureBadge(input.badgeText, badgeFontSize) + PILL_PAD_X,
     CARD_WIDTH - TEXT_INSET
   );
-  const pillH = 48;
+  const pillH = badgeFontSize * 1.6;
 
-  const descFontSize = 34;
   let descLines = wrapTextToWidth(
     measureBody,
     input.classDesc,
-    descFontSize,
+    DESC_FONT_SIZE,
     DESC_MAX_WIDTH
   );
   descLines = clampWrappedLines(descLines, DESC_MAX_LINES);
-  const descLineH = 48;
+  const descLineH = DESC_FONT_SIZE * 1.45;
   const descH = descLines.length * descLineH;
-  const metaH = 36;
+  const metaH = META_FONT_SIZE * 1.2;
 
-  let gapPillToTitle = 14;
-  let gapTitleToDesc = descLines.length ? 20 : 8;
-  let gapDescToMeta = descLines.length ? 16 : 8;
+  const gapPillToTitle = 4 * CARD_SCALE;
+  let gapTitleToDesc = descLines.length ? 4 * CARD_SCALE : 2 * CARD_SCALE;
+  let gapDescToMeta = descLines.length ? 4 * CARD_SCALE : 2 * CARD_SCALE;
 
   let stackH =
     pillH +
@@ -381,7 +427,6 @@ export function layoutDynastyShareCardText(
   const maxStack = CARD_HEIGHT - 80;
   if (stackH > maxStack) {
     const scale = maxStack / stackH;
-    gapPillToTitle *= scale;
     gapTitleToDesc *= scale;
     gapDescToMeta *= scale;
     stackH =
@@ -401,6 +446,8 @@ export function layoutDynastyShareCardText(
     pillW,
     pillH,
     heroFontSize,
+    titleLines,
+    titleLineH,
     titleH,
     descLines,
     descLineH,
@@ -677,7 +724,6 @@ export async function generateDynastyShareCanvas(
   currentY += cardText.pillH + cardText.gapPillToTitle;
 
   // 2. Hero Title
-  const titleCenterY = currentY + cardText.titleH / 2;
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -686,7 +732,11 @@ export async function generateDynastyShareCanvas(
   ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
   ctx.shadowBlur = 14;
   ctx.shadowOffsetY = 3;
-  ctx.fillText(className, CARD_X + CARD_WIDTH / 2, titleCenterY);
+  cardText.titleLines.forEach((line, index) => {
+    const lineCenterY =
+      currentY + cardText.titleLineH / 2 + index * cardText.titleLineH;
+    ctx.fillText(line, CARD_X + CARD_WIDTH / 2, lineCenterY);
+  });
   ctx.restore();
 
   currentY += cardText.titleH + cardText.gapTitleToDesc;
@@ -696,7 +746,7 @@ export async function generateDynastyShareCanvas(
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = `500 34px ${FONT_FAMILY}`;
+    ctx.font = `500 ${DESC_FONT_SIZE}px ${FONT_FAMILY}`;
     ctx.fillStyle = '#f3eee3';
     ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
     ctx.shadowBlur = 8;
@@ -720,11 +770,11 @@ export async function generateDynastyShareCanvas(
   const dotStr = ' · ';
   const probStr = `概率 ${formatDynastyProbability(shareInfo.probability)}`;
 
-  ctx.font = `600 32px ${FONT_FAMILY}`;
+  ctx.font = `600 ${META_FONT_SIZE}px ${FONT_FAMILY}`;
   const genderW = ctx.measureText(genderStr).width;
-  ctx.font = `400 32px ${FONT_FAMILY}`;
+  ctx.font = `400 ${META_FONT_SIZE}px ${FONT_FAMILY}`;
   const dotW = ctx.measureText(dotStr).width;
-  ctx.font = `800 32px ${FONT_FAMILY}`;
+  ctx.font = `800 ${META_FONT_SIZE}px ${FONT_FAMILY}`;
   const probW = ctx.measureText(probStr).width;
 
   const totalMetaW = genderW + dotW + probW;
@@ -737,17 +787,17 @@ export async function generateDynastyShareCanvas(
   ctx.shadowBlur = 6;
   ctx.shadowOffsetY = 2;
 
-  ctx.font = `600 32px ${FONT_FAMILY}`;
+  ctx.font = `600 ${META_FONT_SIZE}px ${FONT_FAMILY}`;
   ctx.fillStyle = '#d1c7b8';
   ctx.fillText(genderStr, metaX, metaCenterY);
   metaX += genderW;
 
-  ctx.font = `400 32px ${FONT_FAMILY}`;
+  ctx.font = `400 ${META_FONT_SIZE}px ${FONT_FAMILY}`;
   ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
   ctx.fillText(dotStr, metaX, metaCenterY);
   metaX += dotW;
 
-  ctx.font = `800 32px ${FONT_FAMILY}`;
+  ctx.font = `800 ${META_FONT_SIZE}px ${FONT_FAMILY}`;
   ctx.fillStyle = stampTier.text || '#fde68a';
   ctx.fillText(probStr, metaX, metaCenterY);
   ctx.restore();

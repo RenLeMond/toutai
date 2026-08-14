@@ -59,16 +59,17 @@
   justify-content: center;
   position: relative;
   min-height: 0;
-  overflow: visible;
+  overflow: hidden;
+  container-type: size;
 }
 
 .dynasty-share-card-wrap {
   position: relative;
-  width: min(100%, 240px);
-  max-height: min(336px, 100%);
-  aspect-ratio: 5 / 7;
-  height: auto;
-  container-type: inline-size;
+  width: 200px;
+  height: 280px;
+  flex-shrink: 0;
+  transform-origin: center center;
+  transform: scale(min(1, 100cqw / 200, 100cqh / 280));
 }
 
 .dynasty-share-glow {
@@ -96,9 +97,7 @@
   color: #1a1a1a;
   min-height: 1.45em;
   margin: 4px 0 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  max-height: calc(1.45em * 2);
   overflow: hidden;
 }
 
@@ -126,51 +125,7 @@
   height: 48px;
 }
 
-.dynasty-share-poster-image {
-  box-sizing: border-box;
-  width: min(100%, 360px, calc((70dvh - 9rem) * 3 / 4));
-  margin: 0 auto;
-  aspect-ratio: 3 / 4;
-  height: auto;
-  display: block;
-  object-fit: contain;
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  background: #f5f3ef;
-  user-select: auto;
-  -webkit-touch-callout: default;
-}
-
 .dynasty-share-poster .dynasty-card > .dynasty-shell-pattern {
   mix-blend-mode: normal;
   opacity: 0.34;
-}
-
-.dynasty-share-poster .dynasty-result-inner {
-  padding: 13cqw 10cqw 11cqw;
-  gap: 2cqw;
-}
-
-.dynasty-share-poster .dynasty-badge-pill {
-  font-size: 5.5cqw;
-  padding: 1cqw 5cqw;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dynasty-share-poster .dynasty-hero-title {
-  font-size: 12cqw;
-  max-width: 100%;
-}
-
-.dynasty-share-poster .dynasty-desc {
-  font-size: 5.75cqw;
-}
-
-.dynasty-share-poster .dynasty-gender,
-.dynasty-share-poster .dynasty-prob,
-.dynasty-share-poster .dynasty-meta-dot {
-  font-size: 5.5cqw;
 }
