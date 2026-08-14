@@ -594,24 +594,40 @@ async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
 function ShareModal() {
   const { active, deactivate, shareInfo } = useShareModal();
   const [isSaving, setIsSaving] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+
+  const handleClose = () => {
+    if (previewImageUrl) {
+      URL.revokeObjectURL(previewImageUrl);
+      setPreviewImageUrl(null);
+    }
+    deactivate();
+  };
+
+  const handleClosePreview = () => {
+    if (previewImageUrl) {
+      URL.revokeObjectURL(previewImageUrl);
+      setPreviewImageUrl(null);
+    }
+  };
 
   async function handleSaveAsImage() {
     if (isSaving) return;
     const shareContent = document.getElementById('shareContent');
-    if (!shareContent) return;
+    if (!shareContent && shareInfo.mode !== 'dynasty') return;
 
     setIsSaving(true);
 
     try {
+      let blob: Blob | null = null;
+      const filename =
+        shareInfo.mode === 'dynasty'
+          ? `投胎模拟器-王朝版-第${shareInfo.count}次.png`
+          : `投胎模拟器-第${shareInfo.count}次.png`;
+
       if (shareInfo.mode === 'dynasty') {
-        const blob = await generateDynastyShareBlob(shareInfo);
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.download = '投胎模拟器-王朝版-第' + shareInfo.count + '次.png';
-        link.href = blobUrl;
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-      } else {
+        blob = await generateDynastyShareBlob(shareInfo);
+      } else if (shareContent) {
         await waitForShareMapReady(shareContent);
         await waitForShareImages(shareContent);
         await new Promise<void>(resolve =>
@@ -640,29 +656,69 @@ function ShareModal() {
           }
         });
 
-        const blob = await new Promise<Blob | null>(resolve =>
+        blob = await new Promise<Blob | null>(resolve =>
           canvas.toBlob(resolve, 'image/png')
         );
+      }
 
-        if (blob) {
-          const blobUrl = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
-          link.href = blobUrl;
-          link.click();
-          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-        } else {
-          const link = document.createElement('a');
-          link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
-          link.href = canvas.toDataURL('image/png');
-          link.click();
+      if (!blob) {
+        throw new Error('Failed to generate image blob');
+      }
+
+      const isMobile =
+        typeof window !== 'undefined' &&
+        (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        ) ||
+          window.matchMedia('(max-width: 768px)').matches);
+
+      const isWeChat =
+        typeof window !== 'undefined' &&
+        /MicroMessenger/i.test(navigator.userAgent);
+
+      // 1. On mobile browsers (non-WeChat), try Web Share API for direct native "Save Image" option
+      if (
+        isMobile &&
+        !isWeChat &&
+        typeof navigator !== 'undefined' &&
+        typeof File !== 'undefined'
+      ) {
+        try {
+          const file = new File([blob], filename, { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: '投胎模拟器结果'
+            });
+            return;
+          }
+        } catch (err: unknown) {
+          if (err instanceof Error && err.name === 'AbortError') {
+            return;
+          }
+          console.warn('navigator.share failed, falling back to preview:', err);
         }
       }
+
+      // 2. On mobile (WeChat or navigator.share fallback), display preview for long-press saving
+      if (isMobile) {
+        const blobUrl = URL.createObjectURL(blob);
+        setPreviewImageUrl(blobUrl);
+        return;
+      }
+
+      // 3. On desktop, trigger standard download
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = blobUrl;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
 
       toast.custom(t => (
         <div className="relative bg-green-100 w-full sm:w-[354px] p-5 border-green-500 border rounded-xl">
           <div className="flex flex-row justify-between">
-            <Text color="positive">图片保存成功！</Text>
+            <Text color="positive">图片已保存！</Text>
           </div>
           <button
             className="absolute top-2 right-3"
@@ -677,7 +733,7 @@ function ShareModal() {
       toast.custom(t => (
         <div className="relative bg-red-100 w-full sm:w-[354px] p-5 border-red-500 border rounded-xl">
           <div className="flex flex-row justify-between">
-            <Text color="critical">图片保存失败，请重试</Text>
+            <Text color="critical">图片生成失败，请重试</Text>
           </div>
           <button
             className="absolute top-2 right-3"
@@ -693,65 +749,111 @@ function ShareModal() {
   }
 
   return (
-    <Modal active={active} onClose={deactivate}>
-      <View gap={3}>
-        <Dismissible onClose={deactivate} closeAriaLabel="Close modal">
-          <Modal.Title>分享</Modal.Title>
-          <Modal.Subtitle>分享你的投胎结果</Modal.Subtitle>
-        </Dismissible>
-        {shareInfo.mode === 'world' ? (
-          <Tabs variant="pills">
-            <View gap={3}>
-              <View>
-                <Tabs.Panel value="1">
-                  <WorldShareStyle1 shareInfo={shareInfo} />
-                </Tabs.Panel>
-                <Tabs.Panel value="2">
-                  <WorldShareStyle2 shareInfo={shareInfo} />
-                </Tabs.Panel>
-                <Tabs.Panel value="3">
-                  <WorldShareStyle3 shareInfo={shareInfo} />
-                </Tabs.Panel>
+    <Modal active={active} onClose={handleClose}>
+      {previewImageUrl ? (
+        <View gap={3} align="center">
+          <Dismissible onClose={handleClosePreview} closeAriaLabel="关闭预览">
+            <Modal.Title>长按保存图片</Modal.Title>
+            <Modal.Subtitle>
+              长按下方图片，在弹出菜单中选择「保存到相册」
+            </Modal.Subtitle>
+          </Dismissible>
+          <div
+            style={{
+              maxWidth: '100%',
+              maxHeight: '62vh',
+              overflowY: 'auto',
+              borderRadius: 14,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              background: '#f5f3ef'
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewImageUrl}
+              alt="投胎结果海报"
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+                display: 'block',
+                borderRadius: 14,
+                userSelect: 'auto',
+                WebkitTouchCallout: 'default'
+              }}
+            />
+          </div>
+          <View width="100%">
+            <Button
+              color="primary"
+              variant="faded"
+              fullWidth
+              onClick={handleClosePreview}
+            >
+              返回
+            </Button>
+          </View>
+        </View>
+      ) : (
+        <View gap={3}>
+          <Dismissible onClose={handleClose} closeAriaLabel="Close modal">
+            <Modal.Title>分享</Modal.Title>
+            <Modal.Subtitle>分享你的投胎结果</Modal.Subtitle>
+          </Dismissible>
+          {shareInfo.mode === 'world' ? (
+            <Tabs variant="pills">
+              <View gap={3}>
+                <View>
+                  <Tabs.Panel value="1">
+                    <WorldShareStyle1 shareInfo={shareInfo} />
+                  </Tabs.Panel>
+                  <Tabs.Panel value="2">
+                    <WorldShareStyle2 shareInfo={shareInfo} />
+                  </Tabs.Panel>
+                  <Tabs.Panel value="3">
+                    <WorldShareStyle3 shareInfo={shareInfo} />
+                  </Tabs.Panel>
+                </View>
+                <Tabs.List>
+                  <Tabs.Item value="1">样式一</Tabs.Item>
+                  <Tabs.Item value="2">样式二</Tabs.Item>
+                  <Tabs.Item value="3">样式三</Tabs.Item>
+                </Tabs.List>
               </View>
-              <Tabs.List>
-                <Tabs.Item value="1">样式一</Tabs.Item>
-                <Tabs.Item value="2">样式二</Tabs.Item>
-                <Tabs.Item value="3">样式三</Tabs.Item>
-              </Tabs.List>
-            </View>
-          </Tabs>
-        ) : shareInfo.mode === 'dynasty' ? (
-          <DynastySharePoster shareInfo={shareInfo} />
-        ) : (
-          <Tabs variant="pills">
-            <View gap={3}>
-              <View>
-                <Tabs.Panel value="1">
-                  <ShareStyle1 shareInfo={shareInfo} />
-                </Tabs.Panel>
-                <Tabs.Panel value="2">
-                  <ShareStyle2 shareInfo={shareInfo} />
-                </Tabs.Panel>
-                <Tabs.Panel value="3">
-                  <ShareStyle3 shareInfo={shareInfo} />
-                </Tabs.Panel>
+            </Tabs>
+          ) : shareInfo.mode === 'dynasty' ? (
+            <DynastySharePoster shareInfo={shareInfo} />
+          ) : (
+            <Tabs variant="pills">
+              <View gap={3}>
+                <View>
+                  <Tabs.Panel value="1">
+                    <ShareStyle1 shareInfo={shareInfo} />
+                  </Tabs.Panel>
+                  <Tabs.Panel value="2">
+                    <ShareStyle2 shareInfo={shareInfo} />
+                  </Tabs.Panel>
+                  <Tabs.Panel value="3">
+                    <ShareStyle3 shareInfo={shareInfo} />
+                  </Tabs.Panel>
+                </View>
+                <Tabs.List>
+                  <Tabs.Item value="1">样式一</Tabs.Item>
+                  <Tabs.Item value="2">样式二</Tabs.Item>
+                  <Tabs.Item value="3">样式三</Tabs.Item>
+                </Tabs.List>
               </View>
-              <Tabs.List>
-                <Tabs.Item value="1">样式一</Tabs.Item>
-                <Tabs.Item value="2">样式二</Tabs.Item>
-                <Tabs.Item value="3">样式三</Tabs.Item>
-              </Tabs.List>
-            </View>
-          </Tabs>
-        )}
-        <ModalFooter
-          onCancel={deactivate}
-          onSave={handleSaveAsImage}
-          isSaving={isSaving}
-        />
-      </View>
+            </Tabs>
+          )}
+          <ModalFooter
+            onCancel={handleClose}
+            onSave={handleSaveAsImage}
+            isSaving={isSaving}
+          />
+        </View>
+      )}
     </Modal>
   );
 }
 
 export default ShareModal;
+
