@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-
   dynasties,
-
   getDynastyClassProbability,
-
   getDynastyProbabilityFormula,
-
-  simulateDynastyBirth
-
+  getFlavorLine,
+  getClassDescription,
+  simulateDynastyBirth,
+  simulateEqualDynastyBirth,
+  DYNASTY_FLAVORS,
+  UNIVERSAL_FLAVORS
 } from '@/lib/dynasty-rebirth';
 
 
@@ -140,5 +140,56 @@ describe('dynasty-rebirth', () => {
     expect(xinCommoner?.desc).not.toContain('绿林赤眉');
   });
 
+  it('simulateEqualDynastyBirth returns valid result with or without targetLevel', () => {
+    const randomResult = simulateEqualDynastyBirth();
+    expect(randomResult.classLevel).toBeGreaterThanOrEqual(1);
+    expect(randomResult.classLevel).toBeLessThanOrEqual(6);
+
+    const l1Result = simulateEqualDynastyBirth(1);
+    expect(l1Result.classLevel).toBe(1);
+
+    const l2Result = simulateEqualDynastyBirth(2);
+    expect(l2Result.classLevel).toBe(2);
+  });
+
+  it('getFlavorLine returns valid dynasty-specific or universal flavor strings', () => {
+    // Test with dynastyId and level
+    for (let level = 1; level <= 6; level++) {
+      const line = getFlavorLine(level as 1 | 2 | 3 | 4 | 5 | 6, 'XIN');
+      expect(typeof line).toBe('string');
+      expect(line.length).toBeGreaterThan(0);
+    }
+
+    // Test fallback when no dynastyId is provided
+    for (let level = 1; level <= 6; level++) {
+      const line = getFlavorLine(level as 1 | 2 | 3 | 4 | 5 | 6);
+      expect(UNIVERSAL_FLAVORS[level as 1 | 2 | 3 | 4 | 5 | 6]).toContain(line);
+    }
+
+    // Verify all 13 dynasties have flavor configurations
+    for (const dynasty of dynasties) {
+      expect(DYNASTY_FLAVORS[dynasty.id]).toBeDefined();
+    }
+  });
+
+  it('getClassDescription returns random description from pool or falls back to desc', () => {
+    const qin = dynasties.find(d => d.id === 'QIN')!;
+    const royal = qin.classes[0];
+    expect(royal.descriptions).toBeDefined();
+    expect(royal.descriptions!.length).toBeGreaterThanOrEqual(2);
+
+    const picked = getClassDescription(royal);
+    expect(royal.descriptions).toContain(picked);
+
+    // Fallback test
+    const dummyClass = {
+      id: 'dummy',
+      name: '测试',
+      level: 1 as const,
+      prob: 1,
+      desc: '基准描述'
+    };
+    expect(getClassDescription(dummyClass)).toBe('基准描述');
+  });
 });
 

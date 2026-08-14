@@ -3,7 +3,7 @@
 import React from 'react';
 import QRCode from 'react-qr-code';
 import { Text } from 'reshaped';
-import { CLASS_STAMPS, type ClassLevel } from '@/lib/dynasty-rebirth';
+import { CLASS_STAMPS, DEFAULT_CLASS_LEVEL, type ClassLevel } from '@/lib/dynasty-rebirth';
 import { DynastyResultCard } from '@/components/dynasty-result-card';
 import { CarrotIcon } from '@/components/title';
 import type { ShareInfo } from '@/lib/store/useShareModal';
@@ -17,12 +17,20 @@ function glowLevel(level: ClassLevel | undefined): ClassLevel | null {
   return null;
 }
 
+function getRareGlowStyle(level: ClassLevel | null): React.CSSProperties | undefined {
+  if (!level || level > 3) return undefined;
+  const stamp = CLASS_STAMPS[level];
+  return {
+    background: `radial-gradient(ellipse at 50% 50%, ${stamp.glow} 0%, rgba(0, 0, 0, 0) 65%)`
+  };
+}
+
 export default function DynastySharePoster({
   shareInfo
 }: {
   shareInfo: ShareInfo;
 }) {
-  const level = shareInfo.classLevel ?? 3;
+  const level = shareInfo.classLevel ?? DEFAULT_CLASS_LEVEL;
   const rareGlow = glowLevel(shareInfo.classLevel);
   const gender = shareInfo.gender === 'female' ? 'female' : 'male';
 
@@ -36,7 +44,7 @@ export default function DynastySharePoster({
           {rareGlow ? (
             <div
               className="dynasty-share-glow"
-              style={{ background: CLASS_STAMPS[rareGlow].glow }}
+              style={getRareGlowStyle(rareGlow)}
             />
           ) : null}
           <DynastyResultCard

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button, Divider, Loader, Tabs, Text, View } from 'reshaped';
-import { simulateDynastyBirth } from '@/lib/dynasty-rebirth';
+import { simulateEqualDynastyBirth } from '@/lib/dynasty-rebirth';
 import { useDynastySpinner } from '@/lib/hooks/useDynastySpinner';
 import Ads from '@/components/ads';
 import RebirthTabPanel from '@/components/rebirth-tab-panel';
@@ -11,7 +11,7 @@ import DynastyResultTable from '@/components/dynasty-result-table';
 import DynastyBar from '@/components/dynasty-bar';
 import DynastyAtlas from '@/components/dynasty-atlas';
 
-function DynastyClient() {
+function DynastyTestClient() {
   const {
     isLoading,
     isSpinning,
@@ -20,7 +20,7 @@ function DynastyClient() {
     birthCount,
     startSpin,
     handleRevealComplete
-  } = useDynastySpinner(simulateDynastyBirth);
+  } = useDynastySpinner(simulateEqualDynastyBirth);
 
   if (isLoading) {
     return (
@@ -113,4 +113,4 @@ function DynastyClient() {
   );
 }
 
-export default DynastyClient;
+export default DynastyTestClient;

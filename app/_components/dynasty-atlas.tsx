@@ -46,6 +46,23 @@ function AtlasCard({
   const dynasty = getDynastyById(dynastyId);
   const tier = CLASS_STAMPS[classLevel];
   const cardVars = dynastyCardVars(classLevel) as React.CSSProperties;
+  const cardKey = `${dynastyId}:${classLevel}`;
+  const isViewed = useDynastyBirth(state =>
+    Boolean(state.viewedAtlasKeys[cardKey])
+  );
+  const markAtlasCardViewed = useDynastyBirth(
+    state => state.markAtlasCardViewed
+  );
+
+  const isNew = lit && !isViewed;
+
+  const handleClick = () => {
+    setFlipped(v => !v);
+    if (isNew) {
+      markAtlasCardViewed(cardKey);
+    }
+  };
+
   const newestFirst = [...records].sort(
     (a, b) => b.generation - a.generation
   );
@@ -56,7 +73,7 @@ function AtlasCard({
     <button
       type="button"
       className="atlas-card-button"
-      onClick={() => setFlipped(v => !v)}
+      onClick={handleClick}
       aria-label={`${dynasty?.name ?? dynastyId} ${className} 图鉴`}
     >
       <div
@@ -69,10 +86,14 @@ function AtlasCard({
               style={cardVars}
             >
               <DynastyCardShell dynastyId={dynastyId} />
+              {isNew && (
+                <div className="corner-badge-ribbon" aria-label="首次解锁">
+                  <span>NEW</span>
+                </div>
+              )}
               <div className="atlas-card-inner">
-                <span className="dynasty-stamp">{tier.name}</span>
-                <p className="dynasty-card-title">{className}</p>
-                {lit && records.length > 1 && (
+                <p className="atlas-hero-title">{className}</p>
+                {lit && !isNew && records.length > 1 && (
                   <span className="atlas-count">×{records.length}</span>
                 )}
               </div>
@@ -85,34 +106,24 @@ function AtlasCard({
             >
               <DynastyCardShell dynastyId={dynastyId} />
               <div className="atlas-back-inner">
-                <Text
-                  variant="caption-1"
-                  weight="medium"
-                  align="center"
-                  className="atlas-back-title"
-                >
+                <p className="atlas-back-title">
                   {dynasty?.name} · {className}
-                </Text>
-                <Text variant="caption-1" align="center" className="dynasty-prob">
-                  概率 {formatDynastyProbability(probability)}
-                </Text>
+                </p>
+                <div className="atlas-back-badge">
+                  <span>{tier.name} · {formatDynastyProbability(probability)}</span>
+                </div>
                 {visibleRecords.length === 0 ? (
-                  <Text
-                    variant="caption-2"
-                    color="neutral-faded"
-                    align="center"
-                    className="atlas-back-empty"
-                  >
+                  <p className="atlas-back-empty">
                     尚未投胎到此身份
-                  </Text>
+                  </p>
                 ) : (
                   <ul className="atlas-record-list">
                     {visibleRecords.map(record => (
                       <li key={record.generation}>
-                        <Text variant="caption-1" align="center">
+                        <span>
                           第 {record.generation} 世 ·{' '}
                           {translateDynastyGender(record.gender)}
-                        </Text>
+                        </span>
                       </li>
                     ))}
                     {truncated ? (

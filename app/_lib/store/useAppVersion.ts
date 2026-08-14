@@ -32,7 +32,11 @@ export function resolveAppVersion(pathname: string, storedVersion: AppVersion) {
     return 'world' as const;
   }
 
-  if (pathname === '/dynasty' || pathname.startsWith('/dynasty/')) {
+  if (
+    pathname === '/dynasty' ||
+    pathname.startsWith('/dynasty/') ||
+    pathname === '/test'
+  ) {
     return 'dynasty' as const;
   }
 

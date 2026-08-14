@@ -1,14 +1,15 @@
 .csgo-scene {
   position: relative;
   width: 100%;
-  max-width: none;
+  max-width: 100%;
   margin: 0 auto;
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
   display: block;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   --csgo-reel-scale: 0.9;
@@ -22,14 +23,11 @@
   cursor: default;
 }
 
-.csgo-scene.is-revealed {
-  overflow: visible;
-}
-
 .csgo-track {
   position: relative;
   height: calc(var(--csgo-card-height, 280px) + 120px);
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -129,19 +127,29 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 16%;
-  z-index: 3;
+  width: 20%;
+  z-index: 5;
   pointer-events: none;
 }
 
 .csgo-vignette-left {
   left: 0;
-  background: linear-gradient(to right, #f5f3ef, transparent);
+  background: linear-gradient(
+    to right,
+    #f5f3ef 0%,
+    rgba(245, 243, 239, 0.85) 45%,
+    transparent 100%
+  );
 }
 
 .csgo-vignette-right {
   right: 0;
-  background: linear-gradient(to left, #f5f3ef, transparent);
+  background: linear-gradient(
+    to left,
+    #f5f3ef 0%,
+    rgba(245, 243, 239, 0.85) 45%,
+    transparent 100%
+  );
 }
 
 .csgo-scene.is-idle .csgo-slot {
@@ -150,9 +158,13 @@
 }
 
 .csgo-slot.is-dimmed {
-  opacity: 0.38;
-  transform: scale(0.9);
-  filter: blur(1px);
+  opacity: 0.25;
+  transform: scale(0.86);
+  filter: blur(1.5px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    filter 0.35s ease;
 }
 
 .csgo-scene.is-revealed .csgo-slot.is-winner {
@@ -200,8 +212,9 @@
 .dynasty-flipper {
   width: 100%;
   height: 100%;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .dynasty-flipper-inner {
@@ -210,6 +223,7 @@
   height: 100%;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
+  will-change: transform;
   transition: transform 0.62s cubic-bezier(0.22, 0.9, 0.28, 1);
 }
 
@@ -231,11 +245,16 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transform: translateZ(0);
+}
+
+.dynasty-face-front {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
 }
 
 .dynasty-face-back {
-  transform: rotateY(180deg) translateZ(0);
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
 
 .csgo-pop-flash {
@@ -290,12 +309,6 @@
   transform: translate(-50%, -50%) scaleY(var(--csgo-reel-scale));
 }
 
-.csgo-scene.is-revealed.is-rare-shining .csgo-track {
-  overflow: hidden;
-  height: calc(var(--csgo-card-height, 280px) + 280px);
-  margin-block: -80px;
-}
-
 .csgo-slot.is-rare-playing {
   overflow: visible;
   z-index: 8;
@@ -335,19 +348,20 @@
   inset: -96px -80px -104px;
   z-index: 0;
   opacity: 0;
-  filter: blur(10px);
+  filter: blur(18px);
+  pointer-events: none;
 }
 
 .csgo-slot.rare-l1 .rare-shine-aura {
-  inset: -128px -108px -136px;
+  inset: -130px -95px -130px;
 }
 
 .csgo-slot.rare-l2 .rare-shine-aura {
-  inset: -80px -64px -88px;
+  inset: -90px -70px -90px;
 }
 
 .csgo-slot.rare-l3 .rare-shine-aura {
-  inset: -52px -42px -56px;
+  inset: -60px -50px -60px;
 }
 
 .csgo-slot.rare-l1 .rare-shine-sparkles {
@@ -505,30 +519,36 @@
 
 .csgo-slot.is-rare-playing.rare-l1 .rare-shine-aura {
   background: radial-gradient(
-    ellipse at 50% 55%,
-    rgba(228, 174, 57, 0.7),
-    rgba(240, 197, 90, 0.22) 40%,
-    transparent 74%
+    ellipse at 50% 50%,
+    rgba(245, 205, 100, 0.9) 0%,
+    rgba(228, 174, 57, 0.55) 25%,
+    rgba(228, 174, 57, 0.18) 48%,
+    rgba(228, 174, 57, 0.02) 64%,
+    transparent 72%
   );
   animation: rare-aura-gold 2.95s ease-out forwards;
 }
 
 .csgo-slot.is-rare-playing.rare-l2 .rare-shine-aura {
   background: radial-gradient(
-    ellipse at 50% 58%,
-    rgba(235, 75, 75, 0.66),
-    rgba(255, 138, 128, 0.2) 38%,
-    transparent 74%
+    ellipse at 50% 50%,
+    rgba(255, 138, 128, 0.85) 0%,
+    rgba(235, 75, 75, 0.5) 26%,
+    rgba(235, 75, 75, 0.16) 48%,
+    rgba(235, 75, 75, 0.02) 64%,
+    transparent 72%
   );
   animation: rare-aura-red 2.05s ease-out forwards;
 }
 
 .csgo-slot.is-rare-playing.rare-l3 .rare-shine-aura {
   background: radial-gradient(
-    ellipse at 50% 52%,
-    rgba(242, 73, 184, 0.62),
-    rgba(255, 110, 199, 0.2) 40%,
-    transparent 74%
+    ellipse at 50% 50%,
+    rgba(255, 150, 215, 0.8) 0%,
+    rgba(242, 73, 184, 0.45) 28%,
+    rgba(242, 73, 184, 0.14) 50%,
+    rgba(242, 73, 184, 0.02) 64%,
+    transparent 72%
   );
   animation: rare-aura-pink 1.6s ease-out forwards;
 }
@@ -732,30 +752,30 @@
 @keyframes rare-aura-gold {
   0% {
     opacity: 0;
-    transform: scale(0.62);
+    transform: scale(0.7);
   }
   22% {
     opacity: 1;
-    transform: scale(1.16);
+    transform: scale(1.08);
   }
   100% {
-    opacity: 0.32;
-    transform: scale(1.34);
+    opacity: 0.35;
+    transform: scale(1.18);
   }
 }
 
 @keyframes rare-aura-red {
   0% {
     opacity: 0;
-    transform: scale(0.78);
+    transform: scale(0.75);
   }
   16% {
     opacity: 1;
-    transform: scale(1.08);
+    transform: scale(1.04);
   }
   100% {
-    opacity: 0.22;
-    transform: scale(1.14);
+    opacity: 0.25;
+    transform: scale(1.1);
   }
 }
 
@@ -857,15 +877,15 @@
 @keyframes rare-aura-pink {
   0% {
     opacity: 0;
-    transform: scale(0.82);
+    transform: scale(0.8);
   }
   20% {
     opacity: 0.9;
-    transform: scale(1.04);
+    transform: scale(1.03);
   }
   100% {
-    opacity: 0.16;
-    transform: scale(1.08);
+    opacity: 0.2;
+    transform: scale(1.06);
   }
 }
 
@@ -972,7 +992,9 @@
   border: none;
   border-radius: 12px;
   overflow: hidden;
-  isolation: isolate;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .dynasty-card::before {
@@ -1027,14 +1049,22 @@
 
 .dynasty-card > .dynasty-shell-pattern {
   z-index: 0;
-  opacity: 0.16;
-  mix-blend-mode: screen;
+  opacity: 0.26;
+  filter: none;
 }
 
 .dynasty-card > .dynasty-shell-ornament {
-  z-index: 3;
+  z-index: 2;
   color: inherit;
-  filter: drop-shadow(0 0.5px 0 rgba(0, 0, 0, 0.35));
+  opacity: 0.55;
+  filter: none;
+}
+
+.dynasty-result-inner,
+.atlas-card-inner,
+.atlas-back-inner {
+  position: relative;
+  z-index: 4;
 }
 
 .dynasty-card.is-preview {
@@ -1043,32 +1073,57 @@
   align-items: stretch;
   justify-content: center;
   color: rgba(245, 240, 230, 0.9);
-  background: linear-gradient(180deg, #3a3228 0%, #241e18 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background: radial-gradient(circle at 50% 30%, #30261b 0%, #17120c 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.dynasty-preview-inner {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 16px;
+  text-align: center;
+}
+
+.dynasty-preview-title {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-indent: 0.12em;
+  text-align: center;
+  color: #ffffff;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.95),
+    0 0 16px var(--tier-glow, rgba(240, 197, 90, 0.4));
 }
 
 .dynasty-card.is-result {
   color: #ece8e0;
   --rs-color-foreground-neutral: #ece8e0;
   --rs-color-foreground-neutral-faded: #b4aea4;
-  background: linear-gradient(
-    180deg,
-    var(--tier-result-bg, #3d362d) 0%,
-    #241e18 100%
+  background: radial-gradient(
+    circle at 50% 30%,
+    var(--tier-result-bg, #382e23) 0%,
+    #17120c 100%
   );
   box-shadow:
     0 14px 32px var(--tier-glow, rgba(0, 0, 0, 0.22)),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .dynasty-card.is-result > .dynasty-shell-pattern {
-  mix-blend-mode: screen;
-  opacity: 0.14;
+  opacity: 0.24;
   filter: none;
 }
 
 .dynasty-card.is-preview .dynasty-card-title {
-  color: #f2ebe2;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
 }
 
 .dynasty-card-class {
@@ -1084,82 +1139,172 @@
   align-items: center;
   justify-content: center;
   min-width: 5em;
-  padding: 8px 10px 8px calc(10px + 0.18em);
-  border: 2px solid var(--tier-text, #78716c);
-  color: var(--tier-text, #78716c);
-  border-radius: 2px;
-  font-size: 15px;
-  font-weight: 800;
+  padding: 6px 9px 6px calc(9px + 0.18em);
+  border: 1.5px solid var(--tier-border, #f0c55a);
+  color: var(--tier-text, #fde68a);
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 900;
   letter-spacing: 0.18em;
   transform: rotate(-8deg);
-  background: var(--tier-stamp-fill, rgba(120, 113, 108, 0.08));
+  transform-origin: center;
+  background: var(--tier-stamp-fill, rgba(240, 197, 90, 0.14));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .dynasty-card.is-preview .dynasty-stamp {
-  font-size: 18px;
-  padding: 10px 12px 10px calc(12px + 0.18em);
-  color: var(--tier-text, #f2ebe2);
-  border-color: var(--tier-stamp-border, rgba(242, 235, 226, 0.72));
-  background: var(--tier-stamp-fill, rgba(242, 235, 226, 0.1));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  font-size: 16px;
+  padding: 8px 10px 8px calc(10px + 0.18em);
+  color: var(--tier-text, #fde68a);
+  border-color: var(--tier-border, rgba(240, 197, 90, 0.8));
+  background: var(--tier-stamp-fill, rgba(240, 197, 90, 0.15));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .dynasty-card.is-preview .dynasty-card-title {
   margin: 0;
   font-size: 28px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-align: center;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .dynasty-card.is-result .dynasty-card-title {
-  color: #f4f0e8;
-  font-size: 20px;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   line-height: 1.15;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
 }
 
 .dynasty-card.is-result .dynasty-stamp {
   font-size: 13px;
-  padding: 6px 8px 6px calc(8px + 0.18em);
-  color: var(--tier-text, #f2ebe2);
-  border-color: var(--tier-stamp-border, rgba(242, 235, 226, 0.72));
-  background: var(--tier-stamp-fill, rgba(242, 235, 226, 0.1));
+  padding: 5px 8px 5px calc(8px + 0.18em);
+  color: var(--tier-text, #fde68a);
+  border-color: var(--tier-border, rgba(240, 197, 90, 0.85));
+  background: var(--tier-stamp-fill, rgba(240, 197, 90, 0.15));
+}
+
+.corner-badge-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 52px;
+  height: 52px;
+  overflow: hidden;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.corner-badge-ribbon span {
+  position: absolute;
+  top: 9px;
+  right: -21px;
+  width: 74px;
+  transform: rotate(45deg);
+  background: linear-gradient(180deg, #241c14 0%, #0e0a07 100%);
+  border-top: 1px solid var(--tier-border, #f0c55a);
+  border-bottom: 1px solid var(--tier-border, #f0c55a);
+  color: var(--tier-text, #fce8a6);
+  font-size: 9px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 15px;
+  letter-spacing: 0.12em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 6px var(--tier-glow, rgba(228, 174, 57, 0.3));
+}
+
+.dynasty-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--tier-text, #fde68a);
+  background: var(--tier-stamp-fill, rgba(240, 197, 90, 0.14));
+  border: 1px solid var(--tier-border, rgba(240, 197, 90, 0.45));
+  padding: 2px 10px;
+  border-radius: 999px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  box-shadow: inset 0 0 4px rgba(240, 197, 90, 0.15), 0 2px 6px rgba(0, 0, 0, 0.35);
+  margin-bottom: 2px;
+}
+
+.dynasty-hero-title {
+  margin: 2px 0;
+  font-size: 24px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  line-height: 1.18;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 0 12px var(--tier-glow, rgba(240, 197, 90, 0.3));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .dynasty-result-inner {
   box-sizing: border-box;
   min-width: 0;
-  padding: 32px 32px 28px;
-}
-
-.dynasty-result-inner .dynasty-card-class {
-  font-size: 13px;
-  line-height: 1.25;
-}
-
-.dynasty-result-inner .dynasty-desc,
-.dynasty-result-inner .dynasty-prob {
-  font-size: 11px;
-  line-height: 1.35;
+  padding: 26px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: 4px;
 }
 
 .dynasty-details {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   margin-top: 4px;
   width: 100%;
   min-width: 0;
 }
 
+.dynasty-meta-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.dynasty-meta-dot {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+}
+
+.dynasty-gender {
+  color: #d1c7b8;
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
 .dynasty-desc {
-  color: var(--tier-text, #78716c);
+  color: #f3eee3;
+  font-size: 11.5px;
+  font-weight: 500;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  line-height: 1.35;
+  line-height: 1.45;
   text-align: center;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -1168,11 +1313,15 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  padding: 0 2px;
 }
 
 .dynasty-prob {
-  color: var(--tier-text, #78716c);
-  font-weight: 600;
+  color: var(--tier-text, #fde68a);
+  font-size: 11px;
+  font-weight: 800;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1231,6 +1380,7 @@
   aspect-ratio: 5 / 7;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  perspective: 920px;
 }
 
 .atlas-flipper {
@@ -1244,44 +1394,67 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   position: relative;
   width: 100%;
   height: 100%;
-  padding: 28px 12px 32px;
+  padding: 20px 8px 24px;
   text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-.dynasty-card.is-preview .atlas-card-inner .dynasty-card-title {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-indent: 0.04em;
-  line-height: 1.25;
+.atlas-hero-title {
   margin: 0;
-  width: 100%;
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
   text-align: center;
-}
-
-.dynasty-card.is-preview .atlas-card-inner .dynasty-stamp {
-  font-size: 16px;
-  min-width: 0;
-  padding: 6px 8px 6px calc(8px + 0.18em);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 0 8px var(--tier-glow, rgba(240, 197, 90, 0.35));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 0 4px;
 }
 
 .atlas-back-inner {
   overflow: hidden;
+  padding: 16px 8px 20px;
 }
 
 .atlas-back-inner .atlas-back-title {
-  font-size: 13px;
-  line-height: 1.3;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  margin: 0;
 }
 
-.atlas-back-inner .dynasty-prob,
+.atlas-back-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--tier-text, #fde68a);
+  background: var(--tier-stamp-fill, rgba(240, 197, 90, 0.16));
+  border: 1px solid var(--tier-border, rgba(240, 197, 90, 0.5));
+  padding: 1px 8px;
+  border-radius: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  margin: 2px 0;
+}
+
 .atlas-back-empty {
   font-size: 11px;
+  color: #d1c7b8;
   line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
 .atlas-record-list {
@@ -1296,12 +1469,15 @@
   overflow: hidden;
   font-size: 11px;
   line-height: 1.35;
+  color: #f3eee3;
 }
 
 .atlas-record-list li {
   width: 100%;
   text-align: center;
   flex: 0 0 auto;
+  color: #f3eee3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
 .atlas-record-more {
@@ -1313,11 +1489,18 @@
 }
 
 .atlas-count {
-  font-size: 14px;
+  position: absolute;
+  top: calc(50% + 18px);
+  left: 0;
+  right: 0;
+  font-size: 13px;
   line-height: 1;
   color: #f2ebe2;
   opacity: 0.85;
   text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 5;
 }
 
 .dynasty-card.is-dim {
@@ -1349,12 +1532,12 @@
     gap: 6px;
   }
 
-  .dynasty-card.is-preview .atlas-card-inner .dynasty-card-title {
+  .atlas-hero-title {
     font-size: 16px;
   }
 
-  .dynasty-card.is-preview .atlas-card-inner .dynasty-stamp {
-    font-size: 13px;
-    padding: 5px 6px 5px calc(6px + 0.18em);
+  .atlas-count {
+    top: calc(50% + 15px);
+    font-size: 11px;
   }
 }

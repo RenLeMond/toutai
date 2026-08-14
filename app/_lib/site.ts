@@ -123,6 +123,18 @@ const pages: Record<string, PageSeo> = {
       '计算你投胎在指定朝代与阶级的概率。选择目标朝代与身份，查看可能性。',
     path: '/dynasty/probability',
     keywords: ['朝代概率计算器', '阶级概率', '古代投胎概率']
+  },
+  dynastyTest: {
+    title: `抽卡测试 - ${dynastyEditionTitle}`,
+    description: '王朝版均等概率抽卡测试台。',
+    path: '/dynasty/test',
+    keywords: ['王朝抽卡测试', '均等概率', '王朝版测试']
+  },
+  test: {
+    title: `抽卡测试 - ${dynastyEditionTitle}`,
+    description: '王朝版均等概率抽卡测试台。',
+    path: '/test',
+    keywords: ['王朝抽卡测试', '均等概率', '王朝版测试']
   }
 };
 

@@ -35,6 +35,7 @@ import './dynasty-flip-card.css';
 export interface DynastyRevealPayload {
   seq: number;
   result: DynastyBirthResult;
+  isNew?: boolean;
 }
 
 interface DynastyFlipCardProps {
@@ -101,18 +102,15 @@ function PreviewCard({
   classLevel: ClassLevel;
   rareFx?: RareLevel;
 }) {
-  const stampTier = CLASS_STAMPS[classLevel];
-
   return (
     <div
       className={`dynasty-card is-preview tier-${classLevel}`}
       style={dynastyCardVars(classLevel)}
     >
       <DynastyCardShell dynastyId={dynastyId} />
-      <View gap={3} padding={4} height="100%" justify="center" align="center">
-        <p className="dynasty-card-title">{dynastyName}</p>
-        <span className="dynasty-stamp">{stampTier.name}</span>
-      </View>
+      <div className="dynasty-preview-inner">
+        <p className="dynasty-preview-title">{dynastyName}</p>
+      </div>
       {rareFx ? <CardSweepFx level={rareFx} /> : null}
     </div>
   );
@@ -121,11 +119,13 @@ function PreviewCard({
 function FlipCard({
   result,
   flipped,
-  rareFx
+  rareFx,
+  isNew = false
 }: {
   result: DynastyBirthResult;
   flipped: boolean;
   rareFx?: RareLevel;
+  isNew?: boolean;
 }) {
   return (
     <div className={`dynasty-flipper ${flipped ? 'is-flipped' : ''}`}>
@@ -147,6 +147,7 @@ function FlipCard({
             classDesc={result.classDesc}
             gender={result.gender}
             probability={result.probability}
+            isNew={isNew}
           />
         </div>
       </div>
@@ -197,6 +198,7 @@ const DynastyFlipCard = ({
     const [rareShinePlayId, setRareShinePlayId] = useState(0);
     const [flipped, setFlipped] = useState(Boolean(result));
     const [syncedSeq, setSyncedSeq] = useState<number | null>(null);
+    const [winnerIsNew, setWinnerIsNew] = useState(false);
     const idleItems = useMemo(() => buildIdleStrip(8), []);
     const idleLoopItems = useMemo(
       () => [...idleItems, ...idleItems.map(item => ({ ...item, key: `${item.key}-dup` }))],
@@ -214,6 +216,7 @@ const DynastyFlipCard = ({
       const to = getOffsetForIndex(nextWinIndex);
 
       setSyncedSeq(reveal.seq);
+      setWinnerIsNew(Boolean(reveal.isNew));
       setStripItems(items);
       setWinIndex(nextWinIndex);
       setDisplayResult(reveal.result);
@@ -542,6 +545,7 @@ const DynastyFlipCard = ({
                         result={item.result}
                         flipped={isWinner && flipped}
                         rareFx={shineLevel ?? undefined}
+                        isNew={winnerIsNew}
                       />
                     </div>
                   );

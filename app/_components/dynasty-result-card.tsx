@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Text, View } from 'reshaped';
 import {
   CLASS_STAMPS,
   type ClassLevel,
@@ -20,6 +19,7 @@ export type DynastyResultCardProps = {
   classDesc: string;
   gender: 'male' | 'female';
   probability: number;
+  isNew?: boolean;
   children?: React.ReactNode;
 };
 
@@ -31,6 +31,7 @@ export function DynastyResultCard({
   classDesc,
   gender,
   probability,
+  isNew = false,
   children
 }: DynastyResultCardProps) {
   const stampTier = CLASS_STAMPS[classLevel];
@@ -41,38 +42,27 @@ export function DynastyResultCard({
       style={dynastyCardVars(classLevel)}
     >
       <DynastyCardShell dynastyId={dynastyId} />
-      <View className="dynasty-result-inner" gap={1} height="100%" justify="center">
-        <Text
-          variant="featured-3"
-          weight="medium"
-          align="center"
-          className="dynasty-card-title"
-        >
-          {dynastyName}
-        </Text>
-        <View align="center">
-          <span className="dynasty-stamp">{stampTier.name}</span>
-        </View>
-        <Text
-          variant="caption-1"
-          weight="medium"
-          align="center"
-          className="dynasty-card-class"
-        >
-          {className}
-        </Text>
-        <div className="dynasty-details">
-          <Text variant="caption-2" color="neutral-faded" align="center">
-            {translateDynastyGender(gender)}
-          </Text>
-          <Text variant="caption-1" align="center" className="dynasty-desc">
-            {classDesc}
-          </Text>
-          <Text variant="caption-1" align="center" className="dynasty-prob">
-            概率 {formatDynastyProbability(probability)}
-          </Text>
+      {isNew && (
+        <div className="corner-badge-ribbon" aria-label="首次解锁">
+          <span>NEW</span>
         </div>
-      </View>
+      )}
+      <div className="dynasty-result-inner">
+        <span className="dynasty-badge-pill">
+          {dynastyName} · {stampTier.name}
+        </span>
+        <h3 className="dynasty-hero-title">
+          {className}
+        </h3>
+        <div className="dynasty-details">
+          <p className="dynasty-desc">{classDesc}</p>
+          <div className="dynasty-meta-line">
+            <span className="dynasty-gender">{translateDynastyGender(gender)}</span>
+            <span className="dynasty-meta-dot">·</span>
+            <span className="dynasty-prob">概率 {formatDynastyProbability(probability)}</span>
+          </div>
+        </div>
+      </div>
       {children}
     </div>
   );

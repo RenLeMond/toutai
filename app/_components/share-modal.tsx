@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Button, Dismissible, Icon, Loader, Modal, Tabs, Text, View } from 'reshaped';
 import useShareModal, { ShareInfo } from '@/lib/store/useShareModal';
@@ -13,6 +13,7 @@ import ChinaMap from '@/components/icon';
 import { translateGenderChild } from '@/lib/rebirth';
 import { formatWorldProbability } from '@/lib/world-rebirth';
 import DynastySharePoster from '@/components/dynasty-share-poster';
+import { generateDynastyShareBlob } from '@/lib/dynasty-share-canvas';
 
 const ShareMap = dynamic(() => import('@/components/share-map'), {
   ssr: false,
@@ -500,21 +501,36 @@ function ShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
 
 function ModalFooter({
   onCancel,
-  onSave
+  onSave,
+  isSaving
 }: {
   onCancel: () => void;
   onSave: () => void;
+  isSaving?: boolean;
 }) {
   return (
     <View gap={2} direction="row">
       <View.Item key="cancel" columns={6}>
-        <Button color="primary" variant="faded" fullWidth onClick={onCancel}>
+        <Button
+          color="primary"
+          variant="faded"
+          fullWidth
+          onClick={onCancel}
+          disabled={isSaving}
+        >
           取消
         </Button>
       </View.Item>
       <View.Item key="save" columns={6}>
-        <Button color="primary" variant="solid" fullWidth onClick={onSave}>
-          保存图片
+        <Button
+          color="primary"
+          variant="solid"
+          fullWidth
+          onClick={onSave}
+          disabled={isSaving}
+          loading={isSaving}
+        >
+          {isSaving ? '生成中...' : '保存图片'}
         </Button>
       </View.Item>
     </View>
@@ -577,38 +593,71 @@ async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
 
 function ShareModal() {
   const { active, deactivate, shareInfo } = useShareModal();
+  const [isSaving, setIsSaving] = useState(false);
 
   async function handleSaveAsImage() {
+    if (isSaving) return;
     const shareContent = document.getElementById('shareContent');
     if (!shareContent) return;
 
-    await waitForShareMapReady(shareContent);
-    await waitForShareImages(shareContent);
-    await new Promise<void>(resolve =>
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
-    );
+    setIsSaving(true);
 
     try {
-      const canvas = await html2canvas(shareContent, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: true,
-        onclone(_doc, cloned) {
-          cloned.querySelectorAll<HTMLElement>('*').forEach(el => {
-            const display = getComputedStyle(el).display;
-            const clamp = getComputedStyle(el).webkitLineClamp;
-            if (display.includes('-webkit-box') || (clamp && clamp !== 'none')) {
-              el.style.display = 'block';
-              el.style.setProperty('-webkit-line-clamp', 'unset');
-              el.style.overflow = 'visible';
-            }
-          });
+      if (shareInfo.mode === 'dynasty') {
+        const blob = await generateDynastyShareBlob(shareInfo);
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = '投胎模拟器-王朝版-第' + shareInfo.count + '次.png';
+        link.href = blobUrl;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      } else {
+        await waitForShareMapReady(shareContent);
+        await waitForShareImages(shareContent);
+        await new Promise<void>(resolve =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+        );
+
+        const canvas = await html2canvas(shareContent, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: true,
+          onclone(doc, cloned) {
+            const target = doc.getElementById('shareContent') || cloned;
+            target.querySelectorAll<HTMLElement>('*').forEach(el => {
+              const display = el.style.display || getComputedStyle(el).display;
+              const clamp =
+                el.style.webkitLineClamp || getComputedStyle(el).webkitLineClamp;
+              if (
+                display.includes('-webkit-box') ||
+                (clamp && clamp !== 'none')
+              ) {
+                el.style.display = 'block';
+                el.style.setProperty('-webkit-line-clamp', 'unset');
+                el.style.overflow = 'visible';
+              }
+            });
+          }
+        });
+
+        const blob = await new Promise<Blob | null>(resolve =>
+          canvas.toBlob(resolve, 'image/png')
+        );
+
+        if (blob) {
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
+          link.href = blobUrl;
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        } else {
+          const link = document.createElement('a');
+          link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
         }
-      });
-      const link = document.createElement('a');
-      link.download = '投胎模拟器-第' + shareInfo.count + '次.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      }
 
       toast.custom(t => (
         <div className="relative bg-green-100 w-full sm:w-[354px] p-5 border-green-500 border rounded-xl">
@@ -638,6 +687,8 @@ function ShareModal() {
           </button>
         </div>
       ));
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -693,7 +744,11 @@ function ShareModal() {
             </View>
           </Tabs>
         )}
-        <ModalFooter onCancel={deactivate} onSave={handleSaveAsImage} />
+        <ModalFooter
+          onCancel={deactivate}
+          onSave={handleSaveAsImage}
+          isSaving={isSaving}
+        />
       </View>
     </Modal>
   );
