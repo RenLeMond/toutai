@@ -22,6 +22,7 @@ import {
   layoutDynastyShareCardText,
   layoutFlavor,
   getDynastyOrnamentSvg,
+  glowRgba,
   resolveAssetUrl,
   drawQrCode
 } from '@/lib/dynasty-share-canvas';
@@ -86,10 +87,56 @@ describe('dynasty-share-canvas', () => {
     }
   });
 
+  it('emits a single stroke-width per SVG tag so canvas can load it as an image', () => {
+    for (const id of DYNASTY_IDS) {
+      const svg = getDynastyOrnamentSvg(id);
+      const tags = svg.match(/<[^>]+>/g) ?? [];
+      for (const tag of tags) {
+        expect((tag.match(/stroke-width="/g) ?? []).length).toBeLessThanOrEqual(
+          1
+        );
+      }
+    }
+  });
+
+  it('keeps Qin, Song, and Xin frames distinct from Tang', () => {
+    const qin = getDynastyOrnamentSvg('QIN');
+    const song = getDynastyOrnamentSvg('SONG');
+    const xin = getDynastyOrnamentSvg('XIN');
+    const tang = getDynastyOrnamentSvg('TANG');
+
+    expect(qin).toContain('width="120" height="184"');
+    expect(qin).not.toContain('rx="22"');
+    expect(song).toContain('width="120" height="184"');
+    expect(song).toContain('stroke-width="1.2"');
+    expect(song).not.toContain('rx="22"');
+    expect(xin).toContain('79.33');
+    expect(xin).not.toContain('rx="22"');
+    expect(tang).toContain('rx="22"');
+  });
+
+  it('uses a 6-merlon Ming battlement that stays inside the 160 viewBox', () => {
+    const svg = getDynastyOrnamentSvg('MING');
+    const path = svg.match(/d="([^"]+)"/)?.[1] ?? '';
+    expect((path.match(/V16/g) ?? []).length).toBe(6);
+    expect((path.match(/h12/g) ?? []).length).toBe(11);
+    const rightEdge = 14 + 11 * 12;
+    expect(rightEdge).toBe(146);
+    expect(rightEdge).toBeLessThan(160);
+    expect(path.startsWith('M14 32')).toBe(true);
+    expect(path).toContain('H14z');
+    expect(path).toContain('h12v16');
+    expect(svg).toContain('stroke-width="1.6"');
+  });
+
+  it('keeps the Qing cloud frame', () => {
+    const svg = getDynastyOrnamentSvg('QING');
+    expect(svg).toContain('y="28"');
+    expect(svg).toContain('width="128" height="168"');
+  });
+
   it('falls back gracefully to TANG for unknown dynasty IDs', () => {
-    const svg = getDynastyOrnamentSvg('UNKNOWN');
-    expect(svg).toContain('<svg');
-    expect(svg).toContain('rx="22"');
+    expect(getDynastyOrnamentSvg('UNKNOWN')).toBe(getDynastyOrnamentSvg('TANG'));
   });
 
   it('has default class level 3', () => {
@@ -216,5 +263,19 @@ describe('layoutFlavor', () => {
     expect(flavor.startY - flavor.lineH / 2).toBeGreaterThanOrEqual(
       CARD_Y + CARD_HEIGHT
     );
+  });
+});
+
+describe('glowRgba', () => {
+  it('rebuilds rgba with a new alpha from rgb or rgba input', () => {
+    expect(glowRgba('rgba(228, 174, 57, 0.45)', 0.85)).toBe(
+      'rgba(228, 174, 57, 0.85)'
+    );
+    expect(glowRgba('rgb(235, 75, 75)', 0.35)).toBe('rgba(235, 75, 75, 0.35)');
+  });
+
+  it('accepts hex colors instead of returning an opaque stop', () => {
+    expect(glowRgba('#e4ae39', 0.85)).toBe('rgba(228, 174, 57, 0.85)');
+    expect(glowRgba('#eb4', 0.35)).toBe('rgba(238, 187, 68, 0.35)');
   });
 });

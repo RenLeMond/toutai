@@ -46,16 +46,44 @@ export const CARD_BOTTOM = CARD_Y + CARD_HEIGHT;
 
 export type MeasureTextFn = (text: string, fontSize: number) => number;
 
+function strokeAttrs(width = 1.35): string {
+  return `fill="none" stroke="#ece8e0" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"`;
+}
+
+function mingMerlonPath(): string {
+  const left = 14;
+  const valleyY = 32;
+  const merlonH = 16;
+  const step = 12;
+  const merlons = 6;
+  const parts = [`M${left} ${valleyY}`];
+  for (let i = 0; i < merlons; i++) {
+    parts.push(`V${valleyY - merlonH}h${step}v${merlonH}`);
+    if (i < merlons - 1) parts.push(`h${step}`);
+  }
+  parts.push(`v176H${left}z`);
+  return parts.join('');
+}
+
+function tangOrnament(S: string): string {
+  return `
+        <rect x="14" y="14" width="132" height="196" rx="22" ${S} />
+        <g><circle cx="26" cy="26" r="8" ${S} /><path ${S} d="M26 14v6M26 32v6M14 26h6M32 26h6" /></g>
+        <g><circle cx="134" cy="26" r="8" ${S} /><path ${S} d="M134 14v6M134 32v6M122 26h6M140 26h6" /></g>
+        <g><circle cx="26" cy="198" r="8" ${S} /><path ${S} d="M26 186v6M26 204v6M14 198h6M32 198h6" /></g>
+        <g><circle cx="134" cy="198" r="8" ${S} /><path ${S} d="M134 186v6M134 204v6M122 198h6M140 198h6" /></g>
+      `;
+}
+
 export function getDynastyOrnamentSvg(dynastyId?: string): string {
-  const S =
-    'fill="none" stroke="rgba(236, 232, 224, 0.55)" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"';
+  const S = strokeAttrs();
 
   let inner = '';
   switch (dynastyId) {
     case 'QIN':
       inner = `
         <rect x="14" y="14" width="132" height="196" ${S} />
-        <rect x="20" y="20" width="120" height="184" ${S} stroke-width="0.9" />
+        <rect x="20" y="20" width="120" height="184" ${strokeAttrs(0.9)} />
         <path ${S} d="M20 36h16v-16M20 20h8v8h-8z" />
         <path ${S} d="M140 36h-16v-16M140 20h-8v8h8z" />
         <path ${S} d="M20 188h16v16M20 204h8v-8h-8z" />
@@ -72,7 +100,7 @@ export function getDynastyOrnamentSvg(dynastyId?: string): string {
     case 'XIN':
       inner = `
         <rect x="14" y="14" width="132" height="196" ${S} />
-        <path ${S} d="M14 79.33h132M14 144.67h132M58 14v196M102 14v196" stroke-width="0.85" />
+        <path ${strokeAttrs(0.85)} d="M14 79.33h132M14 144.67h132M58 14v196M102 14v196" />
       `;
       break;
     case 'EASTERN_HAN':
@@ -85,10 +113,10 @@ export function getDynastyOrnamentSvg(dynastyId?: string): string {
     case 'THREE_KINGDOMS':
       inner = `
         <rect x="12" y="16" width="136" height="192" rx="6" ${S} />
-        <path ${S} d="M36 16c14-12 30-12 44 0 14-12 30-12 44 0" stroke-width="1.5" />
-        <circle cx="36" cy="16" r="3.2" fill="rgba(236, 232, 224, 0.55)" />
-        <circle cx="80" cy="16" r="3.2" fill="rgba(236, 232, 224, 0.55)" />
-        <circle cx="124" cy="16" r="3.2" fill="rgba(236, 232, 224, 0.55)" />
+        <path ${strokeAttrs(1.5)} d="M36 16c14-12 30-12 44 0 14-12 30-12 44 0" />
+        <circle cx="36" cy="16" r="3.2" fill="#ece8e0" />
+        <circle cx="80" cy="16" r="3.2" fill="#ece8e0" />
+        <circle cx="124" cy="16" r="3.2" fill="#ece8e0" />
       `;
       break;
     case 'JIN':
@@ -115,23 +143,16 @@ export function getDynastyOrnamentSvg(dynastyId?: string): string {
       `;
       break;
     case 'TANG':
-    default:
-      inner = `
-        <rect x="14" y="14" width="132" height="196" rx="22" ${S} />
-        <g><circle cx="26" cy="26" r="8" ${S} /><path ${S} d="M26 14v6M26 32v6M14 26h6M32 26h6" /></g>
-        <g><circle cx="134" cy="26" r="8" ${S} /><path ${S} d="M134 14v6M134 32v6M122 26h6M140 26h6" /></g>
-        <g><circle cx="26" cy="198" r="8" ${S} /><path ${S} d="M26 186v6M26 204v6M14 198h6M32 198h6" /></g>
-        <g><circle cx="134" cy="198" r="8" ${S} /><path ${S} d="M134 186v6M134 204v6M122 198h6M140 198h6" /></g>
-      `;
+      inner = tangOrnament(S);
       break;
     case 'SONG':
       inner = `
-        <rect x="14" y="14" width="132" height="196" ${S} stroke-width="1.2" />
-        <rect x="20" y="20" width="120" height="184" ${S} stroke-width="1.2" />
-        <path ${S} stroke-width="1.15" d="M20 20l12 5l5 12M27 20l-3 9l9 3" />
-        <path ${S} stroke-width="1.15" d="M140 20l-12 5l-5 12M133 20l3 9l-9 3" />
-        <path ${S} stroke-width="1.15" d="M20 204l12 -5l5 -12M27 204l-3 -9l9 -3" />
-        <path ${S} stroke-width="1.15" d="M140 204l-12 -5l-5 -12M133 204l3 -9l-9 -3" />
+        <rect x="14" y="14" width="132" height="196" ${strokeAttrs(1.2)} />
+        <rect x="20" y="20" width="120" height="184" ${strokeAttrs(1.2)} />
+        <path ${strokeAttrs(1.15)} d="M20 20l12 5l5 12M27 20l-3 9l9 3" />
+        <path ${strokeAttrs(1.15)} d="M140 20l-12 5l-5 12M133 20l3 9l-9 3" />
+        <path ${strokeAttrs(1.15)} d="M20 204l12 -5l5 -12M27 204l-3 -9l9 -3" />
+        <path ${strokeAttrs(1.15)} d="M140 204l-12 -5l-5 -12M133 204l3 -9l-9 -3" />
       `;
       break;
     case 'YUAN':
@@ -145,7 +166,7 @@ export function getDynastyOrnamentSvg(dynastyId?: string): string {
       break;
     case 'MING':
       inner = `
-        <path ${S} d="M14 32V16h12v16h12V16h12v16h12V16h12v16h12V16h12v16h12V16h12v16v176H14z" />
+        <path ${strokeAttrs(1.6)} d="${mingMerlonPath()}" />
       `;
       break;
     case 'QING':
@@ -154,6 +175,9 @@ export function getDynastyOrnamentSvg(dynastyId?: string): string {
         <path ${S} d="M52 28C42 26 38 14 48 10C56 6 62 14 64 20C72 6 88 6 96 20C98 14 104 6 112 10C122 14 118 26 108 28" />
         <path ${S} d="M52 196C42 198 38 210 48 214C56 218 62 210 64 204C72 218 88 218 96 204C98 210 104 218 112 214C122 210 118 198 108 196" />
       `;
+      break;
+    default:
+      inner = tangOrnament(S);
       break;
   }
 
@@ -515,6 +539,33 @@ function canvasMeasure(
   };
 }
 
+export function glowRgba(glow: string, alpha: number): string {
+  const rgbMatch = glow.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  if (rgbMatch) {
+    return `rgba(${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}, ${alpha})`;
+  }
+
+  const hex = glow.trim();
+  if (hex.startsWith('#')) {
+    const raw = hex.slice(1);
+    const full =
+      raw.length === 3
+        ? raw
+            .split('')
+            .map(ch => ch + ch)
+            .join('')
+        : raw;
+    if (/^[0-9a-fA-F]{6}$/.test(full)) {
+      const r = parseInt(full.slice(0, 2), 16);
+      const g = parseInt(full.slice(2, 4), 16);
+      const b = parseInt(full.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+  }
+
+  return `rgba(228, 174, 57, ${alpha})`;
+}
+
 async function waitForFonts() {
   if (typeof document === 'undefined' || !document.fonts?.ready) return;
   try {
@@ -581,26 +632,21 @@ export async function generateDynastyShareCanvas(
   ctx.fillStyle = '#1a1a1a';
   ctx.fillText(suffix, cursorX, eyebrowY);
 
-  // 3. Rare Glow behind Card (Tier 1, 2, 3) - full range ellipse bloom
+  // 3. Rare Glow behind Card (Tier 1, 2, 3)
   if (level <= 3) {
     const cardCenterX = CARD_X + CARD_WIDTH / 2;
-    const cardCenterY = CARD_Y + CARD_HEIGHT * 0.55;
+    const cardCenterY = CARD_Y + CARD_HEIGHT / 2;
 
     ctx.save();
     ctx.translate(cardCenterX, cardCenterY);
-    ctx.scale(1, 1.25);
-    const glowRadius = CARD_WIDTH * 0.72;
+    ctx.scale(1, 1.2);
+    const glowRadius = CARD_WIDTH * 0.62;
     const glowGrad = ctx.createRadialGradient(0, 0, 40, 0, 0, glowRadius);
-    glowGrad.addColorStop(0, stampTier.glow);
-    glowGrad.addColorStop(0.35, stampTier.glow);
-    glowGrad.addColorStop(
-      0.7,
-      stampTier.glow.startsWith('#') ? `${stampTier.glow}55` : stampTier.glow
-    );
+    glowGrad.addColorStop(0, glowRgba(stampTier.glow, 0.85));
+    glowGrad.addColorStop(0.45, glowRgba(stampTier.glow, 0.35));
     glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
     ctx.fillStyle = glowGrad;
-    ctx.globalAlpha = 0.85;
     ctx.fillRect(-glowRadius, -glowRadius, glowRadius * 2, glowRadius * 2);
     ctx.restore();
   }
@@ -695,12 +741,7 @@ export async function generateDynastyShareCanvas(
     console.warn('Could not load ornament SVG for share canvas:', err);
   }
 
-  // 5d. Outer card border stroke
-  ctx.strokeStyle = tierVars['--tier-border'] || stampTier.border;
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  // 5e. Bottom tier accent bar (matching CSS .dynasty-card::before)
+  // 5d. Bottom tier accent bar (matching CSS .dynasty-card::before)
   ctx.fillStyle = tierVars['--tier-color'] || stampTier.border;
   ctx.fillRect(CARD_X, CARD_Y + CARD_HEIGHT - 8, CARD_WIDTH, 8);
 
@@ -823,6 +864,14 @@ export async function generateDynastyShareCanvas(
   ctx.restore();
 
   // End card clipping
+  ctx.restore();
+
+  // Outer card border — draw after clip so the full stroke is visible
+  ctx.save();
+  roundRectPath(ctx, CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT, CARD_RADIUS);
+  ctx.strokeStyle = stampTier.border;
+  ctx.lineWidth = 3;
+  ctx.stroke();
   ctx.restore();
 
   // 6. Flavor text below card (wrapped, capped so it never hits the footer)
