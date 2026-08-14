@@ -19,7 +19,7 @@ export const CARD_HEIGHT = 980;
 export const CARD_SCALE = CARD_WIDTH / RESULT_CARD_CSS_WIDTH;
 export const CARD_X = (POSTER_WIDTH - CARD_WIDTH) / 2; // 190
 export const CARD_Y = 130;
-export const CARD_RADIUS = 36;
+export const CARD_RADIUS = 12 * CARD_SCALE;
 export const DYNASTY_SHARE_URL = `${siteUrl}/dynasty`;
 export const FONT_FAMILY =
   'Inter, BlinkMacSystemFont, -apple-system, "Segoe UI", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif';
@@ -313,6 +313,20 @@ export function clampWrappedLines(lines: string[], maxLines: number): string[] {
   clamped[maxLines - 1] =
     trimmed.slice(0, Math.max(1, trimmed.length - 1)) + '…';
   return clamped;
+}
+
+export function truncateWithEllipsis(
+  measure: MeasureTextFn,
+  text: string,
+  fontSize: number,
+  maxWidth: number
+): string {
+  if (!text || measure(text, fontSize) <= maxWidth) return text;
+  let trimmed = text;
+  while (trimmed.length > 1 && measure(`${trimmed}…`, fontSize) > maxWidth) {
+    trimmed = trimmed.slice(0, -1);
+  }
+  return `${trimmed}…`;
 }
 
 export type DynastyShareCardTextLayout = {
@@ -626,7 +640,7 @@ export async function generateDynastyShareCanvas(
     );
     if (match && match[1]) {
       const patternImg = await loadImage(match[1]);
-      const patternScale = CARD_WIDTH / 220; // 3.18x tile scale to match 220px CSS card
+      const patternScale = CARD_WIDTH / RESULT_CARD_CSS_WIDTH;
       const tileW = Math.max(1, Math.round(patternImg.width * patternScale));
       const tileH = Math.max(1, Math.round(patternImg.height * patternScale));
 
@@ -706,6 +720,12 @@ export async function generateDynastyShareCanvas(
   // 1. Badge Pill
   const pillX = CARD_X + (CARD_WIDTH - cardText.pillW) / 2;
   const pillY = currentY;
+  const badgeDisplayText = truncateWithEllipsis(
+    measureBadge,
+    badgeText,
+    cardText.badgeFontSize,
+    cardText.pillW - PILL_PAD_X
+  );
   ctx.save();
   roundRectPath(ctx, pillX, pillY, cardText.pillW, cardText.pillH, cardText.pillH / 2);
   ctx.fillStyle = tierVars['--tier-stamp-fill'] || 'rgba(240, 197, 90, 0.14)';
@@ -718,7 +738,7 @@ export async function generateDynastyShareCanvas(
   ctx.textBaseline = 'middle';
   ctx.font = `800 ${cardText.badgeFontSize}px ${FONT_FAMILY}`;
   ctx.fillStyle = stampTier.text || '#fde68a';
-  ctx.fillText(badgeText, CARD_X + CARD_WIDTH / 2, pillY + cardText.pillH / 2 + 1);
+  ctx.fillText(badgeDisplayText, CARD_X + CARD_WIDTH / 2, pillY + cardText.pillH / 2 + 1);
   ctx.restore();
 
   currentY += cardText.pillH + cardText.gapPillToTitle;

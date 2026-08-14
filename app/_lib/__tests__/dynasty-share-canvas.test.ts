@@ -16,6 +16,7 @@ import {
   FOOTER_Y,
   TITLE_MAX_WIDTH,
   fitFontSize,
+  truncateWithEllipsis,
   wrapTextToWidth,
   clampWrappedLines,
   layoutDynastyShareCardText,
@@ -155,6 +156,21 @@ describe('wrapTextToWidth and clampWrappedLines', () => {
     );
     expect(clamped).toHaveLength(2);
     expect(clamped[1].endsWith('…')).toBe(true);
+  });
+});
+
+describe('truncateWithEllipsis', () => {
+  it('adds an ellipsis when badge text exceeds the pill width', () => {
+    const truncated = truncateWithEllipsis(
+      emMeasure,
+      LONG_BADGE.repeat(3),
+      BADGE_FONT_SIZE,
+      BADGE_FONT_SIZE * 4
+    );
+    expect(truncated.endsWith('…')).toBe(true);
+    expect(emMeasure(truncated, BADGE_FONT_SIZE)).toBeLessThanOrEqual(
+      BADGE_FONT_SIZE * 4
+    );
   });
 });
 
