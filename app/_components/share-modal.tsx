@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Button, Dismissible, Icon, Loader, Modal, Tabs, Text, View } from 'reshaped';
 import useShareModal, { ShareInfo } from '@/lib/store/useShareModal';
@@ -14,9 +14,10 @@ import { translateGenderChild } from '@/lib/rebirth';
 import { formatWorldProbability } from '@/lib/world-rebirth';
 import DynastySharePoster from '@/components/dynasty-share-poster';
 import {
-  generateDynastyShareBlob,
-  generateDynastyShareDataUrl
+  blobToDataUrl,
+  generateDynastyShareImage
 } from '@/lib/dynasty-share-canvas';
+import './dynasty-share-poster.css';
 
 const ShareMap = dynamic(() => import('@/components/share-map'), {
   ssr: false,
@@ -505,11 +506,13 @@ function ShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
 function ModalFooter({
   onCancel,
   onSave,
-  isSaving
+  isSaving,
+  saveDisabled
 }: {
   onCancel: () => void;
   onSave: () => void;
   isSaving?: boolean;
+  saveDisabled?: boolean;
 }) {
   return (
     <View gap={2} direction="row">
@@ -530,7 +533,7 @@ function ModalFooter({
           variant="solid"
           fullWidth
           onClick={onSave}
-          disabled={isSaving}
+          disabled={saveDisabled || isSaving}
           loading={isSaving}
         >
           {isSaving ? '生成中...' : '保存图片'}
@@ -597,13 +600,55 @@ async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
 function ShareModal() {
   const { active, deactivate, shareInfo } = useShareModal();
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingPoster, setIsGeneratingPoster] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [dynastyPoster, setDynastyPoster] = useState<{
+    blob: Blob;
+    dataUrl: string;
+  } | null>(null);
+  const [dynastyPosterFailed, setDynastyPosterFailed] = useState(false);
+
+  useEffect(() => {
+    if (!active || shareInfo.mode !== 'dynasty') {
+      return;
+    }
+
+    let cancelled = false;
+    setDynastyPoster(null);
+    setDynastyPosterFailed(false);
+    setIsGeneratingPoster(true);
+
+    generateDynastyShareImage(shareInfo)
+      .then(blob => blobToDataUrl(blob).then(dataUrl => ({ blob, dataUrl })))
+      .then(result => {
+        if (cancelled) return;
+        setDynastyPoster(result);
+      })
+      .catch(err => {
+        console.error('Failed to generate dynasty share poster:', err);
+        if (!cancelled) {
+          setDynastyPosterFailed(true);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsGeneratingPoster(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [active, shareInfo]);
 
   const handleClose = () => {
     if (previewImageUrl?.startsWith('blob:')) {
       URL.revokeObjectURL(previewImageUrl);
     }
     setPreviewImageUrl(null);
+    setDynastyPoster(null);
+    setDynastyPosterFailed(false);
+    setIsGeneratingPoster(false);
     deactivate();
   };
 
@@ -630,8 +675,16 @@ function ShareModal() {
           : `投胎模拟器-第${shareInfo.count}次.png`;
 
       if (shareInfo.mode === 'dynasty') {
-        dataUrl = await generateDynastyShareDataUrl(shareInfo);
-        blob = await generateDynastyShareBlob(shareInfo);
+        if (dynastyPoster) {
+          dataUrl = dynastyPoster.dataUrl;
+          blob = dynastyPoster.blob;
+        } else {
+          const generatedBlob = await generateDynastyShareImage(shareInfo);
+          dataUrl = await blobToDataUrl(generatedBlob);
+          blob = generatedBlob;
+          setDynastyPoster({ blob: generatedBlob, dataUrl });
+          setDynastyPosterFailed(false);
+        }
       } else if (shareContent) {
         await waitForShareMapReady(shareContent);
         await waitForShareImages(shareContent);
@@ -825,7 +878,27 @@ function ShareModal() {
               </View>
             </Tabs>
           ) : shareInfo.mode === 'dynasty' ? (
-            <DynastySharePoster shareInfo={shareInfo} />
+            dynastyPoster ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="dynasty-share-poster-image"
+                src={dynastyPoster.dataUrl}
+                alt="投胎结果海报"
+              />
+            ) : dynastyPosterFailed ? (
+              <DynastySharePoster shareInfo={shareInfo} />
+            ) : (
+              <View
+                direction="column"
+                gap={2}
+                align="center"
+                justify="center"
+                height={80}
+              >
+                <Loader />
+                <Text>海报生成中</Text>
+              </View>
+            )
           ) : (
             <Tabs variant="pills">
               <View gap={3}>
@@ -852,6 +925,10 @@ function ShareModal() {
             onCancel={handleClose}
             onSave={handleSaveAsImage}
             isSaving={isSaving}
+            saveDisabled={
+              shareInfo.mode === 'dynasty' &&
+              (isGeneratingPoster || (!dynastyPoster && !dynastyPosterFailed))
+            }
           />
         </View>
       )}

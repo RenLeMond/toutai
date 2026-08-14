@@ -4,11 +4,29 @@ import {
   POSTER_HEIGHT,
   CARD_WIDTH,
   CARD_HEIGHT,
+  CARD_Y,
+  FONT_FAMILY,
+  FOOTER_Y,
+  TITLE_MAX_WIDTH,
+  fitFontSize,
+  wrapTextToWidth,
+  clampWrappedLines,
+  layoutDynastyShareCardText,
+  layoutFlavor,
   getDynastyOrnamentSvg,
   resolveAssetUrl,
   drawQrCode
 } from '@/lib/dynasty-share-canvas';
 import { DEFAULT_CLASS_LEVEL } from '@/lib/dynasty-rebirth';
+
+const LONG_CLASS_NAME = '蒙古色目贵胄';
+const LONG_CLASS_DESC = '朝堂三公九卿，每天批阅几百斤竹简，生怕KPI不达标。';
+const LONG_FLAVOR = '六王毕，四海一！朕统六国，天下归一，大秦祖龙血统登顶！';
+const LONG_BADGE = '南北朝 · 皇室';
+
+function emMeasure(text: string, fontSize: number) {
+  return text.length * fontSize;
+}
 
 const DYNASTY_IDS = [
   'QIN',
@@ -80,5 +98,87 @@ describe('dynasty-share-canvas', () => {
     drawQrCode(mockCtx, 'https://toutai.online/dynasty', 100, 100, 110);
     expect(fillRectMock).toHaveBeenCalled();
     expect(fillRectMock.mock.calls.length).toBeGreaterThan(10);
+  });
+});
+
+describe('dynasty share font stack', () => {
+  it('puts Inter and Arial before CJK fallbacks so digits match the page', () => {
+    expect(FONT_FAMILY).toContain('Inter');
+    expect(FONT_FAMILY).toContain('Arial');
+    expect(FONT_FAMILY.indexOf('Inter')).toBeLessThan(
+      FONT_FAMILY.indexOf('Microsoft YaHei')
+    );
+    expect(FONT_FAMILY.indexOf('Arial')).toBeLessThan(
+      FONT_FAMILY.indexOf('PingFang SC')
+    );
+  });
+});
+
+describe('fitFontSize', () => {
+  it('keeps max size when the text already fits', () => {
+    expect(fitFontSize(emMeasure, '番匠', TITLE_MAX_WIDTH, 74, 44)).toBe(74);
+  });
+
+  it('shrinks until the text fits, not below min size', () => {
+    const size = fitFontSize(emMeasure, '一二三', 200, 74, 44);
+    expect(size).toBeGreaterThanOrEqual(44);
+    expect(size).toBeLessThan(74);
+    expect(emMeasure('一二三', size)).toBeLessThanOrEqual(200);
+  });
+});
+
+describe('wrapTextToWidth and clampWrappedLines', () => {
+  it('wraps long copy and clamps to two lines with an ellipsis', () => {
+    const lines = wrapTextToWidth(emMeasure, LONG_CLASS_DESC, 34, 510);
+    expect(lines.length).toBeGreaterThan(1);
+
+    const clamped = clampWrappedLines(
+      wrapTextToWidth(emMeasure, LONG_CLASS_DESC.repeat(4), 34, 510),
+      2
+    );
+    expect(clamped).toHaveLength(2);
+    expect(clamped[1].endsWith('…')).toBe(true);
+  });
+});
+
+describe('layoutDynastyShareCardText', () => {
+  it('keeps longest real card copy inside the card', () => {
+    const layout = layoutDynastyShareCardText(
+      emMeasure,
+      emMeasure,
+      emMeasure,
+      {
+        badgeText: LONG_BADGE,
+        className: LONG_CLASS_NAME,
+        classDesc: LONG_CLASS_DESC
+      }
+    );
+
+    expect(layout.pillW).toBeLessThan(CARD_WIDTH);
+    expect(emMeasure(LONG_CLASS_NAME, layout.heroFontSize)).toBeLessThan(
+      TITLE_MAX_WIDTH
+    );
+    expect(layout.descLines.length).toBeLessThanOrEqual(2);
+    expect(layout.stackH).toBeLessThanOrEqual(CARD_HEIGHT - 80);
+    expect(layout.stackTop).toBeGreaterThanOrEqual(CARD_Y);
+    expect(layout.stackTop + layout.stackH).toBeLessThanOrEqual(
+      CARD_Y + CARD_HEIGHT
+    );
+  });
+});
+
+describe('layoutFlavor', () => {
+  it('keeps the longest flavor above the footer band', () => {
+    const flavor = layoutFlavor(emMeasure, LONG_FLAVOR);
+    expect(flavor.lines.length).toBeLessThanOrEqual(2);
+    expect(flavor.lines.length).toBeGreaterThan(0);
+
+    const lastCenterY =
+      flavor.startY + (flavor.lines.length - 1) * flavor.lineH;
+    const lastBottom = lastCenterY + flavor.lineH / 2;
+    expect(lastBottom).toBeLessThanOrEqual(FOOTER_Y);
+    expect(flavor.startY - flavor.lineH / 2).toBeGreaterThanOrEqual(
+      CARD_Y + CARD_HEIGHT
+    );
   });
 });
