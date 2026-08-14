@@ -407,7 +407,25 @@ export async function generateDynastyShareCanvas(
     console.warn('Could not load shell pattern for share canvas:', err);
   }
 
-  // 5b. Shell ornament vector
+  // 5b. Card Bottom Tier Gradient Wash (1:1 replica of CSS .dynasty-card::after)
+  const washGrad = ctx.createLinearGradient(
+    0,
+    CARD_Y + CARD_HEIGHT,
+    0,
+    CARD_Y
+  );
+  washGrad.addColorStop(0, tierVars['--tier-wash-88'] || 'rgba(228, 174, 57, 0.88)');
+  washGrad.addColorStop(0.24, tierVars['--tier-wash-52'] || 'rgba(228, 174, 57, 0.52)');
+  washGrad.addColorStop(0.46, tierVars['--tier-wash-16'] || 'rgba(228, 174, 57, 0.16)');
+  washGrad.addColorStop(0.66, 'rgba(0, 0, 0, 0)');
+  washGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+  ctx.save();
+  ctx.fillStyle = washGrad;
+  ctx.fillRect(CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+  ctx.restore();
+
+  // 5c. Shell ornament vector (z-index 2 in CSS, drawn on top of gradient wash)
   try {
     const ornamentSvg = getDynastyOrnamentSvg(shareInfo.dynastyId);
     const ornamentDataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(ornamentSvg)}`;
@@ -420,28 +438,14 @@ export async function generateDynastyShareCanvas(
     console.warn('Could not load ornament SVG for share canvas:', err);
   }
 
-  // 5c. Card Bottom Accent Glow (Subtle rim light matching web UI, not overpowering wash)
-  const washGrad = ctx.createLinearGradient(
-    0,
-    CARD_Y + CARD_HEIGHT,
-    0,
-    CARD_Y + CARD_HEIGHT * 0.75
-  );
-  washGrad.addColorStop(0, tierVars['--tier-wash-52'] || 'rgba(228, 174, 57, 0.4)');
-  washGrad.addColorStop(0.5, tierVars['--tier-wash-16'] || 'rgba(228, 174, 57, 0.12)');
-  washGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-  ctx.fillStyle = washGrad;
-  ctx.fillRect(CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
-
   // 5d. Outer card border stroke
   ctx.strokeStyle = tierVars['--tier-border'] || stampTier.border;
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  // 5e. Bottom tier accent bar
+  // 5e. Bottom tier accent bar (matching CSS .dynasty-card::before)
   ctx.fillStyle = tierVars['--tier-color'] || stampTier.border;
-  ctx.fillRect(CARD_X, CARD_Y + CARD_HEIGHT - 6, CARD_WIDTH, 6);
+  ctx.fillRect(CARD_X, CARD_Y + CARD_HEIGHT - 8, CARD_WIDTH, 8);
 
   // 5f. Unified Vertically-Centered Text Stack inside Card (Pill + Title + Desc + Meta)
   const badgeText = `${dynastyName} · ${stampTier.name}`;
