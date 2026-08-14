@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Text, View } from 'reshaped';
 import { resolveAppVersion, useAppVersion } from '@/lib/store/useAppVersion';
@@ -10,15 +11,14 @@ import { siteIconSmall } from '@/lib/site';
 
 export function CarrotIcon({ size = 28 }: { size?: number }) {
   return (
-    <img
+    <Image
       src={siteIconSmall}
       alt=""
       aria-hidden="true"
       width={size}
       height={size}
       className="shrink-0"
-      loading="eager"
-      decoding="async"
+      unoptimized
     />
   );
 }

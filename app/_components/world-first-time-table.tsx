@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from 'react';
 import { Pagination, Table, Text, View } from 'reshaped';
-import { formatWorldProbability } from '@/lib/world-rebirth';
 import { useWorldBirth } from '@/lib/store/useWorldBirth';
 import {
   formatCountryName,

@@ -50,3 +50,5 @@ next-env.d.ts
 
 # local scratch / previews
 /tmp/
+scripts/world-data/data.json
+

@@ -1,13 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pagination, Table, Text, View } from 'reshaped';
 import { translateGender } from '@/lib/rebirth';
 import { useBirth } from '@/lib/store/useBirth';
 
 function ResultTable() {
   const birthResults = useBirth(state => state.birthResults);
-  const reversedResults = [...birthResults].reverse();
+  const reversedResults = useMemo(
+    () => [...birthResults].reverse(),
+    [birthResults]
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20;

@@ -11,14 +11,6 @@ const S = {
   strokeLinejoin: 'round' as const
 };
 
-function hexPath(cx: number, cy: number, r: number) {
-  const pts = Array.from({ length: 6 }, (_, i) => {
-    const a = (Math.PI / 3) * i;
-    return `${+(cx + r * Math.cos(a)).toFixed(2)} ${+(cy + r * Math.sin(a)).toFixed(2)}`;
-  });
-  return `M${pts.join('L')}Z`;
-}
-
 export function DynastyOrnament({ id }: { id: string }) {
   switch (id) {
     case 'QIN':

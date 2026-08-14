@@ -119,10 +119,11 @@ const ShareMap = ({ region }: { region: string }) => {
   );
 
   useEffect(() => {
+    const chartElement = chartRef.current;
     mapOption('china', china);
     return () => {
-      if (chartRef.current) {
-        echarts.getInstanceByDom(chartRef.current)?.dispose();
+      if (chartElement) {
+        echarts.getInstanceByDom(chartElement)?.dispose();
       }
     };
   }, [mapOption]);

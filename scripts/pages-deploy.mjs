@@ -3,7 +3,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const OUT_DIR = 'out';
-const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID ?? 'c3de7ef808432cd00bdf8958315bcd24';
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const PROJECT = 'toutai';
 
@@ -26,6 +26,12 @@ function hashFile(path) {
 }
 
 async function deploy() {
+  if (!ACCOUNT_ID) {
+    throw new Error(
+      'Set CLOUDFLARE_ACCOUNT_ID before running deploy.'
+    );
+  }
+
   if (!API_TOKEN) {
     throw new Error(
       'Set CLOUDFLARE_API_TOKEN before running deploy. Create one at https://dash.cloudflare.com/profile/api-tokens'
