@@ -267,6 +267,16 @@ function wrapText(
   return lines;
 }
 
+function setLetterSpacing(ctx: CanvasRenderingContext2D, spacing: string) {
+  if ('letterSpacing' in ctx) {
+    try {
+      (ctx as unknown as { letterSpacing: string }).letterSpacing = spacing;
+    } catch {
+      // ignore if unsupported
+    }
+  }
+}
+
 export async function generateDynastyShareCanvas(
   shareInfo: ShareInfo
 ): Promise<HTMLCanvasElement> {
@@ -292,7 +302,7 @@ export async function generateDynastyShareCanvas(
   // 2. Eyebrow: 第 N 次投胎
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const eyebrowY = 76;
+  const eyebrowY = 78;
   const prefix = '第 ';
   const countStr = `${shareInfo.count}`;
   const suffix = ' 次投胎';
@@ -322,29 +332,27 @@ export async function generateDynastyShareCanvas(
   ctx.fillStyle = '#1a1a1a';
   ctx.fillText(suffix, cursorX, eyebrowY);
 
-  // 3. Rare Glow behind Card (Tier 1, 2, 3)
+  // 3. Rare Glow behind Card (Tier 1, 2, 3) - full range ellipse bloom
   if (level <= 3) {
     const cardCenterX = CARD_X + CARD_WIDTH / 2;
-    const cardCenterY = CARD_Y + CARD_HEIGHT / 2;
-    const glowGrad = ctx.createRadialGradient(
-      cardCenterX,
-      cardCenterY,
-      CARD_WIDTH * 0.25,
-      cardCenterX,
-      cardCenterY,
-      CARD_WIDTH * 0.65
-    );
-    glowGrad.addColorStop(0, stampTier.glow);
-    glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    const cardCenterY = CARD_Y + CARD_HEIGHT * 0.55;
 
     ctx.save();
-    ctx.fillStyle = glowGrad;
-    ctx.fillRect(
-      CARD_X - 60,
-      CARD_Y - 60,
-      CARD_WIDTH + 120,
-      CARD_HEIGHT + 120
+    ctx.translate(cardCenterX, cardCenterY);
+    ctx.scale(1, 1.25);
+    const glowRadius = CARD_WIDTH * 0.72;
+    const glowGrad = ctx.createRadialGradient(0, 0, 40, 0, 0, glowRadius);
+    glowGrad.addColorStop(0, stampTier.glow);
+    glowGrad.addColorStop(0.35, stampTier.glow);
+    glowGrad.addColorStop(
+      0.7,
+      stampTier.glow.startsWith('#') ? `${stampTier.glow}55` : stampTier.glow
     );
+    glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+    ctx.fillStyle = glowGrad;
+    ctx.globalAlpha = 0.85;
+    ctx.fillRect(-glowRadius, -glowRadius, glowRadius * 2, glowRadius * 2);
     ctx.restore();
   }
 
@@ -352,8 +360,8 @@ export async function generateDynastyShareCanvas(
   ctx.save();
   roundRectPath(ctx, CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT, CARD_RADIUS);
   ctx.shadowColor = tierVars['--tier-glow'] || 'rgba(0, 0, 0, 0.22)';
-  ctx.shadowBlur = 40;
-  ctx.shadowOffsetY = 18;
+  ctx.shadowBlur = 44;
+  ctx.shadowOffsetY = 20;
 
   const cardBgGrad = ctx.createRadialGradient(
     CARD_X + CARD_WIDTH / 2,
@@ -449,27 +457,30 @@ export async function generateDynastyShareCanvas(
 
   // 5f. Unified Vertically-Centered Text Stack inside Card (Pill + Title + Desc + Meta)
   const badgeText = `${dynastyName} · ${stampTier.name}`;
-  ctx.font = `800 24px ${FONT_FAMILY}`;
+  ctx.font = `800 32px ${FONT_FAMILY}`;
+  setLetterSpacing(ctx, '0.14em');
   const badgeTextW = ctx.measureText(badgeText).width;
-  const pillW = badgeTextW + 36;
-  const pillH = 40;
+  const pillW = badgeTextW + 56;
+  const pillH = 48;
   const gapPillToTitle = 14;
 
-  const heroFontSize = className.length > 5 ? 54 : 68;
+  const heroFontSize = className.length > 5 ? 58 : 74;
   const titleH = heroFontSize * 1.18;
-  const gapTitleToDesc = 18;
+  const gapTitleToDesc = 20;
 
-  ctx.font = `500 27px ${FONT_FAMILY}`;
-  let descLines = wrapText(ctx, classDesc, CARD_WIDTH - 150);
+  ctx.font = `500 34px ${FONT_FAMILY}`;
+  setLetterSpacing(ctx, '0px');
+  // Proportional line width (approx 510px) matching the ~180px CSS text box inside 220px card
+  let descLines = wrapText(ctx, classDesc, 510);
   if (descLines.length > 3) {
     descLines = descLines.slice(0, 3);
     descLines[2] = descLines[2].slice(0, -1) + '…';
   }
-  const descLineH = 38;
-  const descH = Math.max(descLines.length * descLineH, 38);
-  const gapDescToMeta = 14;
+  const descLineH = 48;
+  const descH = Math.max(descLines.length * descLineH, 48);
+  const gapDescToMeta = 16;
 
-  const metaH = 34;
+  const metaH = 36;
 
   const totalStackH =
     pillH +
@@ -496,7 +507,8 @@ export async function generateDynastyShareCanvas(
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `800 24px ${FONT_FAMILY}`;
+  ctx.font = `800 32px ${FONT_FAMILY}`;
+  setLetterSpacing(ctx, '0.14em');
   ctx.fillStyle = stampTier.text || '#fde68a';
   ctx.fillText(badgeText, CARD_X + CARD_WIDTH / 2, pillY + pillH / 2 + 1);
   ctx.restore();
@@ -509,9 +521,10 @@ export async function generateDynastyShareCanvas(
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = `900 ${heroFontSize}px ${FONT_FAMILY}`;
+  setLetterSpacing(ctx, '0.08em');
   ctx.fillStyle = '#ffffff';
   ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-  ctx.shadowBlur = 12;
+  ctx.shadowBlur = 14;
   ctx.shadowOffsetY = 3;
   ctx.fillText(className, CARD_X + CARD_WIDTH / 2, titleCenterY);
   ctx.restore();
@@ -522,10 +535,11 @@ export async function generateDynastyShareCanvas(
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `500 27px ${FONT_FAMILY}`;
+  ctx.font = `500 34px ${FONT_FAMILY}`;
+  setLetterSpacing(ctx, '0px');
   ctx.fillStyle = '#f3eee3';
   ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
-  ctx.shadowBlur = 6;
+  ctx.shadowBlur = 8;
   ctx.shadowOffsetY = 2;
 
   descLines.forEach((line, index) => {
@@ -545,11 +559,11 @@ export async function generateDynastyShareCanvas(
   const dotStr = ' · ';
   const probStr = `概率 ${formatDynastyProbability(shareInfo.probability)}`;
 
-  ctx.font = `600 26px ${FONT_FAMILY}`;
+  ctx.font = `600 32px ${FONT_FAMILY}`;
   const genderW = ctx.measureText(genderStr).width;
-  ctx.font = `400 26px ${FONT_FAMILY}`;
+  ctx.font = `400 32px ${FONT_FAMILY}`;
   const dotW = ctx.measureText(dotStr).width;
-  ctx.font = `800 26px ${FONT_FAMILY}`;
+  ctx.font = `800 32px ${FONT_FAMILY}`;
   const probW = ctx.measureText(probStr).width;
 
   const totalMetaW = genderW + dotW + probW;
@@ -562,17 +576,17 @@ export async function generateDynastyShareCanvas(
   ctx.shadowBlur = 6;
   ctx.shadowOffsetY = 2;
 
-  ctx.font = `600 26px ${FONT_FAMILY}`;
+  ctx.font = `600 32px ${FONT_FAMILY}`;
   ctx.fillStyle = '#d1c7b8';
   ctx.fillText(genderStr, metaX, metaCenterY);
   metaX += genderW;
 
-  ctx.font = `400 26px ${FONT_FAMILY}`;
+  ctx.font = `400 32px ${FONT_FAMILY}`;
   ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
   ctx.fillText(dotStr, metaX, metaCenterY);
   metaX += dotW;
 
-  ctx.font = `800 26px ${FONT_FAMILY}`;
+  ctx.font = `800 32px ${FONT_FAMILY}`;
   ctx.fillStyle = stampTier.text || '#fde68a';
   ctx.fillText(probStr, metaX, metaCenterY);
   ctx.restore();
@@ -580,16 +594,17 @@ export async function generateDynastyShareCanvas(
   // End card clipping
   ctx.restore();
 
-  // 6. Flavor text below card (wrapped properly to prevent overflow)
+  // 6. Flavor text below card (wrapped with matching line length and font size)
   if (flavor) {
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = `500 28px ${FONT_FAMILY}`;
-    ctx.fillStyle = '#262626';
+    ctx.font = `500 34px ${FONT_FAMILY}`;
+    setLetterSpacing(ctx, '0px');
+    ctx.fillStyle = '#1a1a1a';
 
-    const flavorLines = wrapText(ctx, flavor, POSTER_WIDTH - 160);
-    const lineH = 40;
+    const flavorLines = wrapText(ctx, flavor, 720);
+    const lineH = 48;
     const totalFlavorH = flavorLines.length * lineH;
     const startY = 1180 - totalFlavorH / 2 + lineH / 2;
 
@@ -600,12 +615,12 @@ export async function generateDynastyShareCanvas(
   }
 
   // 7. Footer: Brand (Left) + QR Code (Right)
-  // 7a. Carrot Logo & Brand Text
-  const brandX = 80;
+  // 7a. Carrot Logo & Brand Text (Primary color #ba3700)
+  const brandX = 76;
   const brandY = 1260;
   try {
     const carrotImg = await loadImage(resolveAssetUrl(siteIconSmall));
-    ctx.drawImage(carrotImg, brandX, brandY + 4, 76, 76);
+    ctx.drawImage(carrotImg, brandX, brandY, 80, 80);
   } catch (err) {
     console.warn('Could not load carrot icon for share canvas:', err);
   }
@@ -613,18 +628,18 @@ export async function generateDynastyShareCanvas(
   ctx.save();
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  ctx.font = `600 34px ${FONT_FAMILY}`;
-  ctx.fillStyle = '#1a1a1a';
-  ctx.fillText('投胎模拟器', brandX + 96, brandY + 38);
+  ctx.font = `700 36px ${FONT_FAMILY}`;
+  ctx.fillStyle = '#ba3700';
+  ctx.fillText('投胎模拟器', brandX + 96, brandY + 36);
 
-  ctx.font = `500 24px ${FONT_FAMILY}`;
-  ctx.fillStyle = '#666666';
-  ctx.fillText('toutai.online/dynasty', brandX + 96, brandY + 72);
+  ctx.font = `500 26px ${FONT_FAMILY}`;
+  ctx.fillStyle = '#ba3700';
+  ctx.fillText('toutai.online/dynasty', brandX + 96, brandY + 70);
   ctx.restore();
 
   // 7b. High Resolution QR Code (directly rendered via qrcode-generator, zero DOM scraping)
   const qrSize = 110;
-  const qrX = POSTER_WIDTH - 80 - qrSize;
+  const qrX = POSTER_WIDTH - 76 - qrSize;
   const qrY = brandY - 14;
 
   drawQrCode(ctx, DYNASTY_SHARE_URL, qrX, qrY, qrSize);

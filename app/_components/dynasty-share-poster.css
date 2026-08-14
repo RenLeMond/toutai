@@ -9,6 +9,8 @@
   display: flex;
   flex-direction: column;
   padding: 20px 22px 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 659px) {
