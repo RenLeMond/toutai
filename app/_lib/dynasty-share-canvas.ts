@@ -375,19 +375,32 @@ export async function generateDynastyShareCanvas(
   roundRectPath(ctx, CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT, CARD_RADIUS);
   ctx.clip();
 
-  // 5a. Shell pattern
+  // 5a. Shell pattern (scale tile proportionally so canvas pattern density matches CSS preview)
   try {
     const patternStyle = getShellPatternStyle(shareInfo.dynastyId);
-    const match = patternStyle.backgroundImage.match(/url\("?(data:image\/svg\+xml[^"]+)"?\)/);
+    const match = patternStyle.backgroundImage.match(
+      /url\("?(data:image\/svg\+xml[^"]+)"?\)/
+    );
     if (match && match[1]) {
       const patternImg = await loadImage(match[1]);
-      const pattern = ctx.createPattern(patternImg, 'repeat');
-      if (pattern) {
-        ctx.save();
-        ctx.globalAlpha = 0.24;
-        ctx.fillStyle = pattern;
-        ctx.fillRect(CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
-        ctx.restore();
+      const patternScale = CARD_WIDTH / 220; // 3.18x tile scale to match 220px CSS card
+      const tileW = Math.max(1, Math.round(patternImg.width * patternScale));
+      const tileH = Math.max(1, Math.round(patternImg.height * patternScale));
+
+      const tileCanvas = document.createElement('canvas');
+      tileCanvas.width = tileW;
+      tileCanvas.height = tileH;
+      const tileCtx = tileCanvas.getContext('2d');
+      if (tileCtx) {
+        tileCtx.drawImage(patternImg, 0, 0, tileW, tileH);
+        const pattern = ctx.createPattern(tileCanvas, 'repeat');
+        if (pattern) {
+          ctx.save();
+          ctx.globalAlpha = 0.24;
+          ctx.fillStyle = pattern;
+          ctx.fillRect(CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
+          ctx.restore();
+        }
       }
     }
   } catch (err) {
@@ -400,7 +413,7 @@ export async function generateDynastyShareCanvas(
     const ornamentDataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(ornamentSvg)}`;
     const ornamentImg = await loadImage(ornamentDataUri);
     ctx.save();
-    ctx.globalAlpha = 0.65;
+    ctx.globalAlpha = 0.55;
     ctx.drawImage(ornamentImg, CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT);
     ctx.restore();
   } catch (err) {
@@ -430,7 +443,7 @@ export async function generateDynastyShareCanvas(
   ctx.fillStyle = tierVars['--tier-color'] || stampTier.border;
   ctx.fillRect(CARD_X, CARD_Y + CARD_HEIGHT - 6, CARD_WIDTH, 6);
 
-  // 5e. Unified Vertically-Centered Text Stack inside Card (Pill + Title + Desc + Meta)
+  // 5f. Unified Vertically-Centered Text Stack inside Card (Pill + Title + Desc + Meta)
   const badgeText = `${dynastyName} · ${stampTier.name}`;
   ctx.font = `800 24px ${FONT_FAMILY}`;
   const badgeTextW = ctx.measureText(badgeText).width;
@@ -438,15 +451,19 @@ export async function generateDynastyShareCanvas(
   const pillH = 40;
   const gapPillToTitle = 14;
 
-  const heroFontSize = className.length > 5 ? 58 : 72;
+  const heroFontSize = className.length > 5 ? 54 : 68;
   const titleH = heroFontSize * 1.18;
   const gapTitleToDesc = 18;
 
-  ctx.font = `500 30px ${FONT_FAMILY}`;
-  const descLines = wrapText(ctx, classDesc, CARD_WIDTH - 120);
-  const descLineH = 44;
-  const descH = Math.max(descLines.length * descLineH, 44);
-  const gapDescToMeta = 16;
+  ctx.font = `500 27px ${FONT_FAMILY}`;
+  let descLines = wrapText(ctx, classDesc, CARD_WIDTH - 150);
+  if (descLines.length > 3) {
+    descLines = descLines.slice(0, 3);
+    descLines[2] = descLines[2].slice(0, -1) + '…';
+  }
+  const descLineH = 38;
+  const descH = Math.max(descLines.length * descLineH, 38);
+  const gapDescToMeta = 14;
 
   const metaH = 34;
 
@@ -501,7 +518,7 @@ export async function generateDynastyShareCanvas(
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `500 30px ${FONT_FAMILY}`;
+  ctx.font = `500 27px ${FONT_FAMILY}`;
   ctx.fillStyle = '#f3eee3';
   ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
   ctx.shadowBlur = 6;
@@ -559,14 +576,22 @@ export async function generateDynastyShareCanvas(
   // End card clipping
   ctx.restore();
 
-  // 6. Flavor text below card
+  // 6. Flavor text below card (wrapped properly to prevent overflow)
   if (flavor) {
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = `500 34px ${FONT_FAMILY}`;
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillText(flavor, POSTER_WIDTH / 2, 1175);
+    ctx.font = `500 28px ${FONT_FAMILY}`;
+    ctx.fillStyle = '#262626';
+
+    const flavorLines = wrapText(ctx, flavor, POSTER_WIDTH - 160);
+    const lineH = 40;
+    const totalFlavorH = flavorLines.length * lineH;
+    const startY = 1180 - totalFlavorH / 2 + lineH / 2;
+
+    flavorLines.forEach((line, index) => {
+      ctx.fillText(line, POSTER_WIDTH / 2, startY + index * lineH);
+    });
     ctx.restore();
   }
 
