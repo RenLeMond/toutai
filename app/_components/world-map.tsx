@@ -163,36 +163,37 @@ function WorldMap({ latestResult, rapidMode = false }: WorldMapProps) {
                 api.value(0, params.dataIndex),
                 api.value(1, params.dataIndex)
               ]);
-              const circles = rapidMode
-                ? []
-                : Array.from({ length: 5 }, (_, i) => ({
-                    type: 'circle',
-                    shape: { cx: 0, cy: 0, r: 30 },
-                    style: {
-                      stroke: '#ff4f04',
-                      fill: 'none',
-                      lineWidth: 2
-                    },
-                    keyframeAnimation: {
-                      duration: 4000,
-                      loop: true,
-                      delay: (-i / 4) * 4000,
-                      keyframes: [
-                        {
-                          percent: 0,
-                          scaleX: 0,
-                          scaleY: 0,
-                          style: { opacity: 1 }
-                        },
-                        {
-                          percent: 1,
-                          scaleX: 1,
-                          scaleY: 0.4,
-                          style: { opacity: 0 }
-                        }
-                      ]
-                    }
-                  }));
+              const circles = Array.from(
+                { length: rapidMode ? 3 : 5 },
+                (_, i) => ({
+                  type: 'circle',
+                  shape: { cx: 0, cy: 0, r: 30 },
+                  style: {
+                    stroke: '#ff4f04',
+                    fill: 'none',
+                    lineWidth: 2
+                  },
+                  keyframeAnimation: {
+                    duration: 4000,
+                    loop: true,
+                    delay: (-i / 4) * 4000,
+                    keyframes: [
+                      {
+                        percent: 0,
+                        scaleX: 0,
+                        scaleY: 0,
+                        style: { opacity: 1 }
+                      },
+                      {
+                        percent: 1,
+                        scaleX: 1,
+                        scaleY: 0.4,
+                        style: { opacity: 0 }
+                      }
+                    ]
+                  }
+                })
+              );
 
               return {
                 type: 'group',
