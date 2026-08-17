@@ -144,7 +144,7 @@ function WorldMap({ latestResult, rapidMode = false }: WorldMapProps) {
     if (!chart) return;
 
     const coordinate = latestResult?.position ?? DEFAULT_CENTER;
-    const center = latestResult?.position ?? DEFAULT_CENTER;
+    const center = coordinate;
     const zoom = latestResult ? FOCUS_ZOOM : DEFAULT_ZOOM;
 
     const pinSeries = latestResult

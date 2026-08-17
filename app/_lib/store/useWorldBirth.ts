@@ -1,9 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { WorldBirthResult, CONTINENT_ORDER } from '@/lib/world-rebirth';
+import { WorldBirthResult } from '@/lib/world-rebirth';
 import { capRecords } from '@/lib/birth-storage';
-
-export type ContinentCounts = Record<(typeof CONTINENT_ORDER)[number], number>;
 
 interface WorldBirthState {
   birthResults: WorldBirthResult[];
@@ -12,15 +10,8 @@ interface WorldBirthState {
   getLatestBirthResult: () => WorldBirthResult | null;
   getBirthResultsCount: () => number;
   clearBirthResults: () => void;
-  getContinentCounts: () => ContinentCounts;
   consumeTrimNotice: () => boolean;
 }
-
-const createEmptyContinentCounts = (): ContinentCounts =>
-  CONTINENT_ORDER.reduce((acc, continent) => {
-    acc[continent] = 0;
-    return acc;
-  }, {} as ContinentCounts);
 
 export const useWorldBirth = create<WorldBirthState>()(
   persist(
@@ -45,15 +36,6 @@ export const useWorldBirth = create<WorldBirthState>()(
       },
       getBirthResultsCount: () => get().birthResults.length,
       clearBirthResults: () => set({ birthResults: [], hasTrimmedRecords: false }),
-      getContinentCounts: () => {
-        const counts = createEmptyContinentCounts();
-        get().birthResults.forEach(result => {
-          if (result.continent in counts) {
-            counts[result.continent as keyof ContinentCounts] += 1;
-          }
-        });
-        return counts;
-      },
       consumeTrimNotice: () => {
         const shouldNotify = get().hasTrimmedRecords;
         if (shouldNotify) {

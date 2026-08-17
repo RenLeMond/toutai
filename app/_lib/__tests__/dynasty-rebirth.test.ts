@@ -12,22 +12,14 @@ import {
   UNIVERSAL_FLAVORS
 } from '@/lib/dynasty-rebirth';
 
-
-
 describe('dynasty-rebirth', () => {
-
   it('dynasty probabilities sum to approximately 1', () => {
-
     const sum = dynasties.reduce((acc, d) => acc + d.dynastyProb, 0);
 
     expect(sum).toBeCloseTo(1, 5);
-
   });
 
-
-
   it('QING is much more likely than QIN', () => {
-
     const qin = dynasties.find(d => d.id === 'QIN');
 
     const qing = dynasties.find(d => d.id === 'QING');
@@ -37,13 +29,9 @@ describe('dynasty-rebirth', () => {
     expect(qing).toBeDefined();
 
     expect(qing!.dynastyProb).toBeGreaterThan(qin!.dynastyProb * 10);
-
   });
 
-
-
   it('getDynastyClassProbability uses dynasty weight and gender factor', () => {
-
     const qin = dynasties.find(d => d.id === 'QIN');
 
     const lord = qin?.classes.find(c => c.level === 1);
@@ -51,53 +39,35 @@ describe('dynasty-rebirth', () => {
     expect(lord?.prob).toBe(0.001);
 
     expect(getDynastyClassProbability('QIN', lord!.id)).toBeCloseTo(
-
       qin!.dynastyProb * 0.001 * 0.5,
 
       10
-
     );
 
     expect(getDynastyClassProbability('missing', 'q_1')).toBe(0);
-
   });
-
-
 
   it('has 13 merged dynasties', () => {
     expect(dynasties).toHaveLength(13);
   });
 
   it('each dynasty has 6 classes whose probs sum to 1', () => {
-
     for (const dynasty of dynasties) {
-
       expect(dynasty.classes).toHaveLength(6);
 
       const sum = dynasty.classes.reduce((acc, c) => acc + c.prob, 0);
 
       expect(sum).toBeCloseTo(1, 5);
-
     }
-
   });
-
-
 
   it('getDynastyProbabilityFormula uses weighted dynasty model', () => {
-
     expect(getDynastyProbabilityFormula()).toBe(
-
       String.raw`\displaystyle{P = p_{\text{朝代}} \times p_{\text{阶级}} \times \frac{1}{2}}`
-
     );
-
   });
 
-
-
   it('simulateDynastyBirth returns a valid 6-tier result', () => {
-
     const result = simulateDynastyBirth();
 
     expect(result.classLevel).toBeGreaterThanOrEqual(1);
@@ -109,7 +79,6 @@ describe('dynasty-rebirth', () => {
     expect(result.classId).toBeTruthy();
 
     expect(['male', 'female']).toContain(result.gender);
-
   });
 
   it('pairs merged class names with the matching source description', () => {
@@ -192,4 +161,3 @@ describe('dynasty-rebirth', () => {
     expect(getClassDescription(dummyClass)).toBe('基准描述');
   });
 });
-

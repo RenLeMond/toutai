@@ -52,7 +52,7 @@ const ShareMap = ({ region }: { region: string }) => {
       const option = {
         visualMap: {
           min: 0,
-          max: 5,
+          max: topNumber > 0 ? topNumber : 5,
           left: 'left',
           top: 'bottom',
           text: [topNumber.toFixed(2) + '%', bottomNumber.toFixed(2) + '%'],

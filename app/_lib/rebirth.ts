@@ -2,17 +2,6 @@ import data from '@/data/birthrate.json';
 import dataDetailed from '@/data/birthrate_detailed.json';
 import { TOTAL_CHINA_PROVINCES } from '@/lib/constants';
 
-const chinaBirthPopulation = 12123210;
-const hongKongBirthPopulation = 33200;
-const macauBirthPopulation = 3712;
-const taiwanBirthPopulation = 137413;
-
-export const totalPopulation =
-  chinaBirthPopulation +
-  hongKongBirthPopulation +
-  macauBirthPopulation +
-  taiwanBirthPopulation;
-
 interface Region {
   id: string;
   name: string;
@@ -22,6 +11,9 @@ interface Region {
 }
 
 export const regions: Region[] = data.region.slice(1);
+
+/** 全国出生人口总数 = 各省/地区合计，与 buildDistribution 的抽签分布严格一致 */
+export const totalPopulation = regions.reduce((sum, region) => sum + region.total, 0);
 
 interface CategoryData {
   [order: string]: {

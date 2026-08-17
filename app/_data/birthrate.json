@@ -3,247 +3,247 @@
     {
       "id": "national",
       "name": "全国",
-      "total": 12004692,
-      "male": 6322003,
-      "female": 5682689
+      "total": 12123210,
+      "male": 6412380,
+      "female": 5710830
     },
     {
       "id": "bei_jing",
       "name": "北京",
-      "total": 152864,
-      "male": 79479,
-      "female": 73385
+      "total": 168280,
+      "male": 88170,
+      "female": 80110
     },
     {
       "id": "tian_jin",
       "name": "天津",
-      "total": 83097,
-      "male": 43276,
-      "female": 39821
+      "total": 82260,
+      "male": 42780,
+      "female": 39480
     },
     {
       "id": "he_bei",
       "name": "河北",
-      "total": 608070,
-      "male": 316857,
-      "female": 291213
+      "total": 597120,
+      "male": 310870,
+      "female": 286250
     },
     {
       "id": "shan_xi_2",
       "name": "山西",
-      "total": 288046,
-      "male": 147611,
-      "female": 140435
+      "total": 297750,
+      "male": 151030,
+      "female": 146720
     },
     {
       "id": "nei_meng_gu",
       "name": "内蒙古",
-      "total": 173255,
-      "male": 89566,
-      "female": 83689
+      "total": 184280,
+      "male": 94650,
+      "female": 89630
     },
     {
       "id": "liao_ning",
       "name": "辽宁",
-      "total": 220318,
-      "male": 113266,
-      "female": 107052
+      "total": 225230,
+      "male": 116500,
+      "female": 108730
     },
     {
       "id": "ji_lin",
       "name": "吉林",
-      "total": 116554,
-      "male": 60343,
-      "female": 56211
+      "total": 118210,
+      "male": 60280,
+      "female": 57930
     },
     {
       "id": "hei_long_jiang",
       "name": "黑龙江",
-      "total": 119821,
-      "male": 61707,
-      "female": 58114
+      "total": 132740,
+      "male": 68150,
+      "female": 64590
     },
     {
       "id": "shang_hai",
       "name": "上海",
-      "total": 124777,
-      "male": 64801,
-      "female": 59976
+      "total": 153330,
+      "male": 80010,
+      "female": 73320
     },
     {
       "id": "jiang_su",
       "name": "江苏",
-      "total": 563733,
-      "male": 294029,
-      "female": 269704
+      "total": 577490,
+      "male": 303450,
+      "female": 274040
     },
     {
       "id": "zhe_jiang",
       "name": "浙江",
-      "total": 459658,
-      "male": 240940,
-      "female": 218718
+      "total": 491190,
+      "male": 258200,
+      "female": 232990
     },
     {
       "id": "an_hui",
       "name": "安徽",
-      "total": 575917,
-      "male": 305604,
-      "female": 270313
+      "total": 539130,
+      "male": 287840,
+      "female": 251290
     },
     {
       "id": "fu_jian",
       "name": "福建",
-      "total": 381804,
-      "male": 207241,
-      "female": 174563
+      "total": 379670,
+      "male": 207170,
+      "female": 172500
     },
     {
       "id": "jiang_xi",
       "name": "江西",
-      "total": 427441,
-      "male": 233443,
-      "female": 193998
+      "total": 416330,
+      "male": 229410,
+      "female": 186920
     },
     {
       "id": "shan_dong",
       "name": "山东",
-      "total": 868496,
-      "male": 458738,
-      "female": 409758
+      "total": 864150,
+      "male": 457530,
+      "female": 406620
     },
     {
       "id": "he_nan",
       "name": "河南",
-      "total": 916791,
-      "male": 476784,
-      "female": 440007
+      "total": 885690,
+      "male": 466010,
+      "female": 419680
     },
     {
       "id": "hu_bei",
       "name": "湖北",
-      "total": 477594,
-      "male": 254740,
-      "female": 222854
+      "total": 487720,
+      "male": 261170,
+      "female": 226550
     },
     {
       "id": "hu_nan",
       "name": "湖南",
-      "total": 566431,
-      "male": 301995,
-      "female": 264436
+      "total": 571030,
+      "male": 307770,
+      "female": 263260
     },
     {
       "id": "guang_dong",
       "name": "广东",
-      "total": 1292000,
-      "male": 692476,
-      "female": 599524
+      "total": 1384190,
+      "male": 747850,
+      "female": 636340
     },
     {
       "id": "guang_xi",
       "name": "广西",
-      "total": 568245,
-      "male": 303315,
-      "female": 264930
+      "total": 514910,
+      "male": 276490,
+      "female": 238420
     },
     {
       "id": "hai_nan",
       "name": "海南",
-      "total": 104128,
-      "male": 57303,
-      "female": 46825
+      "total": 103590,
+      "male": 56620,
+      "female": 46970
     },
     {
       "id": "chong_qing",
       "name": "重庆",
-      "total": 239633,
-      "male": 124411,
-      "female": 115222
+      "total": 257270,
+      "male": 133290,
+      "female": 123980
     },
     {
       "id": "si_chuan",
       "name": "四川",
-      "total": 635353,
-      "male": 330146,
-      "female": 305207
+      "total": 710230,
+      "male": 374340,
+      "female": 335890
     },
     {
       "id": "gui_zhou",
       "name": "贵州",
-      "total": 526610,
-      "male": 279552,
-      "female": 247058
+      "total": 489840,
+      "male": 260500,
+      "female": 229340
     },
     {
       "id": "yun_nan",
       "name": "云南",
-      "total": 516555,
-      "male": 267614,
-      "female": 248941
+      "total": 528580,
+      "male": 273530,
+      "female": 255050
     },
     {
       "id": "xi_zang",
       "name": "西藏",
-      "total": 50723,
-      "male": 26030,
-      "female": 24693
+      "total": 51130,
+      "male": 25710,
+      "female": 25420
     },
     {
       "id": "shan_xi_1",
       "name": "陕西",
-      "total": 353175,
-      "male": 183652,
-      "female": 169523
+      "total": 312540,
+      "male": 162650,
+      "female": 149890
     },
     {
       "id": "gan_su",
       "name": "甘肃",
-      "total": 263513,
-      "male": 136530,
-      "female": 126983
+      "total": 257830,
+      "male": 134120,
+      "female": 123710
     },
     {
       "id": "qing_hai",
       "name": "青海",
-      "total": 67506,
-      "male": 34863,
-      "female": 32643
+      "total": 64220,
+      "male": 33730,
+      "female": 30490
     },
     {
       "id": "ning_xia",
       "name": "宁夏",
-      "total": 83255,
-      "male": 42773,
-      "female": 40482
+      "total": 87080,
+      "male": 44740,
+      "female": 42340
     },
     {
       "id": "xin_jiang",
       "name": "新疆",
-      "total": 179329,
-      "male": 92918,
-      "female": 86411
+      "total": 190200,
+      "male": 97820,
+      "female": 92380
     },
     {
       "id": "ao_men",
       "name": "澳门",
-      "total": 3712,
+      "total": 3717,
       "male": 1905,
-      "female": 1807
+      "female": 1812
     },
     {
       "id": "xiang_gang",
       "name": "香港",
-      "total": 33200,
+      "total": 33205,
       "male": 17400,
-      "female": 15800
+      "female": 15805
     },
     {
       "id": "tai_wan",
       "name": "台湾",
-      "total": 137413,
+      "total": 137418,
       "male": 71208,
-      "female": 66205
+      "female": 66210
     }
   ]
 }

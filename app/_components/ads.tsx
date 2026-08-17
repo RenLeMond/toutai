@@ -23,7 +23,7 @@ const Ads = () => {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (err) {
-        console.log(err);
+        console.warn('AdSense push failed:', err);
       }
     });
     return () => cancelAnimationFrame(id);

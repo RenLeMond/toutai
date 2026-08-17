@@ -52,13 +52,9 @@ function HomeClient() {
 
   const openShare = useShareModal(state => state.openShare);
 
-  const { addBirthResult, getBirthResultsCount, consumeTrimNotice } = useBirth(
-    state => ({
-      addBirthResult: state.addBirthResult,
-      getBirthResultsCount: state.getBirthResultsCount,
-      consumeTrimNotice: state.consumeTrimNotice
-    })
-  );
+  const addBirthResult = useBirth(state => state.addBirthResult);
+  const consumeTrimNotice = useBirth(state => state.consumeTrimNotice);
+  const birthCount = useBirth(state => state.birthResults.length);
 
   const showRebirthToast = useCallback(
     (birthResult: BirthResult, count: number) => {
@@ -165,11 +161,10 @@ function HomeClient() {
       toast.message('历史记录已达上限，最早记录已自动清理');
     }
 
-    showRebirthToast(birthResult, getBirthResultsCount());
+    showRebirthToast(birthResult, useBirth.getState().birthResults.length);
   }, [
     addBirthResult,
     consumeTrimNotice,
-    getBirthResultsCount,
     showRebirthErrorToast,
     showRebirthToast
   ]);
@@ -179,8 +174,6 @@ function HomeClient() {
     onRebirth: handleRebirth,
     disabled: isLoading
   });
-
-  const birthCount = getBirthResultsCount();
 
   return (
     <>
