@@ -1,14 +1,13 @@
 'use client';
 
 import world from '@/data/world.json';
-import echarts, {
-  type CustomSeriesRenderItemAPI,
-  type CustomSeriesRenderItemParams
-} from '@/lib/echarts';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import echarts from '@/lib/echarts';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Loader, Text } from 'reshaped';
 import { toGeoName } from '@/lib/world-geo-aliases';
 import { useWorldBirth } from '@/lib/store/useWorldBirth';
+import { BRAND_PRIMARY, MAP_HEAT_START } from '@/lib/constants';
+import { createMapPinSeries, MAP_BACKGROUND } from '@/lib/map-pin';
 
 interface ShareWorldMapProps {
   position: [number, number];
@@ -19,6 +18,7 @@ function ShareWorldMap({ position, countryEn }: ShareWorldMapProps) {
   const birthResults = useWorldBirth(state => state.birthResults);
   const chartRef = useRef<HTMLDivElement | null>(null);
   const chartInstanceRef = useRef<ReturnType<typeof echarts.init> | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
   const heatData = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -51,13 +51,13 @@ function ShareWorldMap({ position, countryEn }: ShareWorldMapProps) {
     echarts.registerMap('world', world as never);
 
     chart.setOption({
-      backgroundColor: '#fcfcfd',
+      backgroundColor: MAP_BACKGROUND,
       visualMap: {
         min: 0,
         max: maxHeat,
         show: false,
         inRange: {
-          color: ['#f5e1d6', '#ff4f04']
+          color: [MAP_HEAT_START, BRAND_PRIMARY]
         }
       },
       geo: {
@@ -83,60 +83,34 @@ function ShareWorldMap({ position, countryEn }: ShareWorldMapProps) {
           data: heatData,
           select: { disabled: true }
         },
-        {
-          type: 'custom',
-          coordinateSystem: 'geo',
-          geoIndex: 0,
-          zlevel: 2,
-          data: [position],
-          renderItem(
-            params: CustomSeriesRenderItemParams,
-            api: CustomSeriesRenderItemAPI
-          ) {
-            const coord = api.coord([
-              api.value(0, params.dataIndex),
-              api.value(1, params.dataIndex)
-            ]);
-
-            return {
-              type: 'group',
-              x: coord[0],
-              y: coord[1],
-              children: [
-                {
-                  type: 'path',
-                  shape: {
-                    d: 'M16 0c-5.523 0-10 4.477-10 10 0 10 10 22 10 22s10-12 10-22c0-5.523-4.477-10-10-10zM16 16c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z',
-                    x: -10,
-                    y: -35,
-                    width: 20,
-                    height: 40
-                  },
-                  style: { fill: '#ff4f04' }
-                }
-              ]
-            };
-          }
-        }
+        createMapPinSeries(position, 0, { animated: false })
       ]
     });
+    setIsReady(true);
   }, [heatData, maxHeat, position]);
 
   useEffect(() => {
     mapOption();
     return () => {
+      setIsReady(false);
       chartInstanceRef.current?.dispose();
       chartInstanceRef.current = null;
     };
   }, [mapOption]);
 
   return (
-    <div
-      className="flex flex-row space-x-2 items-center justify-center h-40 w-full rounded-xl overflow-hidden"
-      ref={chartRef}
-    >
-      <Loader />
-      <Text>地图加载中</Text>
+    <div className="relative h-40 w-full rounded-xl overflow-hidden">
+      <div className="absolute inset-0" ref={chartRef} />
+      {!isReady && (
+        <div
+          className="absolute inset-0 flex flex-row items-center justify-center gap-2"
+          role="status"
+          aria-live="polite"
+        >
+          <Loader />
+          <Text>地图加载中</Text>
+        </div>
+      )}
     </div>
   );
 }

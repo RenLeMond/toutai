@@ -4,6 +4,7 @@ interface UseRebirthPressOptions {
   interval: number;
   onRebirth: () => void;
   onHoldRebirth?: () => void;
+  onPressEnd?: () => void;
   disabled?: boolean;
 }
 
@@ -11,6 +12,7 @@ export function useRebirthPress({
   interval,
   onRebirth,
   onHoldRebirth,
+  onPressEnd,
   disabled = false
 }: UseRebirthPressOptions) {
   const [isPressing, setIsPressing] = useState(false);
@@ -19,6 +21,7 @@ export function useRebirthPress({
   const ignoreClickRef = useRef(false);
   const onRebirthRef = useRef(onRebirth);
   const onHoldRebirthRef = useRef(onHoldRebirth);
+  const onPressEndRef = useRef(onPressEnd);
 
   useEffect(() => {
     onRebirthRef.current = onRebirth;
@@ -27,6 +30,10 @@ export function useRebirthPress({
   useEffect(() => {
     onHoldRebirthRef.current = onHoldRebirth;
   }, [onHoldRebirth]);
+
+  useEffect(() => {
+    onPressEndRef.current = onPressEnd;
+  }, [onPressEnd]);
 
   const clearPressInterval = useCallback(() => {
     if (pressIntervalRef.current) {
@@ -49,6 +56,7 @@ export function useRebirthPress({
   const endPress = useCallback(() => {
     setIsPressing(false);
     clearPressInterval();
+    onPressEndRef.current?.();
   }, [clearPressInterval]);
 
   useEffect(() => {

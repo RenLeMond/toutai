@@ -2,13 +2,12 @@
 
 import React, { useCallback, useMemo, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Button, Dismissible, Icon, Loader, Modal, Tabs, Text, View } from 'reshaped';
+import { Button, Dismissible, Loader, Modal, Tabs, Text, View } from 'reshaped';
 import useShareModal, { ShareInfo } from '@/lib/store/useShareModal';
 import html2canvas from 'html2canvas';
 import { CarrotIcon } from '@/components/title';
 import QRCode from 'react-qr-code';
 import { toast } from 'sonner';
-import { X } from 'lucide-react';
 import ChinaMap from '@/components/icon';
 import { translateGenderChild } from '@/lib/rebirth';
 import { formatWorldProbability } from '@/lib/world-rebirth';
@@ -17,6 +16,7 @@ import {
   generateDynastyShareImage
 } from '@/lib/dynasty-share-canvas';
 import './dynasty-share-poster.css';
+import { RebirthToast } from '@/components/rebirth-toast';
 
 const ShareMap = dynamic(() => import('@/components/share-map'), {
   ssr: false,
@@ -106,15 +106,15 @@ function WorldShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
         )}
         <Text variant="body-2" weight="medium">
           我在投胎模拟器世界版第{' '}
-          <span className="text-[#ba3700] font-medium">{shareInfo.count}</span>{' '}
+          <span className="text-primary font-medium">{shareInfo.count}</span>{' '}
           次投胎在
-          <span className="text-[#ba3700] font-medium">{shareInfo.region}</span>
+          <span className="text-primary font-medium">{shareInfo.region}</span>
           （
-          <span className="text-[#ba3700] font-medium">
+          <span className="text-primary font-medium">
             {shareInfo.continent}
           </span>
           ），概率只有{' '}
-          <span className="text-[#ba3700] font-medium">
+          <span className="text-primary font-medium">
             {formatWorldProbability(shareInfo.probability)}
           </span>
           ，你也来试试吧！
@@ -143,22 +143,22 @@ function WorldShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
         <View direction="column" justify="center" grow paddingTop={6}>
           <Text variant="body-2" weight="medium" className="z-10">
             第{' '}
-            <span className="text-[#ba3700] font-medium">{shareInfo.count}</span>{' '}
+            <span className="text-primary font-medium">{shareInfo.count}</span>{' '}
             次
           </Text>
           <Text variant="body-2" weight="medium" className="z-10">
             我投胎在了
-            <span className="text-[#ba3700] font-medium">{shareInfo.region}</span>
+            <span className="text-primary font-medium">{shareInfo.region}</span>
           </Text>
           <Text variant="body-2" weight="medium" className="z-10">
             大洲
-            <span className="text-[#ba3700] font-medium">
+            <span className="text-primary font-medium">
               {shareInfo.continent}
             </span>
           </Text>
           <Text variant="body-2" weight="medium" className="z-10">
             概率只有{' '}
-            <span className="text-[#ba3700] font-medium">
+            <span className="text-primary font-medium">
               {formatWorldProbability(shareInfo.probability)}
             </span>
           </Text>
@@ -187,37 +187,32 @@ function WorldShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
             countryEn={shareInfo.countryEn}
           />
         )}
-        <View direction="row" justify="space-between" paddingBottom={4}>
-          <View direction="column">
-            <Text variant="body-2" weight="medium" className="z-10">
-              第{' '}
-              <span className="text-[#ba3700] font-medium">
-                {shareInfo.count}
-              </span>{' '}
-              次
-            </Text>
-            <Text variant="body-2" weight="medium" className="z-10">
-              我投胎在了
-              <span className="text-[#ba3700] font-medium">
-                {shareInfo.region}
-              </span>
-            </Text>
-            <Text variant="body-2" weight="medium" className="z-10">
-              大洲
-              <span className="text-[#ba3700] font-medium">
-                {shareInfo.continent}
-              </span>
-            </Text>
-            <Text variant="body-2" weight="medium" className="z-10">
-              概率只有{' '}
-              <span className="text-[#ba3700] font-medium">
-                {formatWorldProbability(shareInfo.probability)}
-              </span>
-            </Text>
-          </View>
-          <View justify="end" height="100%">
-            <Text color="neutral-faded">#投胎 #重开</Text>
-          </View>
+        <View direction="column" paddingBottom={4}>
+          <Text variant="body-2" weight="medium" className="z-10">
+            第{' '}
+            <span className="text-primary font-medium">
+              {shareInfo.count}
+            </span>{' '}
+            次
+          </Text>
+          <Text variant="body-2" weight="medium" className="z-10">
+            我投胎在了
+            <span className="text-primary font-medium">
+              {shareInfo.region}
+            </span>
+          </Text>
+          <Text variant="body-2" weight="medium" className="z-10">
+            大洲
+            <span className="text-primary font-medium">
+              {shareInfo.continent}
+            </span>
+          </Text>
+          <Text variant="body-2" weight="medium" className="z-10">
+            概率只有{' '}
+            <span className="text-primary font-medium">
+              {formatWorldProbability(shareInfo.probability)}
+            </span>
+          </Text>
         </View>
         <WorldShareFooter bgColor="#f5f3ef" />
       </View>
@@ -242,15 +237,15 @@ function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
           {['香港', '澳门', '台湾'].includes(shareInfo.region) ? (
             <>
               我在投胎模拟器第{' '}
-              <span className="text-[#ba3700] font-medium">
+              <span className="text-primary font-medium">
                 {shareInfo.count}
               </span>{' '}
               次投胎在
-              <span className="text-[#ba3700] font-medium">
+              <span className="text-primary font-medium">
                 {shareInfo.region}
               </span>
               ，是一个
-              <span className="text-[#ba3700] font-medium">
+              <span className="text-primary font-medium">
                 {translateGenderChild(shareInfo.gender)}
               </span>
               ，你也来试试吧！
@@ -258,19 +253,19 @@ function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
           ) : (
             <>
               我在投胎模拟器第{' '}
-              <span className="text-[#ba3700] font-medium">
+              <span className="text-primary font-medium">
                 {shareInfo.count}
               </span>{' '}
               次投胎在
-              <span className="text-[#ba3700] font-medium">
+              <span className="text-primary font-medium">
                 {shareInfo.region}的{shareInfo.category}
               </span>
               ，是家里
-              <span className="text-[#ba3700] font-medium">
+              <span className="text-primary font-medium">
                 第{shareInfo.order}个{translateGenderChild(shareInfo.gender)}
               </span>
               ，概率只有{' '}
-              <span className="text-[#ba3700] font-medium">
+              <span className="text-primary font-medium">
                 {shareInfo.probability.toPrecision(2)}%
               </span>
               ，你也来试试吧！
@@ -318,26 +313,26 @@ function ShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
             <>
               <Text variant="body-2" weight="medium" className="z-10">
                 第{' '}
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   {shareInfo.count}
                 </span>{' '}
                 次
               </Text>
               <Text variant="body-2" weight="medium" className="z-10">
                 我投胎在了
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   {shareInfo.region}
                 </span>
               </Text>
               <Text variant="body-2" weight="medium" className="z-10">
                 是一个
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   {translateGenderChild(shareInfo.gender)}
                 </span>
               </Text>
               <Text variant="body-2" weight="medium" className="z-10">
                 概率只有{' '}
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   {shareInfo.probability.toPrecision(2)}%
                 </span>
               </Text>
@@ -346,26 +341,26 @@ function ShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
             <>
               <Text variant="body-2" weight="medium" className="z-10">
                 第{' '}
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   {shareInfo.count}
                 </span>{' '}
                 次
               </Text>
               <Text variant="body-2" weight="medium" className="z-10">
                 我投胎在了
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   {shareInfo.region}的{shareInfo.category}
                 </span>
               </Text>
               <Text variant="body-2" weight="medium" className="z-10">
                 是家里
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   第{shareInfo.order}个{translateGenderChild(shareInfo.gender)}
                 </span>
               </Text>
               <Text variant="body-2" weight="medium" className="z-10">
                 概率只有{' '}
-                <span className="text-[#ba3700] font-medium">
+                <span className="text-primary font-medium">
                   {shareInfo.probability.toPrecision(2)}%
                 </span>
               </Text>
@@ -411,70 +406,65 @@ function ShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
         justify="space-between"
       >
         <ShareMap region={shareInfo.region} />
-        <View direction="row" justify="space-between" paddingBottom={4}>
-          <View direction="column">
-            {['香港', '澳门', '台湾'].includes(shareInfo.region) ? (
-              <>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  第{' '}
-                  <span className="text-[#ba3700] font-medium">
-                    {shareInfo.count}
-                  </span>{' '}
-                  次
-                </Text>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  我投胎在了
-                  <span className="text-[#ba3700] font-medium">
-                    {shareInfo.region}
-                  </span>
-                </Text>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  是一个
-                  <span className="text-[#ba3700] font-medium">
-                    {translateGenderChild(shareInfo.gender)}
-                  </span>
-                </Text>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  概率只有{' '}
-                  <span className="text-[#ba3700] font-medium">
-                    {shareInfo.probability.toPrecision(2)}%
-                  </span>
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  第{' '}
-                  <span className="text-[#ba3700] font-medium">
-                    {shareInfo.count}
-                  </span>{' '}
-                  次
-                </Text>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  我投胎在了
-                  <span className="text-[#ba3700] font-medium">
-                    {shareInfo.region}的{shareInfo.category}
-                  </span>
-                </Text>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  是家里
-                  <span className="text-[#ba3700] font-medium">
-                    第{shareInfo.order}个
-                    {translateGenderChild(shareInfo.gender)}
-                  </span>
-                </Text>
-                <Text variant="body-2" weight="medium" className="z-10">
-                  概率只有{' '}
-                  <span className="text-[#ba3700] font-medium">
-                    {shareInfo.probability.toPrecision(2)}%
-                  </span>
-                </Text>
-              </>
-            )}
-          </View>
-          <View justify="end" height="100%">
-            <Text color="neutral-faded">#投胎 #重开</Text>
-          </View>
+        <View direction="column" paddingBottom={4}>
+          {['香港', '澳门', '台湾'].includes(shareInfo.region) ? (
+            <>
+              <Text variant="body-2" weight="medium" className="z-10">
+                第{' '}
+                <span className="text-primary font-medium">
+                  {shareInfo.count}
+                </span>{' '}
+                次
+              </Text>
+              <Text variant="body-2" weight="medium" className="z-10">
+                我投胎在了
+                <span className="text-primary font-medium">
+                  {shareInfo.region}
+                </span>
+              </Text>
+              <Text variant="body-2" weight="medium" className="z-10">
+                是一个
+                <span className="text-primary font-medium">
+                  {translateGenderChild(shareInfo.gender)}
+                </span>
+              </Text>
+              <Text variant="body-2" weight="medium" className="z-10">
+                概率只有{' '}
+                <span className="text-primary font-medium">
+                  {shareInfo.probability.toPrecision(2)}%
+                </span>
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text variant="body-2" weight="medium" className="z-10">
+                第{' '}
+                <span className="text-primary font-medium">
+                  {shareInfo.count}
+                </span>{' '}
+                次
+              </Text>
+              <Text variant="body-2" weight="medium" className="z-10">
+                我投胎在了
+                <span className="text-primary font-medium">
+                  {shareInfo.region}的{shareInfo.category}
+                </span>
+              </Text>
+              <Text variant="body-2" weight="medium" className="z-10">
+                是家里
+                <span className="text-primary font-medium">
+                  第{shareInfo.order}个
+                  {translateGenderChild(shareInfo.gender)}
+                </span>
+              </Text>
+              <Text variant="body-2" weight="medium" className="z-10">
+                概率只有{' '}
+                <span className="text-primary font-medium">
+                  {shareInfo.probability.toPrecision(2)}%
+                </span>
+              </Text>
+            </>
+          )}
         </View>
         <View direction="row" justify="space-between" align="center">
           <View direction="row" gap={2} align="center">
@@ -826,32 +816,16 @@ function ShareModal() {
       link.click();
 
       toast.custom(t => (
-        <div className="relative bg-green-100 w-full sm:w-[354px] p-5 border-green-500 border rounded-xl">
-          <div className="flex flex-row justify-between">
-            <Text color="positive">图片已保存！</Text>
-          </div>
-          <button
-            className="absolute top-2 right-3"
-            onClick={() => toast.dismiss(t)}
-          >
-            <Icon color="positive" size={4} svg={<X />} />
-          </button>
-        </div>
+        <RebirthToast toastId={t} tone="positive">
+          <Text color="positive">图片已保存</Text>
+        </RebirthToast>
       ));
     } catch (err) {
       console.error('Error capturing image:', err);
       toast.custom(t => (
-        <div className="relative bg-red-100 w-full sm:w-[354px] p-5 border-red-500 border rounded-xl">
-          <div className="flex flex-row justify-between">
-            <Text color="critical">图片生成失败，请重试</Text>
-          </div>
-          <button
-            className="absolute top-2 right-3"
-            onClick={() => toast.dismiss(t)}
-          >
-            <Icon color="critical" size={4} svg={<X />} />
-          </button>
-        </div>
+        <RebirthToast toastId={t} tone="critical">
+          <Text color="critical">图片生成失败，请重试</Text>
+        </RebirthToast>
       ));
     } finally {
       setIsSaving(false);
@@ -875,7 +849,7 @@ function ShareModal() {
               overflowY: 'auto',
               borderRadius: 14,
               boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-              background: '#f5f3ef'
+              background: '#f3efe8'
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -905,7 +879,7 @@ function ShareModal() {
         </View>
       ) : (
         <View gap={3}>
-          <Dismissible onClose={handleClose} closeAriaLabel="Close modal">
+          <Dismissible onClose={handleClose} closeAriaLabel="关闭对话框">
             <Modal.Title>分享</Modal.Title>
             <Modal.Subtitle>分享你的投胎结果</Modal.Subtitle>
           </Dismissible>

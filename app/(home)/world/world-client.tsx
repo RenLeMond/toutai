@@ -1,10 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Divider, Icon, Loader, Tabs, Text, View } from 'reshaped';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Button, Icon, Tabs, Text, View } from 'reshaped';
 import { toast } from 'sonner';
-import { Share2, X } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import {
   formatWorldProbability,
   simulateWorldBirth,
@@ -24,25 +24,17 @@ import WorldNameLangSwitch from '@/components/world-name-lang-switch';
 import Ads from '@/components/ads';
 import { useRebirthPress } from '@/hooks/useRebirthPress';
 import RebirthTabPanel from '@/components/rebirth-tab-panel';
+import { MapStageSkeleton } from '@/components/map-stage-skeleton';
+import { RebirthToast } from '@/components/rebirth-toast';
 
 const WorldMap = dynamic(() => import('@/components/world-map'), {
   ssr: false,
-  loading: () => (
-    <View
-      direction="row"
-      gap={2}
-      align="center"
-      justify="center"
-      paddingBlock={16}
-    >
-      <Loader />
-      <Text>地图加载中</Text>
-    </View>
-  )
+  loading: () => <MapStageSkeleton />
 });
 
 function WorldClient() {
   const [isLoading, setIsLoading] = useState(true);
+  const trimPendingRef = useRef(false);
 
   const nameLang = useWorldLocale(state => state.nameLang);
   const openShare = useShareModal(state => state.openShare);
@@ -73,7 +65,7 @@ function WorldClient() {
       const countryLabel = formatCountryName(birthResult, nameLang);
 
       toast.custom(t => (
-        <div className="relative bg-white w-full sm:w-[354px] py-5 pl-3 pr-5 border-neutral-faded border rounded-xl">
+        <RebirthToast toastId={t}>
           <div className="flex flex-row justify-start space-x-2 items-center">
             <Button
               variant="ghost"
@@ -96,7 +88,9 @@ function WorldClient() {
             </Button>
             <Text>
               第{' '}
-              <span className="font-medium text-primary">{countAtCreation}</span>{' '}
+              <span className="font-medium text-primary tabular-nums">
+                {countAtCreation}
+              </span>{' '}
               次投胎，你出生在
               <span className="font-medium text-primary">{countryLabel}</span>
               （
@@ -104,19 +98,13 @@ function WorldClient() {
                 {birthResult.continent}
               </span>
               ），概率{' '}
-              <span className="font-medium text-primary">
+              <span className="font-medium text-primary tabular-nums">
                 {formatWorldProbability(birthResult.probability)}
               </span>
               。
             </Text>
           </div>
-          <button
-            className="absolute top-2 right-3"
-            onClick={() => toast.dismiss(t)}
-          >
-            <Icon size={4} color="neutral-faded" svg={<X />} />
-          </button>
-        </div>
+        </RebirthToast>
       ));
     },
     [nameLang, openShare]
@@ -138,9 +126,27 @@ function WorldClient() {
     showRebirthToast
   ]);
 
+  const handleHoldRebirth = useCallback(() => {
+    const birthResult = simulateWorldBirth();
+    addBirthResult(birthResult);
+
+    if (consumeTrimNotice()) {
+      trimPendingRef.current = true;
+    }
+  }, [addBirthResult, consumeTrimNotice]);
+
+  const handlePressEnd = useCallback(() => {
+    if (trimPendingRef.current) {
+      trimPendingRef.current = false;
+      toast.message('历史记录已达上限，最早记录已自动清理');
+    }
+  }, []);
+
   const { isPressing, pressHandlers, handleClickRebirth } = useRebirthPress({
     interval: 400,
     onRebirth: handleRebirth,
+    onHoldRebirth: handleHoldRebirth,
+    onPressEnd: handlePressEnd,
     disabled: isLoading
   });
 
@@ -183,10 +189,7 @@ function WorldClient() {
             </View>
           )}
 
-          <View width="100%" paddingBottom={2} paddingTop={4}>
-            <Divider />
-          </View>
-          <View width="100%" paddingBlock={2}>
+          <View width="100%" paddingTop={4}>
             <Tabs variant="pills" defaultValue="record">
               <View paddingBottom={3}>
                 <Tabs.List>

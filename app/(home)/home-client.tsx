@@ -1,11 +1,11 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Button, Divider, Icon, Loader, Tabs, Text, View } from 'reshaped';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Icon, Tabs, Text, View } from 'reshaped';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ResultTable from '@/components/result-table';
 import { toast } from 'sonner';
-import { Share2, X } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import {
   BirthResult,
   simulateBirth,
@@ -20,27 +20,19 @@ import Ads from '@/components/ads';
 import { useRebirthPress } from '@/hooks/useRebirthPress';
 import RebirthTabPanel from '@/components/rebirth-tab-panel';
 import ChinaStatsPanel from '@/components/china-stats-panel';
+import { MapStageSkeleton } from '@/components/map-stage-skeleton';
+import { RebirthToast } from '@/components/rebirth-toast';
 
 const Map = dynamic(() => import('@/components/map'), {
   ssr: false,
-  loading: () => (
-    <View
-      direction="row"
-      gap={2}
-      align="center"
-      justify="center"
-      paddingBlock={16}
-    >
-      <Loader />
-      <Text>地图加载中</Text>
-    </View>
-  )
+  loading: () => <MapStageSkeleton />
 });
 
 const hasStillbirthOutcome = () => Math.random() < 0.0031;
 
 function HomeClient() {
   const [isLoading, setIsLoading] = useState(true);
+  const trimPendingRef = useRef(false);
 
   useEffect(() => {
     const rehydrate = async () => {
@@ -60,7 +52,7 @@ function HomeClient() {
     (birthResult: BirthResult, count: number) => {
       const countAtCreation = count;
       toast.custom(t => (
-        <div className="relative bg-white w-full sm:w-[354px] py-5 pl-3 pr-5 border-neutral-faded border rounded-xl">
+        <RebirthToast toastId={t}>
           <div className="flex flex-row justify-start space-x-2 items-center">
             <Button
               variant="ghost"
@@ -80,7 +72,9 @@ function HomeClient() {
             </Button>
             <Text>
               第{' '}
-              <span className="font-medium text-primary">{countAtCreation}</span>{' '}
+              <span className="font-medium text-primary tabular-nums">
+                {countAtCreation}
+              </span>{' '}
               次投胎，
               {['香港', '澳门', '台湾'].includes(birthResult.province) ? (
                 <>
@@ -109,7 +103,7 @@ function HomeClient() {
                     {translateGenderChild(birthResult.gender)}
                   </span>
                   ，你是这个家庭
-                  <span className="font-medium text-primary">
+                  <span className="font-medium text-primary tabular-nums">
                     第{birthResult.order}个
                   </span>
                   孩子。
@@ -117,14 +111,7 @@ function HomeClient() {
               )}
             </Text>
           </div>
-
-          <button
-            className="absolute top-2 right-3"
-            onClick={() => toast.dismiss(t)}
-          >
-            <Icon size={4} color="neutral-faded" svg={<X />} />
-          </button>
-        </div>
+        </RebirthToast>
       ));
     },
     [openShare]
@@ -132,19 +119,9 @@ function HomeClient() {
 
   const showRebirthErrorToast = useCallback(() => {
     toast.custom(t => (
-      <div className="relative bg-red-100 w-full sm:w-[354px] p-5 border-red-500 border rounded-xl">
-        <div className="flex flex-row justify-between">
-          <Text color="critical">
-            抱歉，你在这次投胎中不幸夭折，再试一次吧！
-          </Text>
-        </div>
-        <button
-          className="absolute top-2 right-3"
-          onClick={() => toast.dismiss(t)}
-        >
-          <Icon color="critical" size={4} svg={<X />} />
-        </button>
-      </div>
+      <RebirthToast toastId={t} tone="critical">
+        <Text color="critical">这次投胎未能降生，再试一次。</Text>
+      </RebirthToast>
     ));
   }, []);
 
@@ -169,9 +146,31 @@ function HomeClient() {
     showRebirthToast
   ]);
 
-  const { pressHandlers, handleClickRebirth } = useRebirthPress({
-    interval: 150,
+  const handleHoldRebirth = useCallback(() => {
+    if (hasStillbirthOutcome()) {
+      return;
+    }
+
+    const birthResult = simulateBirth();
+    addBirthResult(birthResult);
+
+    if (consumeTrimNotice()) {
+      trimPendingRef.current = true;
+    }
+  }, [addBirthResult, consumeTrimNotice]);
+
+  const handlePressEnd = useCallback(() => {
+    if (trimPendingRef.current) {
+      trimPendingRef.current = false;
+      toast.message('历史记录已达上限，最早记录已自动清理');
+    }
+  }, []);
+
+  const { isPressing, pressHandlers, handleClickRebirth } = useRebirthPress({
+    interval: 400,
     onRebirth: handleRebirth,
+    onHoldRebirth: handleHoldRebirth,
+    onPressEnd: handlePressEnd,
     disabled: isLoading
   });
 
@@ -179,7 +178,7 @@ function HomeClient() {
     <>
       <View paddingInline={4} paddingBottom={9} className="select-none">
         <View paddingBlock={4}>
-          <Map />
+          <Map rapidMode={isPressing} />
         </View>
         <View align="center">
           <View
@@ -205,10 +204,7 @@ function HomeClient() {
             </View>
           </View>
 
-          <View width="100%" paddingBottom={2} paddingTop={4}>
-            <Divider />
-          </View>
-          <View width="100%" paddingBlock={2}>
+          <View width="100%" paddingTop={4}>
             <Tabs variant="pills" defaultValue="record">
               <View paddingBottom={3}>
                 <Tabs.List>
