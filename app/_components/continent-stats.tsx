@@ -31,7 +31,7 @@ function ContinentStats() {
 
   return (
     <View gap={2} width="100%">
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>
@@ -45,17 +45,21 @@ function ContinentStats() {
           </Table.Row>
           <Table.Row>
             <Table.Cell padding={1}>
-              <Text align="center">{total}</Text>
+              <Text align="center" className="tabular-nums">
+                {total}
+              </Text>
             </Table.Cell>
             {CONTINENT_ORDER.slice(0, 3).map(continent => (
               <Table.Cell key={continent} padding={1}>
-                <Text align="center">{counts[continent]}</Text>
+                <Text align="center" className="tabular-nums">
+                  {counts[continent]}
+                </Text>
               </Table.Cell>
             ))}
           </Table.Row>
         </Table>
       </View>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             {CONTINENT_ORDER.slice(3).map(continent => (
@@ -67,7 +71,9 @@ function ContinentStats() {
           <Table.Row>
             {CONTINENT_ORDER.slice(3).map(continent => (
               <Table.Cell key={continent} padding={1}>
-                <Text align="center">{counts[continent]}</Text>
+                <Text align="center" className="tabular-nums">
+                  {counts[continent]}
+                </Text>
               </Table.Cell>
             ))}
           </Table.Row>

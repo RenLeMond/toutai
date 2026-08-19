@@ -2,10 +2,10 @@ import { Container, View } from 'reshaped';
 import React from 'react';
 import type { Metadata } from 'next';
 import Title from '@/components/title';
-import Navbar from '@/components/navbar';
 import ResetModal from '@/components/reset-modal';
 import ShareModal from '@/components/share-modal';
 import AppVersionHydrator from '@/components/app-version-hydrator';
+import SiteFooter from '@/components/site-footer';
 import { createPageMetadata } from '@/_lib/site';
 
 export const metadata: Metadata = createPageMetadata('home');
@@ -24,16 +24,16 @@ export default function HomepageLayout({
         <View
           padding={4}
           direction="row"
-          justify="space-between"
           align="center"
-          gap={2}
-          wrap
           as="header"
+          className="app-header"
         >
           <Title />
-          <Navbar />
         </View>
-        {children}
+        <View as="main" attributes={{ id: 'main-content' }}>
+          {children}
+        </View>
+        <SiteFooter />
       </Container>
     </>
   );

@@ -68,10 +68,12 @@ function WorldResultTable() {
     return sorted;
   }, [birthResults, nameLang, sortDir, sortKey]);
 
-  const startIndex = (currentPage - 1) * pageSize;
+  const totalPages = Math.ceil(rows.length / pageSize);
+  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages || 1));
+
+  const startIndex = (safeCurrentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentPageData = rows.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(rows.length / pageSize);
 
   const handleSort = (key: SortKey) => {
     setCurrentPage(1);
@@ -100,7 +102,7 @@ function WorldResultTable() {
 
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             {sortableHeading('count', '投胎次数')}
@@ -111,7 +113,9 @@ function WorldResultTable() {
           {currentPageData.map(item => (
             <Table.Row key={`${item.countryEn}-${item.sequence}`}>
               <Table.Cell padding={1}>
-                <Text align="center">{item.sequence}</Text>
+                <Text align="center" className="tabular-nums">
+                  {item.sequence}
+                </Text>
               </Table.Cell>
               <Table.Cell padding={1}>
                 <Text align="center">{item.continent}</Text>
@@ -122,7 +126,7 @@ function WorldResultTable() {
                 </Text>
               </Table.Cell>
               <Table.Cell padding={1}>
-                <Text align="center">
+                <Text align="center" className="tabular-nums">
                   {formatWorldProbability(item.probability)}
                 </Text>
               </Table.Cell>
@@ -133,11 +137,11 @@ function WorldResultTable() {
       {totalPages > 1 && (
         <View align="center">
           <Pagination
-            page={currentPage}
+            page={safeCurrentPage}
             total={totalPages}
             previousAriaLabel="上一页"
             nextAriaLabel="下一页"
-            pageAriaLabel={args => `Page ${args.page}`}
+            pageAriaLabel={args => `第 ${args.page} 页`}
             onChange={args => setCurrentPage(args.page)}
           />
         </View>

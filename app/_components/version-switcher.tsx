@@ -2,43 +2,18 @@
 
 import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Text, View } from 'reshaped';
 import {
   AppVersion,
   resolveAppVersion,
   useAppVersion
 } from '@/lib/store/useAppVersion';
+import { SegmentSwitch } from '@/components/segment-switch';
 
-function VersionBadge({
-  label,
-  active,
-  onClick
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`px-1.5 py-1 rounded-xl transition-colors sm:px-2 ${
-        active
-          ? 'bg-[#01ca78] hover:cursor-default'
-          : 'bg-[#e8e6e1] hover:bg-[#dedbd4] hover:cursor-pointer'
-      }`}
-    >
-      <Text
-        className={active ? 'text-white' : 'text-[#4a4a4a]'}
-        weight="medium"
-        variant="caption-1"
-      >
-        {label}
-      </Text>
-    </button>
-  );
-}
+const VERSION_OPTIONS = [
+  { value: 'china' as const, label: '中国' },
+  { value: 'world' as const, label: '世界' },
+  { value: 'dynasty' as const, label: '王朝' }
+];
 
 function VersionSwitcher() {
   const pathname = usePathname();
@@ -60,23 +35,13 @@ function VersionSwitcher() {
   };
 
   return (
-    <View direction="row" align="center" gap={1}>
-      <VersionBadge
-        label="中国版"
-        active={activeVersion === 'china'}
-        onClick={() => handleSwitch('china')}
-      />
-      <VersionBadge
-        label="世界版"
-        active={activeVersion === 'world'}
-        onClick={() => handleSwitch('world')}
-      />
-      <VersionBadge
-        label="王朝版"
-        active={activeVersion === 'dynasty'}
-        onClick={() => handleSwitch('dynasty')}
-      />
-    </View>
+    <SegmentSwitch
+      value={activeVersion}
+      options={VERSION_OPTIONS}
+      onChange={handleSwitch}
+      ariaLabel="版本切换"
+      size="sm"
+    />
   );
 }
 

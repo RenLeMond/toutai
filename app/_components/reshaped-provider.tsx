@@ -6,7 +6,9 @@ import { Reshaped, View } from 'reshaped';
 const ReshapedProvider = ({ children }: { children: ReactNode }) => {
   return (
     <Reshaped theme="orangeTheme">
-      <View backgroundColor="page">{children}</View>
+      <View backgroundColor="page" className="app-page-shell">
+        {children}
+      </View>
     </Reshaped>
   );
 };

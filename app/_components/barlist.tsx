@@ -55,33 +55,36 @@ const BarList: React.FC = () => {
 
   return (
     <View direction="column" gap={1}>
-      {sortedResults.map((item: ProvinceData) => (
-        <View key={item.province} direction="row" align="center" gap={2}>
-          <View width={12}>
-            <Text>{item.province}</Text>
+      {sortedResults.map((item: ProvinceData) => {
+        const barWidth =
+          percentage !== undefined && maxProbability > 0
+            ? (item.probability / maxProbability) * percentage
+            : 0;
+
+        return (
+          <View key={item.province} direction="row" align="center" gap={2}>
+            <View width={12} className="shrink-0">
+              <Text>{item.province}</Text>
+            </View>
+            <View.Item grow>
+              <div
+                className="bg-[#ebe8e7] h-8 rounded-xl"
+                style={{ width: `${barWidth}%` }}
+              />
+            </View.Item>
+            <View width={14} align="end" className="shrink-0">
+              <Text variant="body-3" color="neutral-faded">
+                {(item.probability * 100).toFixed(2)}%
+              </Text>
+            </View>
+            <View width={6} align="end" className="shrink-0">
+              <Text variant="body-3" color="neutral-faded">
+                {item.count}
+              </Text>
+            </View>
           </View>
-          <div
-            className="bg-[#ebe8e7] h-8 rounded-xl"
-            style={{
-              width:
-                percentage !== undefined
-                  ? `${(item.probability / maxProbability) * percentage}%`
-                  : '0%'
-            }}
-          >
-            <Text
-              variant="body-3"
-              color="neutral-faded"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2"
-            >
-              {(item.probability * 100).toFixed(2)}%
-            </Text>
-          </div>
-          <Text variant="body-3" color="neutral-faded">
-            {item.count}
-          </Text>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 };

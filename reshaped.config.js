@@ -3,14 +3,25 @@ const { generateThemeColors } = require('reshaped/themes');
 const config = {
   themes: {
     orangeTheme: {
+      fontFamily: {
+        title: {
+          family:
+            '"Songti SC", "STSong", "Noto Serif SC", serif'
+        },
+        body: {
+          family:
+            '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif'
+        }
+      },
       color: {
         ...generateThemeColors({
-          primary: '#ff4f04',
-          critical: '#ff2732',
-          positive: '#00ca78',
+          primary: '#c24a18',
+          critical: '#b42318',
+          positive: '#8a6a3d',
           neutral: '#dbd8d5'
         }),
-        backgroundPage: { hex: '#f5f3ef' }
+        backgroundPage: { hex: '#f3efe8' },
+        backgroundPageFaded: { hex: '#faf7f2' }
       },
       unit: {
         radiusSmall: {
@@ -18,13 +29,22 @@ const config = {
         }
       },
       shadow: {
+        raised: [
+          {
+            offsetX: 0,
+            offsetY: 10,
+            blurRadius: 24,
+            colorToken: 'black',
+            opacity: 0.08
+          }
+        ],
         overlay: [
           {
             offsetX: 0,
-            offsetY: 1,
-            blurRadius: 3,
+            offsetY: 14,
+            blurRadius: 34,
             colorToken: 'black',
-            opacity: 0.1
+            opacity: 0.12
           }
         ]
       }

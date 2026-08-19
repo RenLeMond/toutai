@@ -15,11 +15,12 @@ function ResultTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20;
 
-  const startIndex = (currentPage - 1) * pageSize;
+  const totalPages = Math.ceil(reversedResults.length / pageSize);
+  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages || 1));
+
+  const startIndex = (safeCurrentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentPageData = reversedResults.slice(startIndex, endIndex);
-
-  const totalPages = Math.ceil(reversedResults.length / pageSize);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -27,7 +28,7 @@ function ResultTable() {
 
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>
@@ -47,9 +48,9 @@ function ResultTable() {
             </Table.Heading>
           </Table.Row>
           {currentPageData.map((item, index) => (
-            <Table.Row key={index}>
+            <Table.Row key={`${item.province}-${item.gender}-${startIndex + index}`}>
               <Table.Cell padding={1}>
-                <Text align="center">
+                <Text align="center" className="tabular-nums">
                   {reversedResults.length - (startIndex + index)}
                 </Text>
               </Table.Cell>
@@ -63,7 +64,9 @@ function ResultTable() {
                 <Text align="center">{item.category || '-'}</Text>
               </Table.Cell>
               <Table.Cell padding={1}>
-                <Text align="center">{item.order || '-'}</Text>
+                <Text align="center" className="tabular-nums">
+                  {item.order || '-'}
+                </Text>
               </Table.Cell>
             </Table.Row>
           ))}
@@ -72,10 +75,11 @@ function ResultTable() {
       {totalPages > 1 && (
         <View align="center">
           <Pagination
+            page={safeCurrentPage}
             total={totalPages}
             previousAriaLabel="上一页"
             nextAriaLabel="下一页"
-            pageAriaLabel={args => `Page ${args.page}`}
+            pageAriaLabel={args => `第 ${args.page} 页`}
             onChange={args => handlePageChange(args.page)}
           />
         </View>

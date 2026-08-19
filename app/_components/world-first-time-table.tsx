@@ -37,13 +37,15 @@ function WorldFirstTimeTable() {
     return rows.sort((a, b) => b.firstAppearance - a.firstAppearance);
   }, [birthResults, nameLang]);
 
-  const startIndex = (currentPage - 1) * pageSize;
-  const currentPageData = uniqueResults.slice(startIndex, startIndex + pageSize);
   const totalPages = Math.ceil(uniqueResults.length / pageSize);
+  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages || 1));
+
+  const startIndex = (safeCurrentPage - 1) * pageSize;
+  const currentPageData = uniqueResults.slice(startIndex, startIndex + pageSize);
 
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>
@@ -65,7 +67,9 @@ function WorldFirstTimeTable() {
                 <Text align="center">{item.continent}</Text>
               </Table.Cell>
               <Table.Cell padding={1}>
-                <Text align="center">第 {item.firstAppearance} 次</Text>
+                <Text align="center" className="tabular-nums">
+                  第 {item.firstAppearance} 次
+                </Text>
               </Table.Cell>
             </Table.Row>
           ))}
@@ -74,10 +78,11 @@ function WorldFirstTimeTable() {
       {totalPages > 1 && (
         <View align="center">
           <Pagination
+            page={safeCurrentPage}
             total={totalPages}
             previousAriaLabel="上一页"
             nextAriaLabel="下一页"
-            pageAriaLabel={args => `Page ${args.page}`}
+            pageAriaLabel={args => `第 ${args.page} 页`}
             onChange={args => setCurrentPage(args.page)}
           />
         </View>

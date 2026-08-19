@@ -6,6 +6,7 @@ import {
   translateDynastyGender
 } from '@/lib/dynasty-rebirth';
 import { dynastyCardVars } from '@/lib/dynasty-card-style';
+import { BRAND_PRIMARY } from '@/lib/constants';
 import { getShellPatternStyle } from '@/lib/dynasty-shell-pattern';
 import type { ShareInfo } from '@/lib/store/useShareModal';
 import { siteIconSmall, siteUrl } from '@/lib/site';
@@ -624,7 +625,7 @@ export async function generateDynastyShareCanvas(
   cursorX += prefixW;
 
   ctx.font = `700 42px ${FONT_FAMILY}`;
-  ctx.fillStyle = '#ba3700';
+  ctx.fillStyle = BRAND_PRIMARY;
   ctx.fillText(countStr, cursorX, eyebrowY);
   cursorX += countW;
 
@@ -772,7 +773,7 @@ export async function generateDynastyShareCanvas(
   ctx.fillStyle = tierVars['--tier-stamp-fill'] || 'rgba(240, 197, 90, 0.14)';
   ctx.fill();
   ctx.lineWidth = 1.5;
-  ctx.strokeStyle = tierVars['--tier-border'] || stampTier.border;
+  ctx.strokeStyle = tierVars['--tier-border'] || '#f0c55a';
   ctx.stroke();
 
   ctx.textAlign = 'center';
@@ -869,7 +870,7 @@ export async function generateDynastyShareCanvas(
   // Outer card border — draw after clip so the full stroke is visible
   ctx.save();
   roundRectPath(ctx, CARD_X, CARD_Y, CARD_WIDTH, CARD_HEIGHT, CARD_RADIUS);
-  ctx.strokeStyle = stampTier.border;
+  ctx.strokeStyle = tierVars['--tier-border'] || '#f0c55a';
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.restore();
@@ -894,7 +895,7 @@ export async function generateDynastyShareCanvas(
   }
 
   // 7. Footer: Brand (Left) + QR Code (Right)
-  // 7a. Carrot Logo & Brand Text (Primary color #ba3700)
+  // 7a. Carrot Logo & Brand Text
   const brandX = 76;
   const brandY = FOOTER_Y;
   try {
@@ -908,12 +909,13 @@ export async function generateDynastyShareCanvas(
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   ctx.font = `700 36px ${FONT_FAMILY}`;
-  ctx.fillStyle = '#ba3700';
+  ctx.fillStyle = BRAND_PRIMARY;
   ctx.fillText('投胎模拟器', brandX + 96, brandY + 36);
 
   ctx.font = `500 26px ${FONT_FAMILY}`;
-  ctx.fillStyle = '#ba3700';
-  ctx.fillText('toutai.online/dynasty', brandX + 96, brandY + 70);
+  ctx.fillStyle = BRAND_PRIMARY;
+  const shareHost = new URL(DYNASTY_SHARE_URL).host;
+  ctx.fillText(`${shareHost}/dynasty`, brandX + 96, brandY + 70);
   ctx.restore();
 
   // 7b. High Resolution QR Code (directly rendered via qrcode-generator, zero DOM scraping)

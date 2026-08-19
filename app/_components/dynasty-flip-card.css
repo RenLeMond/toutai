@@ -32,6 +32,20 @@
   border: none;
   border-radius: 0;
   box-shadow: none;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
 }
 
 .csgo-idle-hint {
@@ -124,32 +138,7 @@
 }
 
 .csgo-vignette {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 20%;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.csgo-vignette-left {
-  left: 0;
-  background: linear-gradient(
-    to right,
-    #f5f3ef 0%,
-    rgba(245, 243, 239, 0.85) 45%,
-    transparent 100%
-  );
-}
-
-.csgo-vignette-right {
-  right: 0;
-  background: linear-gradient(
-    to left,
-    #f5f3ef 0%,
-    rgba(245, 243, 239, 0.85) 45%,
-    transparent 100%
-  );
+  display: none;
 }
 
 .csgo-scene.is-idle .csgo-slot {
@@ -264,7 +253,7 @@
   pointer-events: none;
   background: radial-gradient(
     circle at 50% 50%,
-    color-mix(in srgb, var(--tier-color, #ff4f04) 28%, transparent) 0%,
+    color-mix(in srgb, var(--tier-color, #c24a18) 28%, transparent) 0%,
     transparent 68%
   );
   animation: csgo-pop-flash var(--csgo-pop-ms, 350ms) ease-out forwards;

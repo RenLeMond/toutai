@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Icon, Text } from 'reshaped';
 import { toast } from 'sonner';
-import { Share2, X } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import {
   CLASS_STAMPS,
   DynastyBirthResult,
@@ -14,6 +14,7 @@ import { useDynastyBirth } from '@/lib/store/useDynastyBirth';
 import useShareModal from '@/lib/store/useShareModal';
 import { buildDynastyShareInfo } from '@/lib/dynasty-share';
 import { DynastyRevealPayload } from '@/components/dynasty-flip-card';
+import { RebirthToast } from '@/components/rebirth-toast';
 
 /**
  * Shared hook that encapsulates the full dynasty spin lifecycle:
@@ -62,7 +63,7 @@ export function useDynastySpinner(simulateFn: () => DynastyBirthResult) {
       );
 
       toast.custom(t => (
-        <div className="relative bg-white w-full sm:w-[354px] py-5 pl-3 pr-5 border-neutral-faded border rounded-xl">
+        <RebirthToast toastId={t}>
           <div className="flex flex-row justify-start space-x-2 items-center">
             <Button
               variant="ghost"
@@ -76,7 +77,9 @@ export function useDynastySpinner(simulateFn: () => DynastyBirthResult) {
             </Button>
             <Text>
               第{' '}
-              <span className="font-medium text-primary">{countAtCreation}</span>{' '}
+              <span className="font-medium text-primary tabular-nums">
+                {countAtCreation}
+              </span>{' '}
               次投胎，你生于
               <span className="font-medium text-primary">
                 {birthResult.dynastyName}
@@ -86,19 +89,13 @@ export function useDynastySpinner(simulateFn: () => DynastyBirthResult) {
                 {birthResult.className}
               </span>
               （{stamp}），概率{' '}
-              <span className="font-medium text-primary">
+              <span className="font-medium text-primary tabular-nums">
                 {formatDynastyProbability(birthResult.probability)}
               </span>
               。{flavor}
             </Text>
           </div>
-          <button
-            className="absolute top-2 right-3"
-            onClick={() => toast.dismiss(t)}
-          >
-            <Icon size={4} color="neutral-faded" svg={<X />} />
-          </button>
-        </div>
+        </RebirthToast>
       ));
     },
     [openShare]

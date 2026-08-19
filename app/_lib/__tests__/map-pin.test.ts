@@ -5,7 +5,7 @@ import {
 } from '@/lib/map-pin';
 
 describe('map-pin', () => {
-  it('renders pin shadow and path without ripples when animated is false', () => {
+  it('renders pin shadow, path, and core without ripples when animated is false', () => {
     const api = {
       coord: vi.fn(() => [100, 200]),
       value: vi.fn((dim: number) => (dim === 0 ? 116.4 : 39.9))
@@ -18,9 +18,10 @@ describe('map-pin', () => {
     );
 
     expect(result.type).toBe('group');
-    expect(result.children).toHaveLength(2);
-    expect(result.children?.[0].type).toBe('path');
+    expect(result.children).toHaveLength(3);
+    expect(result.children?.[0].type).toBe('ellipse');
     expect(result.children?.[1].type).toBe('path');
+    expect(result.children?.[2].type).toBe('circle');
   });
 
   it('renders ripples when animated is true', () => {
@@ -35,7 +36,7 @@ describe('map-pin', () => {
       { animated: true, rapidMode: false }
     );
 
-    expect(result.children).toHaveLength(7);
+    expect(result.children).toHaveLength(8);
   });
 
   it('uses fewer ripples in rapid mode', () => {
@@ -50,7 +51,7 @@ describe('map-pin', () => {
       { animated: true, rapidMode: true }
     );
 
-    expect(result.children).toHaveLength(5);
+    expect(result.children).toHaveLength(6);
   });
 
   it('fixes bounce delay when provided to createMapPinSeries', () => {
@@ -64,8 +65,11 @@ describe('map-pin', () => {
     };
 
     const pin = series.renderItem({ dataIndex: 0 } as never, api as never);
-    const pinPath = pin.children?.[pin.children.length - 1];
+    const pinPath = pin.children?.[pin.children.length - 2] as
+      | { type?: string; keyframeAnimation?: { delay?: number } }
+      | undefined;
 
+    expect(pinPath?.type).toBe('path');
     expect(pinPath?.keyframeAnimation?.delay).toBe(250);
   });
 });

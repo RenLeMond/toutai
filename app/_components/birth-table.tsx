@@ -4,7 +4,7 @@ import { regions } from '@/lib/rebirth';
 function BirthTable() {
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>
@@ -20,19 +20,25 @@ function BirthTable() {
               <Text align="center">合计</Text>
             </Table.Heading>
           </Table.Row>
-          {regions.map((item, index) => (
-            <Table.Row key={index}>
+          {regions.map(item => (
+            <Table.Row key={item.name}>
               <Table.Cell padding={1}>
                 <Text align="center">{item.name}</Text>
               </Table.Cell>
               <Table.Cell padding={1}>
-                <Text align="center">{item.male}</Text>
+                <Text align="center" className="tabular-nums">
+                  {item.male}
+                </Text>
               </Table.Cell>
               <Table.Cell padding={1}>
-                <Text align="center">{item.female}</Text>
+                <Text align="center" className="tabular-nums">
+                  {item.female}
+                </Text>
               </Table.Cell>
               <Table.Cell padding={1}>
-                <Text align="center">{item.total}</Text>
+                <Text align="center" className="tabular-nums">
+                  {item.total}
+                </Text>
               </Table.Cell>
             </Table.Row>
           ))}

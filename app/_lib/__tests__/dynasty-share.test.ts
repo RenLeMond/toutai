@@ -126,4 +126,10 @@ describe('dynastyCardVars', () => {
       }
     }
   });
+
+  it('keeps the dynasty-class pill border gold across all class levels', () => {
+    for (const level of [1, 2, 3, 4, 5, 6] as const) {
+      expect(dynastyCardVars(level)['--tier-border']).toBe('#f0c55a');
+    }
+  });
 });

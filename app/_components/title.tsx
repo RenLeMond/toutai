@@ -35,11 +35,17 @@ function Title() {
         : '/';
 
   return (
-    <View direction="row" align="center" gap={2} wrap className="min-w-0">
+    <View
+      direction="row"
+      align="center"
+      gap={2}
+      wrap
+      className="brand-lockup min-w-0"
+    >
       <Link href={homeHref}>
         <View direction="row" align="center" gap={2}>
           <CarrotIcon />
-          <Text variant="body-1" weight="medium">
+          <Text className="brand-title" variant="body-2" weight="bold">
             投胎模拟器
           </Text>
         </View>

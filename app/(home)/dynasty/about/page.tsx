@@ -1,5 +1,5 @@
 import React from 'react';
-import { Actionable, Divider, Text, View } from 'reshaped';
+import { Actionable, Text, View } from 'reshaped';
 import MathComponent from '@/components/math-component';
 import Reset from '@/components/reset';
 import {
@@ -9,7 +9,7 @@ import {
 
 function Page() {
   return (
-    <View as="main" paddingInline={4}>
+    <View paddingInline={4}>
       <View
         paddingBottom={12}
         paddingTop={24}
@@ -61,9 +61,8 @@ function Page() {
           </View>
         </View>
         <View paddingBlock={8}>
-          <Divider />
+          <Reset />
         </View>
-        <Reset />
       </View>
     </View>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Icon, Pagination, Table, Text, Tooltip, View } from 'reshaped';
 import { useBirth } from '@/lib/store/useBirth';
 import { CircleHelp } from 'lucide-react';
@@ -18,57 +18,72 @@ function FirstTimeTable() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 20;
 
-  const uniqueProvinces = Array.from(
-    new Set(birthResults.map(item => item.province))
-  );
+  const uniqueResults = useMemo<UniqueResult[]>(() => {
+    const firstBoyByProvince = new Map<string, number>();
+    const firstGirlByProvince = new Map<string, number>();
+    const seenProvinces = new Set<string>();
 
-  const uniqueResults: UniqueResult[] = uniqueProvinces.map(province => {
-    const firstBoyIndex = birthResults.findIndex(
-      item => item.province === province && item.gender === 'male'
-    );
-    const firstGirlIndex = birthResults.findIndex(
-      item => item.province === province && item.gender === 'female'
-    );
-    return {
-      province,
-      firstBoyAppearance: firstBoyIndex >= 0 ? firstBoyIndex + 1 : 'N/A',
-      firstGirlAppearance: firstGirlIndex >= 0 ? firstGirlIndex + 1 : 'N/A'
-    };
-  });
+    birthResults.forEach((item, index) => {
+      seenProvinces.add(item.province);
+      if (item.gender === 'male' && !firstBoyByProvince.has(item.province)) {
+        firstBoyByProvince.set(item.province, index + 1);
+      } else if (
+        item.gender === 'female' &&
+        !firstGirlByProvince.has(item.province)
+      ) {
+        firstGirlByProvince.set(item.province, index + 1);
+      }
+    });
 
-  uniqueResults.sort((a, b) => {
-    const aFirstBoyAppearance =
-      a.firstBoyAppearance !== 'N/A' ? Number(a.firstBoyAppearance) : Infinity;
-    const aFirstGirlAppearance =
-      a.firstGirlAppearance !== 'N/A'
-        ? Number(a.firstGirlAppearance)
-        : Infinity;
-    const bFirstBoyAppearance =
-      b.firstBoyAppearance !== 'N/A' ? Number(b.firstBoyAppearance) : Infinity;
-    const bFirstGirlAppearance =
-      b.firstGirlAppearance !== 'N/A'
-        ? Number(b.firstGirlAppearance)
-        : Infinity;
+    const results: UniqueResult[] = Array.from(seenProvinces).map(province => {
+      const boy = firstBoyByProvince.get(province);
+      const girl = firstGirlByProvince.get(province);
+      return {
+        province,
+        firstBoyAppearance: boy !== undefined ? boy : 'N/A',
+        firstGirlAppearance: girl !== undefined ? girl : 'N/A'
+      };
+    });
 
-    const aMinAppearance = Math.min(aFirstBoyAppearance, aFirstGirlAppearance);
-    const bMinAppearance = Math.min(bFirstBoyAppearance, bFirstGirlAppearance);
+    return results.sort((a, b) => {
+      const aBoy =
+        a.firstBoyAppearance !== 'N/A'
+          ? Number(a.firstBoyAppearance)
+          : Infinity;
+      const aGirl =
+        a.firstGirlAppearance !== 'N/A'
+          ? Number(a.firstGirlAppearance)
+          : Infinity;
+      const bBoy =
+        b.firstBoyAppearance !== 'N/A'
+          ? Number(b.firstBoyAppearance)
+          : Infinity;
+      const bGirl =
+        b.firstGirlAppearance !== 'N/A'
+          ? Number(b.firstGirlAppearance)
+          : Infinity;
 
-    return bMinAppearance - aMinAppearance;
-  });
+      const aMinAppearance = Math.min(aBoy, aGirl);
+      const bMinAppearance = Math.min(bBoy, bGirl);
+
+      return bMinAppearance - aMinAppearance;
+    });
+  }, [birthResults]);
 
   const totalPages = Math.ceil(uniqueResults.length / pageSize);
+  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const startIndex = (currentPage - 1) * pageSize;
+  const startIndex = (safeCurrentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentPageResults = uniqueResults.slice(startIndex, endIndex);
 
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>
@@ -87,8 +102,8 @@ function FirstTimeTable() {
               </View>
             </Table.Heading>
           </Table.Row>
-          {currentPageResults.map((item, index) => (
-            <Table.Row key={index}>
+          {currentPageResults.map(item => (
+            <Table.Row key={item.province}>
               <Table.Cell padding={1}>
                 <Text align="center">{item.province}</Text>
               </Table.Cell>
@@ -97,13 +112,17 @@ function FirstTimeTable() {
                   {item.firstBoyAppearance !== 'N/A' && (
                     <View direction="row" align="center" gap={1}>
                       <MaleIcon size={12} />
-                      <Text align="center">{item.firstBoyAppearance}</Text>
+                      <Text align="center" className="tabular-nums">
+                        {item.firstBoyAppearance}
+                      </Text>
                     </View>
                   )}
                   {item.firstGirlAppearance !== 'N/A' && (
                     <View direction="row" align="center" gap={1}>
                       <FemaleIcon size={14} />
-                      <Text align="center">{item.firstGirlAppearance}</Text>
+                      <Text align="center" className="tabular-nums">
+                        {item.firstGirlAppearance}
+                      </Text>
                     </View>
                   )}
                   {item.firstBoyAppearance === 'N/A' &&
@@ -119,10 +138,11 @@ function FirstTimeTable() {
       {totalPages > 1 && (
         <View align="center">
           <Pagination
+            page={safeCurrentPage}
             total={totalPages}
             previousAriaLabel="上一页"
             nextAriaLabel="下一页"
-            pageAriaLabel={args => `Page ${args.page}`}
+            pageAriaLabel={args => `第 ${args.page} 页`}
             onChange={args => handlePageChange(args.page)}
           />
         </View>

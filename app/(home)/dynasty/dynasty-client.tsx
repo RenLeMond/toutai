@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button, Divider, Loader, Tabs, Text, View } from 'reshaped';
+import { Button, Loader, Tabs, Text, View } from 'reshaped';
 import { simulateDynastyBirth } from '@/lib/dynasty-rebirth';
 import { useDynastySpinner } from '@/lib/hooks/useDynastySpinner';
 import Ads from '@/components/ads';
@@ -71,10 +71,7 @@ function DynastyClient() {
             </View>
           </View>
 
-          <View width="100%" paddingBottom={2} paddingTop={4}>
-            <Divider />
-          </View>
-          <View width="100%" paddingBlock={2}>
+          <View width="100%" paddingTop={4}>
             <Tabs variant="pills" defaultValue="record">
               <View paddingBottom={3}>
                 <Tabs.List>

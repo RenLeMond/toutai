@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button, Dismissible, Modal, Text, View } from 'reshaped';
+import { Button, Dismissible, Modal, View } from 'reshaped';
 import useResetModal from '@/lib/store/useResetModal';
 import { useBirth } from '@/lib/store/useBirth';
 import { resolveAppVersion, useAppVersion } from '@/lib/store/useAppVersion';
@@ -35,7 +35,7 @@ function ResetModal() {
         <Dismissible
           key="header"
           onClose={deactivate}
-          closeAriaLabel="Close modal"
+          closeAriaLabel="关闭对话框"
         >
           <Modal.Title>确定要重置数据？</Modal.Title>
           <Modal.Subtitle>

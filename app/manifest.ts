@@ -10,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: '根据人口普查数据，模拟你在中国的出生省份、性别与家庭排行。',
     start_url: '/',
     display: 'standalone',
-    background_color: '#f5f3ef',
-    theme_color: '#ff4f04',
+    background_color: '#f3efe8',
+    theme_color: '#c24a18',
     icons: [
       {
         src: siteIcon192,

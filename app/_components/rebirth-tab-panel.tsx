@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Loader, Text, View } from 'reshaped';
+import { Text, View } from 'reshaped';
 
 interface RebirthTabPanelProps {
   count: number;
@@ -17,22 +17,32 @@ function RebirthTabPanel({ count, isLoading, children }: RebirthTabPanelProps) {
   if (isLoading) {
     return (
       <View
-        direction="row"
-        gap={2}
-        align="center"
-        paddingBlock={4}
-        height={64}
-        justify="center"
+        className="record-card skeleton-state"
+        padding={6}
+        gap={3}
+        attributes={{ role: 'status', 'aria-live': 'polite' }}
       >
-        <Loader />
-        <Text>数据加载中</Text>
+        <Text color="neutral-faded" variant="body-3" align="center">
+          数据加载中
+        </Text>
+        <div className="skeleton-stack" aria-hidden="true">
+          <span className="skeleton-line" />
+          <span className="skeleton-line skeleton-line--short" />
+          <span className="skeleton-line skeleton-line--shorter" />
+        </div>
       </View>
     );
   }
 
   return (
-    <View align="center" paddingBlock={4} height={64} justify="center">
-      <Text color="neutral">暂无投胎记录，点击投胎按钮开始！</Text>
+    <View className="record-card empty-state-card" align="center" justify="center">
+      <div className="empty-state-mark" aria-hidden="true">
+        ◎
+      </div>
+      <Text weight="medium">还没有投胎记录</Text>
+      <Text color="neutral-faded" variant="body-3">
+        点一次上方按钮，开始你的第一次模拟。
+      </Text>
     </View>
   );
 }

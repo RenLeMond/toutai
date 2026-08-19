@@ -5,35 +5,39 @@ import type {
 } from '@/lib/echarts';
 
 export const MAP_PIN_PATH =
-  'M16 0c-5.523 0-10 4.477-10 10 0 10 10 22 10 22s10-12 10-22c0-5.523-4.477-10-10-10zM16 16c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z';
+  'M7 0C3.134 0 0 3.134 0 7C0 12.25 7 22 7 22C7 22 14 12.25 14 7C14 3.134 10.866 0 7 0Z';
 
 export const MAP_BACKGROUND = '#f3efe8';
 
 const PIN_SHAPE = {
   d: MAP_PIN_PATH,
-  x: -10,
-  y: -35,
-  width: 20,
-  height: 40
+  x: -7,
+  y: -22,
+  width: 14,
+  height: 22
 } as const;
 
 const PIN_FILL_STYLE = {
   fill: BRAND_PRIMARY,
   stroke: BRAND_INK,
-  lineWidth: 1,
+  lineWidth: 1.1,
   lineJoin: 'round' as const
+};
+
+const PIN_CORE_STYLE = {
+  fill: '#ffffff'
 };
 
 const PIN_SHADOW_STYLE = {
   fill: BRAND_INK,
-  opacity: 0.22
+  opacity: 0.24
 };
 
 const RIPPLE_STYLE = {
-  stroke: BRAND_INK,
+  stroke: BRAND_PRIMARY,
   fill: 'none',
-  lineWidth: 1.5,
-  opacity: 0.28
+  lineWidth: 1.2,
+  opacity: 0.35
 };
 
 export interface MapPinRenderOptions {
@@ -57,7 +61,7 @@ export function renderMapPinItem(
   const circles = animated
     ? Array.from({ length: rapidMode ? 3 : 5 }, (_, i) => ({
         type: 'circle' as const,
-        shape: { cx: 0, cy: 0, r: 30 },
+        shape: { cx: 0, cy: 0, r: 24 },
         style: RIPPLE_STYLE,
         keyframeAnimation: {
           duration: 4000,
@@ -68,12 +72,12 @@ export function renderMapPinItem(
               percent: 0,
               scaleX: 0,
               scaleY: 0,
-              style: { opacity: 0.45 }
+              style: { opacity: 0.55 }
             },
             {
               percent: 1,
-              scaleX: 1,
-              scaleY: 0.4,
+              scaleX: 1.4,
+              scaleY: 0.55,
               style: { opacity: 0 }
             }
           ]
@@ -81,20 +85,33 @@ export function renderMapPinItem(
       }))
     : [];
 
-  const pinShadow = {
-    type: 'path' as const,
-    shape: {
-      ...PIN_SHAPE,
-      y: PIN_SHAPE.y + 2
-    },
-    style: PIN_SHADOW_STYLE,
-    silent: true
+  const bounceKeyframes = rapidMode
+    ? [
+        { y: -4, percent: 0.5, easing: 'cubicOut' as const },
+        { y: 0, percent: 1, easing: 'cubicOut' as const }
+      ]
+    : [
+        { y: -7, percent: 0.5, easing: 'cubicOut' as const },
+        { y: 0, percent: 1, easing: 'bounceOut' as const }
+      ];
+
+  const pinBounceAnimation = {
+    duration: rapidMode ? 450 : 1000,
+    loop: true,
+    delay: bounceDelay,
+    keyframes: bounceKeyframes
   };
 
-  const pinPath = {
-    type: 'path' as const,
-    shape: PIN_SHAPE,
-    style: PIN_FILL_STYLE,
+  const pinShadow = {
+    type: 'ellipse' as const,
+    shape: {
+      cx: 0,
+      cy: 0,
+      rx: 6,
+      ry: 2.4
+    },
+    style: PIN_SHADOW_STYLE,
+    silent: true,
     ...(animated
       ? {
           keyframeAnimation: {
@@ -103,23 +120,62 @@ export function renderMapPinItem(
             delay: bounceDelay,
             keyframes: rapidMode
               ? [
-                  { y: -6, percent: 0.5, easing: 'cubicOut' },
-                  { y: 0, percent: 1, easing: 'cubicOut' }
+                  {
+                    scaleX: 0.8,
+                    scaleY: 0.8,
+                    percent: 0.5,
+                    easing: 'cubicOut' as const
+                  },
+                  {
+                    scaleX: 1,
+                    scaleY: 1,
+                    percent: 1,
+                    easing: 'cubicOut' as const
+                  }
                 ]
               : [
-                  { y: -10, percent: 0.5, easing: 'cubicOut' },
-                  { y: 0, percent: 1, easing: 'bounceOut' }
+                  {
+                    scaleX: 0.7,
+                    scaleY: 0.7,
+                    percent: 0.5,
+                    easing: 'cubicOut' as const
+                  },
+                  {
+                    scaleX: 1,
+                    scaleY: 1,
+                    percent: 1,
+                    easing: 'bounceOut' as const
+                  }
                 ]
           }
         }
       : {})
   };
 
+  const pinPath = {
+    type: 'path' as const,
+    shape: PIN_SHAPE,
+    style: PIN_FILL_STYLE,
+    ...(animated ? { keyframeAnimation: pinBounceAnimation } : {})
+  };
+
+  const pinCore = {
+    type: 'circle' as const,
+    shape: {
+      cx: 0,
+      cy: -15,
+      r: 2.8
+    },
+    style: PIN_CORE_STYLE,
+    silent: true,
+    ...(animated ? { keyframeAnimation: pinBounceAnimation } : {})
+  };
+
   return {
     type: 'group',
     x: coord[0],
     y: coord[1],
-    children: [...circles, pinShadow, pinPath]
+    children: [...circles, pinShadow, pinPath, pinCore]
   };
 }
 

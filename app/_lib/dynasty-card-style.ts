@@ -39,11 +39,11 @@ export function dynastyCardVars(
     '--tier-color': tier.border,
     '--tier-text': tier.text,
     '--tier-glow': tier.glow,
+    '--tier-border': '#f0c55a',
     '--tier-result-bg': mixHex(tier.border, '#3a3228', 0.15),
     '--tier-wash-88': hexToRgba(tier.border, 0.88),
     '--tier-wash-52': hexToRgba(tier.border, 0.52),
     '--tier-wash-16': hexToRgba(tier.border, 0.16),
-    '--tier-stamp-fill': hexToRgba(tier.text, 0.1),
-    '--tier-stamp-border': hexToRgba(tier.text, 0.72)
+    '--tier-stamp-fill': hexToRgba(tier.text, 0.1)
   };
 }

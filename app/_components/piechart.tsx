@@ -4,6 +4,9 @@ import { PieChart } from 'react-minimal-pie-chart';
 import { useBirth } from '@/lib/store/useBirth';
 import { BirthResult } from '@/lib/rebirth';
 import { View, Text } from 'reshaped';
+import { BRAND_PRIMARY } from '@/lib/constants';
+
+const CHART_FEMALE = '#2a9d8f';
 
 function Piechart() {
   const birthResults = useBirth(
@@ -28,8 +31,8 @@ function Piechart() {
   // Create the data array for the PieChart
   const datas = useMemo(
     () => [
-      { title: '男孩', value: genderCounts.male, color: '#ff4f04' },
-      { title: '女孩', value: genderCounts.female, color: '#00ca78' }
+      { title: '男孩', value: genderCounts.male, color: BRAND_PRIMARY },
+      { title: '女孩', value: genderCounts.female, color: CHART_FEMALE }
     ],
     [genderCounts]
   );
@@ -60,12 +63,18 @@ function Piechart() {
         />
         <View direction="column" gap={2} paddingBottom={4} width={28}>
           <View direction="row" gap={1} align="center">
-            <div className="w-4 h-4 bg-[#ff4f04] rounded-full" />
-            <Text>男孩：{genderCounts.male}</Text>
+            <div
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: BRAND_PRIMARY }}
+            />
+            <Text className="tabular-nums">男孩：{genderCounts.male}</Text>
           </View>
           <View direction="row" gap={1} align="center">
-            <div className="w-4 h-4 bg-[#00ca78] rounded-full" />
-            <Text>女孩：{genderCounts.female}</Text>
+            <div
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: CHART_FEMALE }}
+            />
+            <Text className="tabular-nums">女孩：{genderCounts.female}</Text>
           </View>
         </View>
       </View>

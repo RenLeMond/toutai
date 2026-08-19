@@ -4,7 +4,7 @@ import { Actionable, Table, Text, View } from 'reshaped';
 function DeathTable() {
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl">
+      <View className="record-card">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>

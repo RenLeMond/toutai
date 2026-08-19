@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Pagination, Table, Text, View } from 'reshaped';
 import {
   CLASS_STAMPS,
@@ -10,17 +10,25 @@ import { useDynastyBirth } from '@/lib/store/useDynastyBirth';
 
 function DynastyResultTable() {
   const birthResults = useDynastyBirth(state => state.birthResults);
-  const reversedResults = [...birthResults].reverse();
+  const reversedResults = useMemo(
+    () => [...birthResults].reverse(),
+    [birthResults]
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20;
 
-  const startIndex = (currentPage - 1) * pageSize;
-  const currentPageData = reversedResults.slice(startIndex, startIndex + pageSize);
   const totalPages = Math.ceil(reversedResults.length / pageSize);
+  const safeCurrentPage = Math.max(1, Math.min(currentPage, totalPages || 1));
+
+  const startIndex = (safeCurrentPage - 1) * pageSize;
+  const currentPageData = reversedResults.slice(
+    startIndex,
+    startIndex + pageSize
+  );
 
   return (
     <View gap={4}>
-      <View backgroundColor="neutral-faded" className="rounded-xl overflow-hidden">
+      <View className="record-card overflow-hidden">
         <Table border columnBorder>
           <Table.Row highlighted>
             <Table.Heading padding={1.5}>
@@ -37,9 +45,9 @@ function DynastyResultTable() {
             </Table.Heading>
           </Table.Row>
           {currentPageData.map((item, index) => (
-            <Table.Row key={index}>
+            <Table.Row key={`${item.dynastyId}-${item.classId}-${startIndex + index}`}>
               <Table.Cell padding={1}>
-                <Text align="center">
+                <Text align="center" className="tabular-nums">
                   {reversedResults.length - (startIndex + index)}
                 </Text>
               </Table.Cell>
@@ -63,10 +71,11 @@ function DynastyResultTable() {
       {totalPages > 1 && (
         <View align="center">
           <Pagination
+            page={safeCurrentPage}
             total={totalPages}
             previousAriaLabel="上一页"
             nextAriaLabel="下一页"
-            pageAriaLabel={args => `Page ${args.page}`}
+            pageAriaLabel={args => `第 ${args.page} 页`}
             onChange={args => setCurrentPage(args.page)}
           />
         </View>

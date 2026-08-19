@@ -1,5 +1,5 @@
-import './globals.css';
 import './_themes/orangeTheme/theme.css';
+import './globals.css';
 import ReshapedProvider from '@/components/reshaped-provider';
 import React from 'react';
 import { Toaster } from 'sonner';
@@ -44,9 +44,13 @@ export default function RootLayout({
       lang="zh-CN"
       data-rs-theme="orangeTheme"
       data-rs-color-mode="light"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased">
+      <body className="antialiased">
+        <a className="skip-link" href="#main-content">
+          跳到主要内容
+        </a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
