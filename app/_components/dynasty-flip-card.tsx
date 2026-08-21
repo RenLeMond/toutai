@@ -504,12 +504,7 @@ const DynastyFlipCard = ({
     }, []);
 
     useLayoutEffect(() => {
-      if (!rareShineLevel) {
-        document.body.classList.remove('is-rare-shining');
-        return;
-      }
-
-      document.body.classList.add('is-rare-shining');
+      if (!rareShineLevel) return;
 
       let frame = 0;
       const measure = () => {
@@ -534,16 +529,11 @@ const DynastyFlipCard = ({
 
       onViewportChange();
       window.addEventListener('resize', onViewportChange);
-      window.addEventListener('scroll', onViewportChange, true);
       window.visualViewport?.addEventListener('resize', onViewportChange);
-      window.visualViewport?.addEventListener('scroll', onViewportChange);
 
       return () => {
-        document.body.classList.remove('is-rare-shining');
         window.removeEventListener('resize', onViewportChange);
-        window.removeEventListener('scroll', onViewportChange, true);
         window.visualViewport?.removeEventListener('resize', onViewportChange);
-        window.visualViewport?.removeEventListener('scroll', onViewportChange);
         if (frame) cancelAnimationFrame(frame);
       };
     }, [rareShineLevel, rareShinePlayId]);

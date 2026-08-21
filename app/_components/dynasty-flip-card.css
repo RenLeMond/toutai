@@ -298,13 +298,18 @@
   transform: translate(-50%, -50%) scaleY(var(--csgo-reel-scale));
 }
 
-body.is-rare-shining {
-  isolation: isolate;
+/* overflow-x:clip + overflow-y:visible computes to clip on both axes.
+   Revealed winner glow/flip must paint outside the reel. */
+.csgo-scene.is-revealed,
+.csgo-scene.is-rare-shining {
+  overflow: visible;
 }
 
-.csgo-scene.is-rare-shining {
-  position: relative;
-  z-index: 30;
+.csgo-scene.is-revealed .csgo-track,
+.csgo-scene.is-rare-shining .csgo-track {
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 .csgo-slot.is-rare-playing {
@@ -339,35 +344,16 @@ body.is-rare-shining {
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  contain: paint;
   --shine: #f0c55a;
   --throw: 1.35;
 }
 
 .rare-shine-screen.is-back {
   z-index: 20;
-  -webkit-mask-image: radial-gradient(
-    ellipse calc(var(--fx-width, 200px) * 0.58)
-      calc(var(--fx-height, 280px) * 0.58) at
-      calc(var(--fx-left, 0px) + var(--fx-width, 200px) * 0.5)
-      calc(var(--fx-top, 0px) + var(--fx-height, 280px) * 0.5),
-    transparent 0%,
-    transparent 58%,
-    #000 100%
-  );
-  mask-image: radial-gradient(
-    ellipse calc(var(--fx-width, 200px) * 0.58)
-      calc(var(--fx-height, 280px) * 0.58) at
-      calc(var(--fx-left, 0px) + var(--fx-width, 200px) * 0.5)
-      calc(var(--fx-top, 0px) + var(--fx-height, 280px) * 0.5),
-    transparent 0%,
-    transparent 58%,
-    #000 100%
-  );
 }
 
 .rare-shine-screen.is-front {
-  z-index: 40;
+  z-index: 21;
 }
 
 .rare-shine-screen.rare-l1 {
@@ -404,12 +390,11 @@ body.is-rare-shining {
 .rare-shine-screen .rare-shine-aura {
   left: 50%;
   top: 50%;
-  width: 160vmax;
-  height: 160vmax;
+  width: 110vmax;
+  height: 110vmax;
   transform: translate(-50%, -50%);
   z-index: 0;
   opacity: 0;
-  filter: blur(12px);
 }
 
 .rare-shine-screen .rare-shine-burst {
@@ -532,11 +517,11 @@ body.is-rare-shining {
 .rare-shine-screen.rare-l1 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
-    rgba(245, 205, 100, 0.9) 0%,
-    rgba(228, 174, 57, 0.55) 25%,
-    rgba(228, 174, 57, 0.18) 48%,
-    rgba(228, 174, 57, 0.02) 64%,
-    transparent 72%
+    transparent 0%,
+    transparent 26%,
+    rgba(245, 205, 100, 0.5) 34%,
+    rgba(228, 174, 57, 0.22) 52%,
+    transparent 70%
   );
   animation: rare-aura-gold 2.95s ease-out forwards;
 }
@@ -544,11 +529,11 @@ body.is-rare-shining {
 .rare-shine-screen.rare-l2 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
-    rgba(255, 138, 128, 0.85) 0%,
-    rgba(235, 75, 75, 0.5) 26%,
-    rgba(235, 75, 75, 0.16) 48%,
-    rgba(235, 75, 75, 0.02) 64%,
-    transparent 72%
+    transparent 0%,
+    transparent 28%,
+    rgba(255, 138, 128, 0.45) 36%,
+    rgba(235, 75, 75, 0.18) 52%,
+    transparent 70%
   );
   animation: rare-aura-red 2.05s ease-out forwards;
 }
@@ -556,11 +541,11 @@ body.is-rare-shining {
 .rare-shine-screen.rare-l3 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
-    rgba(255, 150, 215, 0.8) 0%,
-    rgba(242, 73, 184, 0.45) 28%,
-    rgba(242, 73, 184, 0.14) 50%,
-    rgba(242, 73, 184, 0.02) 64%,
-    transparent 72%
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 150, 215, 0.4) 38%,
+    rgba(242, 73, 184, 0.14) 54%,
+    transparent 70%
   );
   animation: rare-aura-pink 1.6s ease-out forwards;
 }
@@ -794,27 +779,23 @@ body.is-rare-shining {
 
 @keyframes rare-burst-gold {
   0% {
-    opacity: 0.95;
+    opacity: 0.85;
     transform: translate(-50%, -50%) scale(0.24);
-    box-shadow: 0 0 0 0 rgba(228, 174, 57, 0.62);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(16);
-    box-shadow: 0 0 120px 80px rgba(228, 174, 57, 0);
+    transform: translate(-50%, -50%) scale(6.5);
   }
 }
 
 @keyframes rare-burst-red {
   0% {
-    opacity: 1;
+    opacity: 0.9;
     transform: translate(-50%, -50%) scale(0.28);
-    box-shadow: 0 0 0 0 rgba(235, 75, 75, 0.6);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(12);
-    box-shadow: 0 0 96px 56px rgba(235, 75, 75, 0);
+    transform: translate(-50%, -50%) scale(5);
   }
 }
 
