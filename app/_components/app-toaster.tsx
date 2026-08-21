@@ -1,40 +1,51 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
 import { Toaster } from 'sonner';
 
 const BASE_OFFSET_PX = 12;
+
+function readVisualViewportBottomInset() {
+  const viewport = window.visualViewport;
+  if (!viewport) return 0;
+  return Math.max(
+    0,
+    Math.round(window.innerHeight - viewport.height - viewport.offsetTop)
+  );
+}
 
 function useVisualViewportBottomInset() {
   const [inset, setInset] = useState(0);
 
   useEffect(() => {
-    const update = () => {
-      const viewport = window.visualViewport;
-      if (!viewport) {
-        setInset(0);
-        return;
-      }
+    let frame = 0;
 
-      setInset(
-        Math.max(
-          0,
-          Math.round(window.innerHeight - viewport.height - viewport.offsetTop)
-        )
-      );
+    const commit = () => {
+      frame = 0;
+      const next = readVisualViewportBottomInset();
+      setInset(prev => (prev === next ? prev : next));
     };
 
-    update();
-    window.visualViewport?.addEventListener('resize', update);
-    window.visualViewport?.addEventListener('scroll', update);
-    window.addEventListener('resize', update);
-    window.addEventListener('scroll', update, true);
+    const onViewportChange = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(commit);
+    };
+
+    commit();
+
+    const viewport = window.visualViewport;
+    if (viewport) {
+      viewport.addEventListener('resize', onViewportChange);
+      viewport.addEventListener('scroll', onViewportChange);
+    } else {
+      window.addEventListener('resize', onViewportChange);
+    }
 
     return () => {
-      window.visualViewport?.removeEventListener('resize', update);
-      window.visualViewport?.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
+      if (frame) cancelAnimationFrame(frame);
+      viewport?.removeEventListener('resize', onViewportChange);
+      viewport?.removeEventListener('scroll', onViewportChange);
+      window.removeEventListener('resize', onViewportChange);
     };
   }, []);
 
@@ -43,23 +54,22 @@ function useVisualViewportBottomInset() {
 
 export default function AppToaster() {
   const viewportInset = useVisualViewportBottomInset();
-  const bottomOffset = `calc(${BASE_OFFSET_PX}px + env(safe-area-inset-bottom, 0px) + ${viewportInset}px)`;
+  // visualViewport inset already covers keyboard / browser chrome.
+  // Only add safe-area when that gap is 0, so the home indicator is not counted twice.
+  const mobileBottom =
+    viewportInset > 0
+      ? `${BASE_OFFSET_PX + viewportInset}px`
+      : `calc(${BASE_OFFSET_PX}px + env(safe-area-inset-bottom, 0px))`;
 
   return (
     <Toaster
       position="bottom-center"
       offset={32}
       mobileOffset={{
-        bottom: bottomOffset,
+        bottom: mobileBottom,
         left: '12px',
         right: '12px'
       }}
-      style={
-        {
-          '--offset-bottom': `calc(32px + env(safe-area-inset-bottom, 0px) + ${viewportInset}px)`,
-          '--mobile-offset-bottom': bottomOffset
-        } as CSSProperties
-      }
     />
   );
 }
