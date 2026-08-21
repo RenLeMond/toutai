@@ -243,6 +243,17 @@ body {
   outline-offset: 2px;
 }
 
+/* Sonner uses z-index 999999999; keep share modal above rebirth toasts. */
+.share-modal-overlay {
+  z-index: 1000000000;
+}
+
+@media (max-width: 659px) {
+  .share-modal-dialog {
+    max-height: min(92dvh, 760px);
+  }
+}
+
 .map-stage {
   background: transparent;
   -webkit-mask-image: radial-gradient(
