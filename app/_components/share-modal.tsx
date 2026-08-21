@@ -605,6 +605,30 @@ type DynastyPosterAsset = {
   dataUrl: string;
 };
 
+const DYNASTY_POSTER_TIMEOUT_MS = 15000;
+
+function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  message: string
+): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => {
+      reject(new Error(message));
+    }, timeoutMs);
+
+    promise
+      .then(value => {
+        window.clearTimeout(timer);
+        resolve(value);
+      })
+      .catch(err => {
+        window.clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
+
 function getDynastyShareCacheKey(shareInfo: ShareInfo) {
   return [
     shareInfo.count,
@@ -621,17 +645,24 @@ function getDynastyShareCacheKey(shareInfo: ShareInfo) {
 function DynastyShareImagePreloader({
   shareInfo,
   cacheKey,
-  onReady
+  onReady,
+  onError
 }: {
   shareInfo: ShareInfo;
   cacheKey: string;
   onReady: (key: string, asset: DynastyPosterAsset) => void;
+  onError: (key: string, message: string) => void;
 }) {
   useEffect(() => {
     let cancelled = false;
 
-    generateDynastyShareImage(shareInfo)
-      .then(blob => blobToDataUrl(blob).then(dataUrl => ({ blob, dataUrl })))
+    withTimeout(
+      generateDynastyShareImage(shareInfo).then(blob =>
+        blobToDataUrl(blob).then(dataUrl => ({ blob, dataUrl }))
+      ),
+      DYNASTY_POSTER_TIMEOUT_MS,
+      '海报生成超时，请重试'
+    )
       .then(asset => {
         if (!cancelled) {
           onReady(cacheKey, asset);
@@ -639,21 +670,49 @@ function DynastyShareImagePreloader({
       })
       .catch(err => {
         console.error('Failed to preload dynasty share poster:', err);
+        if (!cancelled) {
+          const message =
+            err instanceof Error ? err.message : '海报生成失败，请重试';
+          onError(cacheKey, message);
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [shareInfo, cacheKey, onReady]);
+  }, [shareInfo, cacheKey, onReady, onError]);
 
   return null;
 }
 
 function DynastyShareCanvasPreview({
-  poster
+  poster,
+  error,
+  onRetry
 }: {
   poster: DynastyPosterAsset | null;
+  error: string | null;
+  onRetry?: () => void;
 }) {
+  if (error) {
+    return (
+      <View
+        direction="column"
+        gap={2}
+        align="center"
+        justify="center"
+        height={80}
+      >
+        <Text color="critical">{error}</Text>
+        {onRetry ? (
+          <Button color="primary" variant="faded" onClick={onRetry}>
+            重试
+          </Button>
+        ) : null}
+      </View>
+    );
+  }
+
   if (!poster) {
     return (
       <View
@@ -687,6 +746,13 @@ function ShareModal() {
     null
   );
   const [dynastyPosterKey, setDynastyPosterKey] = useState<string | null>(null);
+  const [dynastyPosterError, setDynastyPosterError] = useState<string | null>(
+    null
+  );
+  const [dynastyPosterErrorKey, setDynastyPosterErrorKey] = useState<
+    string | null
+  >(null);
+  const [dynastyPosterRetry, setDynastyPosterRetry] = useState(0);
 
   const dynastyShareCacheKey = useMemo(
     () =>
@@ -695,14 +761,29 @@ function ShareModal() {
   );
   const cachedDynastyPoster =
     dynastyPosterKey === dynastyShareCacheKey ? dynastyPoster : null;
+  const cachedDynastyPosterError =
+    dynastyPosterErrorKey === dynastyShareCacheKey ? dynastyPosterError : null;
 
   const handleDynastyPosterReady = useCallback(
     (key: string, asset: DynastyPosterAsset) => {
       setDynastyPoster(asset);
       setDynastyPosterKey(key);
+      setDynastyPosterError(null);
+      setDynastyPosterErrorKey(null);
     },
     []
   );
+
+  const handleDynastyPosterError = useCallback((key: string, message: string) => {
+    setDynastyPosterError(message);
+    setDynastyPosterErrorKey(key);
+  }, []);
+
+  const handleDynastyPosterRetry = useCallback(() => {
+    setDynastyPosterError(null);
+    setDynastyPosterErrorKey(null);
+    setDynastyPosterRetry(retry => retry + 1);
+  }, []);
 
   const handleClose = () => {
     if (previewImageUrl?.startsWith('blob:')) {
@@ -711,6 +792,9 @@ function ShareModal() {
     setPreviewImageUrl(null);
     setDynastyPoster(null);
     setDynastyPosterKey(null);
+    setDynastyPosterError(null);
+    setDynastyPosterErrorKey(null);
+    setDynastyPosterRetry(0);
     deactivate();
   };
 
@@ -747,7 +831,16 @@ function ShareModal() {
         dataUrl = asset.dataUrl;
       } else {
         const shareContent = document.getElementById('shareContent');
-        if (!shareContent) return;
+        if (!shareContent) {
+          toast.custom(t => (
+            <RebirthToast toastId={t} tone="critical">
+              <Text color="critical">
+                分享内容未加载完成，请切换样式后重试
+              </Text>
+            </RebirthToast>
+          ));
+          return;
+        }
 
         await waitForShareMapReady(shareContent);
         await waitForShareImages(shareContent);
@@ -918,13 +1011,18 @@ function ShareModal() {
             <>
               {active ? (
                 <DynastyShareImagePreloader
-                  key={dynastyShareCacheKey}
+                  key={`${dynastyShareCacheKey}-${dynastyPosterRetry}`}
                   shareInfo={shareInfo}
                   cacheKey={dynastyShareCacheKey}
                   onReady={handleDynastyPosterReady}
+                  onError={handleDynastyPosterError}
                 />
               ) : null}
-              <DynastyShareCanvasPreview poster={cachedDynastyPoster} />
+              <DynastyShareCanvasPreview
+                poster={cachedDynastyPoster}
+                error={cachedDynastyPosterError}
+                onRetry={handleDynastyPosterRetry}
+              />
             </>
           ) : (
             <Tabs variant="pills" defaultValue="1">
@@ -953,7 +1051,8 @@ function ShareModal() {
             onSave={handleSaveAsImage}
             isSaving={isSaving}
             saveDisabled={
-              shareInfo.mode === 'dynasty' && !cachedDynastyPoster
+              shareInfo.mode === 'dynasty' &&
+              (!cachedDynastyPoster || !!cachedDynastyPosterError)
             }
           />
         </View>
