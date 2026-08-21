@@ -298,17 +298,17 @@
   transform: translate(-50%, -50%) scaleY(var(--csgo-reel-scale));
 }
 
-/* overflow-x:clip forces both axes to clip. After landing, clip only
-   left/right so the strip stays contained, and bleed 96px on Y for rim glow. */
+/* Keep horizontal clipping contained so the strip never causes page overflow */
 .csgo-scene.is-revealed,
 .csgo-scene.is-rare-shining {
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .csgo-scene.is-revealed .csgo-track,
 .csgo-scene.is-rare-shining .csgo-track {
-  overflow: visible;
-  clip-path: inset(-96px 0);
+  overflow-x: clip;
+  overflow-y: visible;
   -webkit-mask-image: none;
   mask-image: none;
 }

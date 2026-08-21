@@ -62,7 +62,8 @@ function WorldShareQr({ bgColor }: { bgColor: string }) {
       fgColor="#000000"
       level="L"
       size={256}
-      className="w-12 h-12"
+      className="w-12 h-12 shrink-0"
+      style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
     />
   );
 }
@@ -89,8 +90,8 @@ function WorldShareFooter({ bgColor }: { bgColor: string }) {
 function WorldShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
   return (
     <div
-      className="w-full bg-orange-200 relative aspect-square"
-      id="shareContent"
+      className="w-full bg-orange-200 relative aspect-square share-card-container"
+      data-tab-panel="1"
     >
       <View
         direction="column"
@@ -128,8 +129,8 @@ function WorldShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
 function WorldShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
   return (
     <div
-      className="w-full bg-[#f5f3ef] relative aspect-square"
-      id="shareContent"
+      className="w-full bg-[#f5f3ef] relative aspect-square share-card-container"
+      data-tab-panel="2"
     >
       <View direction="column" padding={6} height="100%">
         {shareInfo.position && (
@@ -172,8 +173,8 @@ function WorldShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
 function WorldShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
   return (
     <div
-      className="w-full bg-[#f5f3ef] relative aspect-square"
-      id="shareContent"
+      className="w-full bg-[#f5f3ef] relative aspect-square share-card-container"
+      data-tab-panel="3"
     >
       <View
         direction="column"
@@ -223,8 +224,8 @@ function WorldShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
 function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
   return (
     <div
-      className="w-full bg-orange-200 relative aspect-square"
-      id="shareContent"
+      className="w-full bg-orange-200 relative aspect-square share-card-container"
+      data-tab-panel="1"
     >
       <View
         direction="column"
@@ -290,7 +291,8 @@ function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
             fgColor="#000000"
             level="L"
             size={256}
-            className="w-12 h-12"
+            className="w-12 h-12 shrink-0"
+            style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
           />
         </View>
       </View>
@@ -301,8 +303,8 @@ function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
 function ShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
   return (
     <div
-      className="w-full bg-[#f5f3ef] relative aspect-square"
-      id="shareContent"
+      className="w-full bg-[#f5f3ef] relative aspect-square share-card-container"
+      data-tab-panel="2"
     >
       <View direction="column" padding={6} height="100%">
         <div className="absolute right-2 top-12">
@@ -385,7 +387,8 @@ function ShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
             fgColor="#000000"
             level="L"
             size={256}
-            className="w-12 h-12"
+            className="w-12 h-12 shrink-0"
+            style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
           />
         </View>
       </View>
@@ -396,8 +399,8 @@ function ShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
 function ShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
   return (
     <div
-      className="w-full bg-[#f5f3ef] relative aspect-square"
-      id="shareContent"
+      className="w-full bg-[#f5f3ef] relative aspect-square share-card-container"
+      data-tab-panel="3"
     >
       <View
         direction="column"
@@ -484,7 +487,8 @@ function ShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
             fgColor="#000000"
             level="L"
             size={256}
-            className="w-12 h-12"
+            className="w-12 h-12 shrink-0"
+            style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
           />
         </View>
       </View>
@@ -532,7 +536,7 @@ function ModalFooter({
   );
 }
 
-async function waitForShareMapReady(root: HTMLElement, timeoutMs = 2500) {
+async function waitForShareMapReady(root: HTMLElement, timeoutMs = 800) {
   await new Promise(resolve =>
     requestAnimationFrame(() => requestAnimationFrame(resolve))
   );
@@ -542,18 +546,18 @@ async function waitForShareMapReady(root: HTMLElement, timeoutMs = 2500) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
     if (root.querySelector('canvas')) return;
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise(resolve => setTimeout(resolve, 40));
   }
 }
 
-async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
+async function waitForShareImages(root: HTMLElement, timeoutMs = 1200) {
   const images = Array.from(root.querySelectorAll('img'));
   if (images.length === 0) return;
 
   await Promise.all(
     images.map(img => {
       if (img.complete && img.naturalWidth > 0) {
-        return img.decode?.().catch(() => undefined) ?? Promise.resolve();
+        return Promise.resolve();
       }
 
       return new Promise<void>(resolve => {
@@ -569,7 +573,7 @@ async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
           'load',
           () => {
             window.clearTimeout(timer);
-            img.decode?.().then(done).catch(done);
+            done();
           },
           { once: true }
         );
@@ -586,7 +590,7 @@ async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
   );
 }
 
-async function waitForShareFonts(timeoutMs = 2500) {
+async function waitForShareFonts(timeoutMs = 600) {
   if (typeof document === 'undefined' || !document.fonts?.ready) return;
   try {
     await Promise.race([
@@ -740,6 +744,8 @@ function DynastyShareCanvasPreview({
 
 function ShareModal() {
   const { active, deactivate, shareInfo } = useShareModal();
+  const [worldTab, setWorldTab] = useState('1');
+  const [chinaTab, setChinaTab] = useState('1');
   const [isSaving, setIsSaving] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [dynastyPoster, setDynastyPoster] = useState<DynastyPosterAsset | null>(
@@ -795,6 +801,8 @@ function ShareModal() {
     setDynastyPosterError(null);
     setDynastyPosterErrorKey(null);
     setDynastyPosterRetry(0);
+    setWorldTab('1');
+    setChinaTab('1');
     deactivate();
   };
 
@@ -830,10 +838,19 @@ function ShareModal() {
         blob = asset.blob;
         dataUrl = asset.dataUrl;
       } else {
-        const shareContent = document.getElementById('shareContent');
+        const activeTabValue =
+          shareInfo.mode === 'world' ? worldTab : chinaTab;
+        const shareContent =
+          (document.querySelector(
+            `.share-modal-dialog .share-card-container[data-tab-panel="${activeTabValue}"]`
+          ) as HTMLElement | null) ||
+          (document.querySelector(
+            '.share-modal-dialog .share-card-container'
+          ) as HTMLElement | null);
+
         if (!shareContent) {
           toast.custom(t => (
-            <RebirthToast toastId={t} tone="critical">
+            <RebirthToast toastId={t} tone="critical" centered>
               <Text color="critical">
                 分享内容未加载完成，请切换样式后重试
               </Text>
@@ -842,23 +859,65 @@ function ShareModal() {
           return;
         }
 
-        await waitForShareMapReady(shareContent);
-        await waitForShareImages(shareContent);
-        await waitForShareFonts();
-        await new Promise<void>(resolve =>
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
-        );
+        const { dataUrl: generatedDataUrl, blob: generatedBlob } =
+          await withTimeout(
+            (async () => {
+              await waitForShareMapReady(shareContent);
+              await waitForShareImages(shareContent);
+              await waitForShareFonts();
+              await new Promise<void>(resolve =>
+                requestAnimationFrame(() =>
+                  requestAnimationFrame(() => resolve())
+                )
+              );
 
-        const canvas = await html2canvas(shareContent, {
-          scale: window.matchMedia('(max-width: 768px)').matches ? 2 : 3,
-          useCORS: true,
-          allowTaint: true
-        });
+              const isSmallScreen =
+                typeof window !== 'undefined' &&
+                window.matchMedia('(max-width: 768px)').matches;
 
-        dataUrl = canvas.toDataURL('image/png');
-        blob = await new Promise<Blob | null>(resolve =>
-          canvas.toBlob(resolve, 'image/png')
-        );
+              const canvas = await html2canvas(shareContent, {
+                scale: isSmallScreen ? 2 : 3,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null,
+                logging: false,
+                onclone: clonedDoc => {
+                  const origCanvases =
+                    shareContent.querySelectorAll('canvas');
+                  const clonedCanvases =
+                    clonedDoc.querySelectorAll('canvas');
+                  origCanvases.forEach((orig, idx) => {
+                    const cloned = clonedCanvases[idx];
+                    if (cloned && orig) {
+                      const ctx = cloned.getContext('2d');
+                      if (ctx) {
+                        try {
+                          ctx.drawImage(orig, 0, 0);
+                        } catch {
+                          // ignore canvas clone error
+                        }
+                      }
+                    }
+                  });
+                }
+              });
+
+              const dUrl = canvas.toDataURL('image/png');
+              const b = await new Promise<Blob | null>(resolve =>
+                canvas.toBlob(resolve, 'image/png')
+              );
+
+              if (!dUrl || !b) {
+                throw new Error('Failed to generate image');
+              }
+              return { dataUrl: dUrl, blob: b };
+            })(),
+            12000,
+            '图片生成超时，请重试'
+          );
+
+        dataUrl = generatedDataUrl;
+        blob = generatedBlob;
       }
 
       if (!dataUrl) {
@@ -872,58 +931,32 @@ function ShareModal() {
         ) ||
           window.matchMedia('(max-width: 768px)').matches);
 
-      const isWeChat =
-        typeof window !== 'undefined' &&
-        /MicroMessenger/i.test(navigator.userAgent);
-
-      // 1. On mobile browsers (non-WeChat), try Web Share API for direct native "Save Image" option
-      if (
-        isMobile &&
-        !isWeChat &&
-        blob &&
-        typeof navigator !== 'undefined' &&
-        typeof File !== 'undefined'
-      ) {
-        try {
-          const file = new File([blob], filename, { type: 'image/png' });
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            setIsSaving(false);
-            await navigator.share({
-              files: [file],
-              title: '投胎模拟器结果'
-            });
-            return;
-          }
-        } catch (err: unknown) {
-          if (err instanceof Error && err.name === 'AbortError') {
-            return;
-          }
-          console.warn('navigator.share failed, falling back to preview:', err);
-        }
-      }
-
-      // 2. On mobile (WeChat or navigator.share fallback), display preview with base64 data URL for long-press saving
+      // 1. On mobile browsers (WeChat / Safari / Chrome etc.), display preview for direct long-press saving
       if (isMobile) {
         setPreviewImageUrl(dataUrl);
         return;
       }
 
-      // 3. On desktop, trigger standard download
+      // 2. On desktop, trigger standard download
       const link = document.createElement('a');
       link.download = filename;
       link.href = dataUrl;
       link.click();
 
       toast.custom(t => (
-        <RebirthToast toastId={t} tone="positive">
+        <RebirthToast toastId={t} tone="positive" centered>
           <Text color="positive">图片已保存</Text>
         </RebirthToast>
       ));
     } catch (err) {
       console.error('Error capturing image:', err);
       toast.custom(t => (
-        <RebirthToast toastId={t} tone="critical">
-          <Text color="critical">图片生成失败，请重试</Text>
+        <RebirthToast toastId={t} tone="critical" centered>
+          <Text color="critical">
+            {err instanceof Error && err.message
+              ? err.message
+              : '图片生成失败，请重试'}
+          </Text>
         </RebirthToast>
       ));
     } finally {
@@ -987,7 +1020,11 @@ function ShareModal() {
             <Modal.Subtitle>分享你的投胎结果</Modal.Subtitle>
           </Dismissible>
           {shareInfo.mode === 'world' ? (
-            <Tabs variant="pills" defaultValue="1">
+            <Tabs
+              variant="pills"
+              value={worldTab}
+              onChange={({ value }) => setWorldTab(value)}
+            >
               <View gap={3}>
                 <View>
                   <Tabs.Panel value="1">
@@ -1025,7 +1062,11 @@ function ShareModal() {
               />
             </>
           ) : (
-            <Tabs variant="pills" defaultValue="1">
+            <Tabs
+              variant="pills"
+              value={chinaTab}
+              onChange={({ value }) => setChinaTab(value)}
+            >
               <View gap={3}>
                 <View>
                   <Tabs.Panel value="1">

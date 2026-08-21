@@ -7,10 +7,15 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 
 #root {
   height: 100%;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 @layer base {
@@ -47,6 +52,8 @@ body {
 
 .app-page-shell {
   min-height: 100%;
+  overflow-x: hidden;
+  max-width: 100vw;
   background:
     radial-gradient(circle at top, rgba(194, 74, 24, 0.05), transparent 34%),
     linear-gradient(180deg, #f7f2eb 0%, var(--tt-page) 100%);
@@ -212,20 +219,33 @@ body {
   position: relative;
   width: 100%;
   max-width: 354px;
-  padding: 18px 44px 18px 16px;
+  margin: 0 auto;
+  padding: 16px 40px 16px 16px;
   border: 1px solid #e4ddd3;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: var(--tt-shadow-soft);
+  box-sizing: border-box;
 }
 
 .rebirth-toast__body {
   min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.rebirth-toast--centered .rebirth-toast__body {
+  justify-content: center;
+  text-align: center;
 }
 
 .share-modal-dialog {
-  min-width: 0;
-  max-width: min(100%, calc(100vw - 32px));
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: min(400px, calc(100vw - 32px)) !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 /* Sonner sets width:100% plus left/right offsets below 600px, which overflows. */
@@ -233,6 +253,11 @@ body {
   [data-sonner-toaster] {
     width: auto !important;
   }
+}
+
+[data-sonner-toaster] {
+  display: flex;
+  justify-content: center;
 }
 
 .rebirth-toast--positive {
