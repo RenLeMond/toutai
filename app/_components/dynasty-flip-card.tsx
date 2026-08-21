@@ -153,7 +153,9 @@ function RareShineScreen({
       aria-hidden="true"
     >
       <div className="rare-shine-origin">
-        <RareShineBack level={level} />
+        <div className="rare-shine-back">
+          <RareShineBack level={level} />
+        </div>
         <RareShineFront />
       </div>
     </div>
@@ -410,8 +412,10 @@ const DynastyFlipCard = ({
         if (!isRareLevel(resultToCommit.classLevel)) return;
 
         const level = resultToCommit.classLevel;
+        const nextRect = readWinnerFxRect(winnerSlotRef.current);
         setRareShineLevel(level);
         setRareShinePlayId(id => id + 1);
+        if (nextRect) setFxRect(nextRect);
         rareShineTimerRef.current = window.setTimeout(() => {
           setRareShineLevel(null);
           setFxRect(null);
@@ -543,7 +547,7 @@ const DynastyFlipCard = ({
         });
       };
 
-      commitRect();
+      onViewportChange();
       window.addEventListener('resize', onViewportChange);
       window.addEventListener('scroll', onViewportChange, true);
       window.visualViewport?.addEventListener('resize', onViewportChange);
