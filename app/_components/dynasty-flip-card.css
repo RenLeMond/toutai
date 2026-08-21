@@ -298,6 +298,15 @@
   transform: translate(-50%, -50%) scaleY(var(--csgo-reel-scale));
 }
 
+body.is-rare-shining {
+  isolation: isolate;
+}
+
+.csgo-scene.is-rare-shining {
+  position: relative;
+  z-index: 30;
+}
+
 .csgo-slot.is-rare-playing {
   overflow: visible;
   z-index: 8;
@@ -325,6 +334,65 @@
   z-index: 1;
 }
 
+.rare-shine-screen {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: paint;
+  --shine: #f0c55a;
+  --throw: 1.35;
+}
+
+.rare-shine-screen.is-back {
+  z-index: 20;
+  -webkit-mask-image: radial-gradient(
+    ellipse calc(var(--fx-width, 200px) * 0.58)
+      calc(var(--fx-height, 280px) * 0.58) at
+      calc(var(--fx-left, 0px) + var(--fx-width, 200px) * 0.5)
+      calc(var(--fx-top, 0px) + var(--fx-height, 280px) * 0.5),
+    transparent 0%,
+    transparent 58%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    ellipse calc(var(--fx-width, 200px) * 0.58)
+      calc(var(--fx-height, 280px) * 0.58) at
+      calc(var(--fx-left, 0px) + var(--fx-width, 200px) * 0.5)
+      calc(var(--fx-top, 0px) + var(--fx-height, 280px) * 0.5),
+    transparent 0%,
+    transparent 58%,
+    #000 100%
+  );
+}
+
+.rare-shine-screen.is-front {
+  z-index: 40;
+}
+
+.rare-shine-screen.rare-l1 {
+  --shine: #f0c55a;
+  --throw: 1.35;
+}
+
+.rare-shine-screen.rare-l2 {
+  --shine: #ff8a80;
+  --throw: 0.9;
+}
+
+.rare-shine-screen.rare-l3 {
+  --shine: #ff6ec7;
+  --throw: 0.55;
+}
+
+.rare-shine-origin {
+  position: absolute;
+  left: var(--fx-left, 50%);
+  top: var(--fx-top, 50%);
+  width: var(--fx-width, 200px);
+  height: var(--fx-height, 280px);
+}
+
 .rare-shine-aura,
 .rare-shine-burst,
 .rare-shine-seal,
@@ -333,67 +401,32 @@
   pointer-events: none;
 }
 
-.rare-shine-aura {
-  inset: -96px -80px -104px;
-  z-index: 0;
-  opacity: 0;
-  filter: blur(18px);
-  pointer-events: none;
-}
-
-.csgo-slot.rare-l1 .rare-shine-aura {
-  inset: -130px -95px -130px;
-}
-
-.csgo-slot.rare-l2 .rare-shine-aura {
-  inset: -90px -70px -90px;
-}
-
-.csgo-slot.rare-l3 .rare-shine-aura {
-  inset: -60px -50px -60px;
-}
-
-.csgo-slot.rare-l1 .rare-shine-sparkles {
-  inset: -96px -88px -104px;
-}
-
-.csgo-slot.rare-l2 .rare-shine-sparkles {
-  inset: -64px -56px -72px;
-}
-
-.csgo-slot.rare-l3 .rare-shine-sparkles {
-  inset: -40px -34px -44px;
-}
-
-.rare-shine-burst {
+.rare-shine-screen .rare-shine-aura {
   left: 50%;
   top: 50%;
-  width: 140px;
-  height: 140px;
-  margin: -70px 0 0 -70px;
+  width: 160vmax;
+  height: 160vmax;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  opacity: 0;
+  filter: blur(12px);
+}
+
+.rare-shine-screen .rare-shine-burst {
+  left: 50%;
+  top: 50%;
+  width: min(var(--fx-width, 200px), var(--fx-height, 280px));
+  height: min(var(--fx-width, 200px), var(--fx-height, 280px));
   border-radius: 50%;
   z-index: 0;
   opacity: 0;
 }
 
-.csgo-slot.rare-l1 .rare-shine-burst {
-  width: 168px;
-  height: 168px;
-  margin: -84px 0 0 -84px;
-}
-
-.csgo-slot.rare-l2 .rare-shine-burst {
-  width: 118px;
-  height: 118px;
-  margin: -59px 0 0 -59px;
-}
-
-.rare-shine-seal {
+.rare-shine-screen .rare-shine-seal {
   left: 50%;
   top: 50%;
-  width: 92px;
-  height: 118px;
-  margin: -59px 0 0 -46px;
+  width: calc(var(--fx-width, 200px) * 0.46);
+  height: calc(var(--fx-height, 280px) * 0.42);
   border: 2px solid #f249b8;
   border-radius: 6px;
   z-index: 0;
@@ -401,17 +434,7 @@
   box-shadow: 0 0 18px rgba(242, 73, 184, 0.45);
 }
 
-.csgo-slot.rare-l3 .rare-shine-seal {
-  width: 72px;
-  height: 92px;
-  margin: -46px 0 0 -36px;
-}
-
-.rare-shine-seal-2 {
-  border-color: #ff6ec7;
-}
-
-.rare-shine-sparkles {
+.rare-shine-screen .rare-shine-sparkles {
   inset: 0;
   z-index: 5;
 }
@@ -421,28 +444,28 @@
   opacity: 0;
 }
 
-.csgo-slot.rare-l1 .rare-shine-spark {
-  width: 7px;
-  height: 7px;
+.rare-shine-screen.rare-l1 .rare-shine-spark {
+  width: 9px;
+  height: 9px;
   background: #ffe9a8;
-  box-shadow: 0 0 10px 2px #e4ae39;
+  box-shadow: 0 0 14px 3px #e4ae39;
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 
-.csgo-slot.rare-l2 .rare-shine-spark {
-  width: 3px;
-  height: 14px;
+.rare-shine-screen.rare-l2 .rare-shine-spark {
+  width: 4px;
+  height: 18px;
   border-radius: 1px;
   background: linear-gradient(#fff, #ff6b5b 55%, #eb4b4b);
-  box-shadow: 0 0 12px 2px #eb4b4b;
+  box-shadow: 0 0 14px 3px #eb4b4b;
 }
 
-.csgo-slot.rare-l3 .rare-shine-spark {
-  width: 8px;
-  height: 8px;
+.rare-shine-screen.rare-l3 .rare-shine-spark {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #fff, #ff9ad4 42%, #f249b8);
-  box-shadow: 0 0 12px 2px #ff6ec7;
+  box-shadow: 0 0 14px 3px #ff6ec7;
 }
 
 .dynasty-card > .rare-shine-foil,
@@ -506,7 +529,7 @@
   opacity: 0;
 }
 
-.csgo-slot.is-rare-playing.rare-l1 .rare-shine-aura {
+.rare-shine-screen.rare-l1 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
     rgba(245, 205, 100, 0.9) 0%,
@@ -518,7 +541,7 @@
   animation: rare-aura-gold 2.95s ease-out forwards;
 }
 
-.csgo-slot.is-rare-playing.rare-l2 .rare-shine-aura {
+.rare-shine-screen.rare-l2 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
     rgba(255, 138, 128, 0.85) 0%,
@@ -530,7 +553,7 @@
   animation: rare-aura-red 2.05s ease-out forwards;
 }
 
-.csgo-slot.is-rare-playing.rare-l3 .rare-shine-aura {
+.rare-shine-screen.rare-l3 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
     rgba(255, 150, 215, 0.8) 0%,
@@ -542,20 +565,33 @@
   animation: rare-aura-pink 1.6s ease-out forwards;
 }
 
-.csgo-slot.is-rare-playing.rare-l1 .rare-shine-burst {
+.rare-shine-screen.rare-l1 .rare-shine-burst {
   animation: rare-burst-gold 2.25s cubic-bezier(0.12, 0.7, 0.2, 1) forwards;
 }
 
-.csgo-slot.is-rare-playing.rare-l2 .rare-shine-burst {
+.rare-shine-screen.rare-l2 .rare-shine-burst {
   animation: rare-burst-red 1.65s cubic-bezier(0.12, 0.7, 0.2, 1) forwards;
 }
 
-.csgo-slot.is-rare-playing.rare-l3 .rare-shine-seal {
+.rare-shine-screen.rare-l3 .rare-shine-seal {
   animation: rare-seal-bloom 1.55s cubic-bezier(0.12, 0.72, 0.18, 1) forwards;
 }
 
-.csgo-slot.is-rare-playing.rare-l3 .rare-shine-seal-2 {
+.rare-shine-screen.rare-l3 .rare-shine-seal-2 {
+  border-color: #ff6ec7;
   animation-delay: 0.12s;
+}
+
+.rare-shine-screen.rare-l1 .rare-shine-spark {
+  animation: rare-flake-out 2.65s ease-out forwards;
+}
+
+.rare-shine-screen.rare-l2 .rare-shine-spark {
+  animation: rare-ember-out 1.82s ease-out forwards;
+}
+
+.rare-shine-screen.rare-l3 .rare-shine-spark {
+  animation: rare-pearl-out 1.48s ease-out forwards;
 }
 
 .csgo-slot.is-rare-playing.rare-l1 .rare-shine-foil {
@@ -582,18 +618,6 @@
   animation: rare-pink-bloom 1.12s ease-out forwards;
 }
 
-.csgo-slot.is-rare-playing.rare-l1 .rare-shine-spark {
-  animation: rare-flake-out 2.65s ease-out forwards;
-}
-
-.csgo-slot.is-rare-playing.rare-l2 .rare-shine-spark {
-  animation: rare-ember-out 1.82s ease-out forwards;
-}
-
-.csgo-slot.is-rare-playing.rare-l3 .rare-shine-spark {
-  animation: rare-pearl-out 1.48s ease-out forwards;
-}
-
 .csgo-slot.is-rare-playing.rare-l1 .dynasty-card {
   animation: rare-rim-gold 2.85s ease-out forwards;
 }
@@ -606,83 +630,83 @@
   animation: rare-rim-pink 1.65s ease-out forwards;
 }
 
-.rare-shine-spark:nth-child(1) {
+.rare-shine-screen .rare-shine-spark:nth-child(1) {
   left: 8%;
   top: 18%;
-  --dx: -52px;
-  --dy: -44px;
+  --dx: -24vw;
+  --dy: -22vh;
   animation-delay: 0.06s;
 }
 
-.rare-shine-spark:nth-child(2) {
+.rare-shine-screen .rare-shine-spark:nth-child(2) {
   left: 88%;
   top: 14%;
-  --dx: 56px;
-  --dy: -48px;
+  --dx: 26vw;
+  --dy: -24vh;
   animation-delay: 0.14s;
 }
 
-.rare-shine-spark:nth-child(3) {
+.rare-shine-screen .rare-shine-spark:nth-child(3) {
   left: 4%;
   top: 52%;
-  --dx: -64px;
-  --dy: 10px;
+  --dx: -28vw;
+  --dy: 6vh;
   animation-delay: 0.22s;
 }
 
-.rare-shine-spark:nth-child(4) {
+.rare-shine-screen .rare-shine-spark:nth-child(4) {
   left: 92%;
   top: 48%;
-  --dx: 68px;
-  --dy: 8px;
+  --dx: 30vw;
+  --dy: 5vh;
   animation-delay: 0.1s;
 }
 
-.rare-shine-spark:nth-child(5) {
+.rare-shine-screen .rare-shine-spark:nth-child(5) {
   left: 22%;
   top: 6%;
-  --dx: -22px;
-  --dy: -58px;
+  --dx: -10vw;
+  --dy: -28vh;
   animation-delay: 0.3s;
 }
 
-.rare-shine-spark:nth-child(6) {
+.rare-shine-screen .rare-shine-spark:nth-child(6) {
   left: 6%;
   top: 86%;
-  --dx: -54px;
-  --dy: 46px;
+  --dx: -22vw;
+  --dy: 24vh;
   animation-delay: 0.18s;
 }
 
-.rare-shine-spark:nth-child(7) {
+.rare-shine-screen .rare-shine-spark:nth-child(7) {
   left: 78%;
   top: 88%;
-  --dx: 46px;
-  --dy: 52px;
+  --dx: 20vw;
+  --dy: 26vh;
   animation-delay: 0.34s;
 }
 
-.rare-shine-spark:nth-child(8) {
+.rare-shine-screen .rare-shine-spark:nth-child(8) {
   left: 96%;
   top: 28%;
-  --dx: 62px;
-  --dy: -22px;
+  --dx: 26vw;
+  --dy: -10vh;
   animation-delay: 0.26s;
 }
 
-.rare-shine-spark:nth-child(9) {
+.rare-shine-screen .rare-shine-spark:nth-child(9) {
   left: 50%;
   top: 2%;
-  --dx: 10px;
-  --dy: -66px;
+  --dx: 4vw;
+  --dy: -30vh;
   animation-delay: 0.12s;
 }
 
-.rare-shine-spark:nth-child(10) {
+.rare-shine-screen .rare-shine-spark:nth-child(10) {
   left: 50%;
   top: 96%;
-  --dx: -12px;
-  --dy: 58px;
+  --dx: -6vw;
+  --dy: 28vh;
   animation-delay: 0.2s;
 }
 
@@ -741,56 +765,56 @@
 @keyframes rare-aura-gold {
   0% {
     opacity: 0;
-    transform: scale(0.7);
+    transform: translate(-50%, -50%) scale(0.55);
   }
   22% {
     opacity: 1;
-    transform: scale(1.08);
+    transform: translate(-50%, -50%) scale(1);
   }
   100% {
-    opacity: 0.35;
-    transform: scale(1.18);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.12);
   }
 }
 
 @keyframes rare-aura-red {
   0% {
     opacity: 0;
-    transform: scale(0.75);
+    transform: translate(-50%, -50%) scale(0.6);
   }
   16% {
     opacity: 1;
-    transform: scale(1.04);
+    transform: translate(-50%, -50%) scale(0.96);
   }
   100% {
-    opacity: 0.25;
-    transform: scale(1.1);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.06);
   }
 }
 
 @keyframes rare-burst-gold {
   0% {
     opacity: 0.95;
-    transform: scale(0.24);
+    transform: translate(-50%, -50%) scale(0.24);
     box-shadow: 0 0 0 0 rgba(228, 174, 57, 0.62);
   }
   100% {
     opacity: 0;
-    transform: scale(4.4);
-    box-shadow: 0 0 110px 64px rgba(228, 174, 57, 0);
+    transform: translate(-50%, -50%) scale(16);
+    box-shadow: 0 0 120px 80px rgba(228, 174, 57, 0);
   }
 }
 
 @keyframes rare-burst-red {
   0% {
     opacity: 1;
-    transform: scale(0.28);
+    transform: translate(-50%, -50%) scale(0.28);
     box-shadow: 0 0 0 0 rgba(235, 75, 75, 0.6);
   }
   100% {
     opacity: 0;
-    transform: scale(3.05);
-    box-shadow: 0 0 64px 36px rgba(235, 75, 75, 0);
+    transform: translate(-50%, -50%) scale(12);
+    box-shadow: 0 0 96px 56px rgba(235, 75, 75, 0);
   }
 }
 
@@ -852,29 +876,30 @@
 @keyframes rare-seal-bloom {
   0% {
     opacity: 0.9;
-    transform: scale(0.5) rotate(-6deg);
+    transform: translate(-50%, -50%) scale(0.5) rotate(-6deg);
   }
   28% {
     opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.05) rotate(-2deg);
   }
   100% {
     opacity: 0;
-    transform: scale(1.7) rotate(4deg);
+    transform: translate(-50%, -50%) scale(4.2) rotate(4deg);
   }
 }
 
 @keyframes rare-aura-pink {
   0% {
     opacity: 0;
-    transform: scale(0.8);
+    transform: translate(-50%, -50%) scale(0.65);
   }
   20% {
     opacity: 0.9;
-    transform: scale(1.03);
+    transform: translate(-50%, -50%) scale(0.94);
   }
   100% {
-    opacity: 0.2;
-    transform: scale(1.06);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.02);
   }
 }
 
@@ -1331,10 +1356,10 @@
   .csgo-slot.is-rare-playing .rare-shine-slash,
   .csgo-slot.is-rare-playing .rare-shine-ribbon,
   .csgo-slot.is-rare-playing .rare-shine-flash,
-  .csgo-slot.is-rare-playing .rare-shine-spark,
-  .csgo-slot.is-rare-playing .rare-shine-aura,
-  .csgo-slot.is-rare-playing .rare-shine-burst,
-  .csgo-slot.is-rare-playing .rare-shine-seal {
+  .rare-shine-screen .rare-shine-spark,
+  .rare-shine-screen .rare-shine-aura,
+  .rare-shine-screen .rare-shine-burst,
+  .rare-shine-screen .rare-shine-seal {
     animation: none;
     opacity: 0;
   }

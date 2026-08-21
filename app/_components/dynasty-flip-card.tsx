@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState
 } from 'react';
+import { createPortal } from 'react-dom';
 import { Text, View } from 'reshaped';
 import {
   CLASS_STAMPS,
@@ -49,10 +50,18 @@ interface DynastyFlipCardProps {
 type Phase = 'prompt' | 'spinning' | 'revealed';
 type RareLevel = 1 | 2 | 3;
 
+interface FxRect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+/** Longest animation duration + delay per tier, with a short teardown buffer. */
 const RARE_SHINE_MS: Record<RareLevel, number> = {
-  1: 1100,
-  2: 900,
-  3: 800
+  1: 3000,
+  2: 2200,
+  3: 1850
 };
 
 function isRareLevel(level: ClassLevel): level is RareLevel {
@@ -70,7 +79,7 @@ function CardSweepFx({ level }: { level: RareLevel }) {
   );
 }
 
-function RareShineOuter({ level }: { level: RareLevel }) {
+function RareShineBack({ level }: { level: RareLevel }) {
   return (
     <>
       <div className="rare-shine-aura" />
@@ -82,12 +91,50 @@ function RareShineOuter({ level }: { level: RareLevel }) {
       ) : (
         <div className="rare-shine-burst" />
       )}
-      <div className="rare-shine-sparkles">
-        {Array.from({ length: 10 }, (_, i) => (
-          <span key={i} className="rare-shine-spark" />
-        ))}
-      </div>
     </>
+  );
+}
+
+function RareShineFront() {
+  return (
+    <div className="rare-shine-sparkles">
+      {Array.from({ length: 10 }, (_, i) => (
+        <span key={i} className="rare-shine-spark" />
+      ))}
+    </div>
+  );
+}
+
+function RareShineScreen({
+  level,
+  rect,
+  layer
+}: {
+  level: RareLevel;
+  rect: FxRect;
+  layer: 'back' | 'front';
+}) {
+  return (
+    <div
+      className={`rare-shine-screen is-${layer} rare-l${level}`}
+      style={
+        {
+          '--fx-left': `${rect.left}px`,
+          '--fx-top': `${rect.top}px`,
+          '--fx-width': `${rect.width}px`,
+          '--fx-height': `${rect.height}px`
+        } as React.CSSProperties
+      }
+      aria-hidden="true"
+    >
+      <div className="rare-shine-origin">
+        {layer === 'back' ? (
+          <RareShineBack level={level} />
+        ) : (
+          <RareShineFront />
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -163,6 +210,7 @@ const DynastyFlipCard = ({
   onRevealComplete
 }: DynastyFlipCardProps) => {
     const stripRef = useRef<HTMLDivElement>(null);
+    const winnerSlotRef = useRef<HTMLDivElement>(null);
     const offsetRef = useRef(0);
     const animRef = useRef<Animation | null>(null);
     const spinTimerRef = useRef<number | null>(null);
@@ -196,6 +244,8 @@ const DynastyFlipCard = ({
     const [popped, setPopped] = useState(Boolean(result));
     const [rareShineLevel, setRareShineLevel] = useState<RareLevel | null>(null);
     const [rareShinePlayId, setRareShinePlayId] = useState(0);
+    const [fxRect, setFxRect] = useState<FxRect | null>(null);
+    const [portalMounted, setPortalMounted] = useState(false);
     const [flipped, setFlipped] = useState(Boolean(result));
     const [syncedSeq, setSyncedSeq] = useState<number | null>(null);
     const [winnerIsNew, setWinnerIsNew] = useState(false);
@@ -223,6 +273,7 @@ const DynastyFlipCard = ({
       setShowPopFx(false);
       setPopped(reducedMotion);
       setRareShineLevel(null);
+      setFxRect(null);
       setFlipped(reducedMotion);
       setPhase(reducedMotion ? 'revealed' : 'spinning');
       setStripOffset(reducedMotion ? to : SPIN_START_OFFSET);
@@ -316,6 +367,7 @@ const DynastyFlipCard = ({
         setPopped(true);
         setFlipped(true);
         setRareShineLevel(null);
+        setFxRect(null);
         onRevealCompleteRef.current?.(resultToCommit, seq);
         return;
       }
@@ -324,6 +376,7 @@ const DynastyFlipCard = ({
       setPopped(false);
       setFlipped(false);
       setRareShineLevel(null);
+      setFxRect(null);
 
       scheduleBeat(() => {
         setShowPopFx(true);
@@ -334,6 +387,7 @@ const DynastyFlipCard = ({
         setRareShinePlayId(id => id + 1);
         rareShineTimerRef.current = window.setTimeout(() => {
           setRareShineLevel(null);
+          setFxRect(null);
         }, RARE_SHINE_MS[level]);
       }, beats.popAt);
 
@@ -435,6 +489,7 @@ const DynastyFlipCard = ({
     }, [reveal]);
 
     useEffect(() => {
+      setPortalMounted(true);
       return () => {
         animRef.current?.cancel();
         if (spinTimerRef.current) window.clearTimeout(spinTimerRef.current);
@@ -443,6 +498,52 @@ const DynastyFlipCard = ({
         if (passingRafRef.current) cancelAnimationFrame(passingRafRef.current);
       };
     }, []);
+
+    useLayoutEffect(() => {
+      if (!rareShineLevel) {
+        document.body.classList.remove('is-rare-shining');
+        setFxRect(null);
+        return;
+      }
+
+      document.body.classList.add('is-rare-shining');
+
+      let frame = 0;
+      const measure = () => {
+        const el = winnerSlotRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        setFxRect({
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height
+        });
+      };
+
+      const onViewportChange = () => {
+        if (frame) return;
+        frame = window.requestAnimationFrame(() => {
+          frame = 0;
+          measure();
+        });
+      };
+
+      measure();
+      window.addEventListener('resize', onViewportChange);
+      window.addEventListener('scroll', onViewportChange, true);
+      window.visualViewport?.addEventListener('resize', onViewportChange);
+      window.visualViewport?.addEventListener('scroll', onViewportChange);
+
+      return () => {
+        document.body.classList.remove('is-rare-shining');
+        window.removeEventListener('resize', onViewportChange);
+        window.removeEventListener('scroll', onViewportChange, true);
+        window.visualViewport?.removeEventListener('resize', onViewportChange);
+        window.visualViewport?.removeEventListener('scroll', onViewportChange);
+        if (frame) cancelAnimationFrame(frame);
+      };
+    }, [rareShineLevel, rareShinePlayId]);
 
     const active = displayResult ?? result;
     const stampTier = active ? CLASS_STAMPS[active.classLevel] : null;
@@ -463,7 +564,31 @@ const DynastyFlipCard = ({
       .filter(Boolean)
       .join(' ');
 
+    const rareShinePortal =
+      portalMounted &&
+      rareShineLevel &&
+      fxRect &&
+      createPortal(
+        <>
+          <RareShineScreen
+            key={`back-${rareShinePlayId}`}
+            level={rareShineLevel}
+            rect={fxRect}
+            layer="back"
+          />
+          <RareShineScreen
+            key={`front-${rareShinePlayId}`}
+            level={rareShineLevel}
+            rect={fxRect}
+            layer="front"
+          />
+        </>,
+        document.body
+      );
+
     return (
+      <>
+      {rareShinePortal}
       <button
         type="button"
         className={sceneClass}
@@ -536,11 +661,9 @@ const DynastyFlipCard = ({
                   return (
                     <div
                       key={item.key}
+                      ref={isWinner ? winnerSlotRef : undefined}
                       className={`csgo-slot ${isWinner ? 'is-winner' : ''} ${isDimmed ? 'is-dimmed' : ''} ${shineLevel ? `is-rare-playing rare-l${shineLevel}` : ''}`}
                     >
-                      {shineLevel ? (
-                        <RareShineOuter key={rareShinePlayId} level={shineLevel} />
-                      ) : null}
                       <FlipCard
                         result={item.result}
                         flipped={isWinner && flipped}
@@ -576,6 +699,7 @@ const DynastyFlipCard = ({
           )}
         </div>
       </button>
+      </>
     );
 };
 
