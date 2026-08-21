@@ -69,6 +69,27 @@ function isRareLevel(level: ClassLevel): level is RareLevel {
   return level <= 3;
 }
 
+function readWinnerFxRect(el: HTMLDivElement | null): FxRect | null {
+  if (!el) return null;
+  const rect = el.getBoundingClientRect();
+  return {
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height
+  };
+}
+
+function sameFxRect(a: FxRect | null, b: FxRect | null) {
+  if (!a || !b) return a === b;
+  return (
+    a.left === b.left &&
+    a.top === b.top &&
+    a.width === b.width &&
+    a.height === b.height
+  );
+}
+
 function CardSweepFx({ level }: { level: RareLevel }) {
   return (
     <>
@@ -108,32 +129,32 @@ function RareShineFront() {
 
 function RareShineScreen({
   level,
-  rect,
-  layer
+  rect
 }: {
   level: RareLevel;
   rect: FxRect;
-  layer: 'back' | 'front';
 }) {
+  const holeW = rect.width * 1.16;
+  const holeH = rect.height * 1.16;
+
   return (
     <div
-      className={`rare-shine-screen is-${layer} rare-l${level}`}
+      className={`rare-shine-screen rare-l${level}`}
       style={
         {
           '--fx-left': `${rect.left}px`,
           '--fx-top': `${rect.top}px`,
           '--fx-width': `${rect.width}px`,
-          '--fx-height': `${rect.height}px`
+          '--fx-height': `${rect.height}px`,
+          '--fx-hole-w': `${holeW}px`,
+          '--fx-hole-h': `${holeH}px`
         } as React.CSSProperties
       }
       aria-hidden="true"
     >
       <div className="rare-shine-origin">
-        {layer === 'back' ? (
-          <RareShineBack level={level} />
-        ) : (
-          <RareShineFront />
-        )}
+        <RareShineBack level={level} />
+        <RareShineFront />
       </div>
     </div>
   );
@@ -246,6 +267,7 @@ const DynastyFlipCard = ({
     const [rareShineLevel, setRareShineLevel] = useState<RareLevel | null>(null);
     const [rareShinePlayId, setRareShinePlayId] = useState(0);
     const [fxRect, setFxRect] = useState<FxRect | null>(null);
+    // Client-only portal target; subscribe noop because mount state never changes.
     const portalMounted = useSyncExternalStore(
       () => () => {},
       () => true,
@@ -507,33 +529,31 @@ const DynastyFlipCard = ({
       if (!rareShineLevel) return;
 
       let frame = 0;
-      const measure = () => {
-        const el = winnerSlotRef.current;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        setFxRect({
-          left: rect.left,
-          top: rect.top,
-          width: rect.width,
-          height: rect.height
-        });
+      const commitRect = () => {
+        const next = readWinnerFxRect(winnerSlotRef.current);
+        if (!next) return;
+        setFxRect(prev => (sameFxRect(prev, next) ? prev : next));
       };
 
       const onViewportChange = () => {
         if (frame) return;
         frame = window.requestAnimationFrame(() => {
           frame = 0;
-          measure();
+          commitRect();
         });
       };
 
-      onViewportChange();
+      commitRect();
       window.addEventListener('resize', onViewportChange);
+      window.addEventListener('scroll', onViewportChange, true);
       window.visualViewport?.addEventListener('resize', onViewportChange);
+      window.visualViewport?.addEventListener('scroll', onViewportChange);
 
       return () => {
         window.removeEventListener('resize', onViewportChange);
+        window.removeEventListener('scroll', onViewportChange, true);
         window.visualViewport?.removeEventListener('resize', onViewportChange);
+        window.visualViewport?.removeEventListener('scroll', onViewportChange);
         if (frame) cancelAnimationFrame(frame);
       };
     }, [rareShineLevel, rareShinePlayId]);
@@ -562,20 +582,11 @@ const DynastyFlipCard = ({
       rareShineLevel &&
       fxRect &&
       createPortal(
-        <>
-          <RareShineScreen
-            key={`back-${rareShinePlayId}`}
-            level={rareShineLevel}
-            rect={fxRect}
-            layer="back"
-          />
-          <RareShineScreen
-            key={`front-${rareShinePlayId}`}
-            level={rareShineLevel}
-            rect={fxRect}
-            layer="front"
-          />
-        </>,
+        <RareShineScreen
+          key={rareShinePlayId}
+          level={rareShineLevel}
+          rect={fxRect}
+        />,
         document.body
       );
 

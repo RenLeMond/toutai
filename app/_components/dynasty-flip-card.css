@@ -298,18 +298,10 @@
   transform: translate(-50%, -50%) scaleY(var(--csgo-reel-scale));
 }
 
-/* overflow-x:clip + overflow-y:visible computes to clip on both axes.
-   Revealed winner glow/flip must paint outside the reel. */
-.csgo-scene.is-revealed,
-.csgo-scene.is-rare-shining {
-  overflow: visible;
-}
-
-.csgo-scene.is-revealed .csgo-track,
-.csgo-scene.is-rare-shining .csgo-track {
-  overflow: visible;
-  -webkit-mask-image: none;
-  mask-image: none;
+/* Let winner rim/glow bleed without unmasking the whole strip. */
+.csgo-scene.is-revealed .csgo-slot.is-winner,
+.csgo-scene.is-rare-shining .csgo-slot.is-winner {
+  clip-path: inset(-96px -72px -96px -72px);
 }
 
 .csgo-slot.is-rare-playing {
@@ -342,18 +334,13 @@
 .rare-shine-screen {
   position: fixed;
   inset: 0;
+  z-index: 20;
   pointer-events: none;
   overflow: hidden;
   --shine: #f0c55a;
   --throw: 1.35;
-}
-
-.rare-shine-screen.is-back {
-  z-index: 20;
-}
-
-.rare-shine-screen.is-front {
-  z-index: 21;
+  --fx-hole-w: calc(var(--fx-width, 200px) * 1.16);
+  --fx-hole-h: calc(var(--fx-height, 280px) * 1.16);
 }
 
 .rare-shine-screen.rare-l1 {
@@ -395,6 +382,18 @@
   transform: translate(-50%, -50%);
   z-index: 0;
   opacity: 0;
+  -webkit-mask-image: radial-gradient(
+    ellipse calc(var(--fx-hole-w) * 0.5) calc(var(--fx-hole-h) * 0.5) at 50% 50%,
+    transparent 0%,
+    transparent 54%,
+    #000 62%
+  );
+  mask-image: radial-gradient(
+    ellipse calc(var(--fx-hole-w) * 0.5) calc(var(--fx-hole-h) * 0.5) at 50% 50%,
+    transparent 0%,
+    transparent 54%,
+    #000 62%
+  );
 }
 
 .rare-shine-screen .rare-shine-burst {
@@ -405,6 +404,24 @@
   border-radius: 50%;
   z-index: 0;
   opacity: 0;
+}
+
+.rare-shine-screen.rare-l1 .rare-shine-burst {
+  background: radial-gradient(
+    circle,
+    rgba(245, 205, 100, 0.88) 0%,
+    rgba(228, 174, 57, 0.42) 42%,
+    transparent 72%
+  );
+}
+
+.rare-shine-screen.rare-l2 .rare-shine-burst {
+  background: radial-gradient(
+    circle,
+    rgba(255, 138, 128, 0.85) 0%,
+    rgba(235, 75, 75, 0.38) 42%,
+    transparent 72%
+  );
 }
 
 .rare-shine-screen .rare-shine-seal {
@@ -517,11 +534,10 @@
 .rare-shine-screen.rare-l1 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
-    transparent 0%,
-    transparent 26%,
-    rgba(245, 205, 100, 0.5) 34%,
-    rgba(228, 174, 57, 0.22) 52%,
-    transparent 70%
+    rgba(245, 205, 100, 0.55) 0%,
+    rgba(228, 174, 57, 0.28) 38%,
+    rgba(228, 174, 57, 0.08) 58%,
+    transparent 72%
   );
   animation: rare-aura-gold 2.95s ease-out forwards;
 }
@@ -529,11 +545,10 @@
 .rare-shine-screen.rare-l2 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
-    transparent 0%,
-    transparent 28%,
-    rgba(255, 138, 128, 0.45) 36%,
-    rgba(235, 75, 75, 0.18) 52%,
-    transparent 70%
+    rgba(255, 138, 128, 0.5) 0%,
+    rgba(235, 75, 75, 0.24) 40%,
+    rgba(235, 75, 75, 0.08) 58%,
+    transparent 72%
   );
   animation: rare-aura-red 2.05s ease-out forwards;
 }
@@ -541,11 +556,10 @@
 .rare-shine-screen.rare-l3 .rare-shine-aura {
   background: radial-gradient(
     ellipse at 50% 50%,
-    transparent 0%,
-    transparent 30%,
-    rgba(255, 150, 215, 0.4) 38%,
-    rgba(242, 73, 184, 0.14) 54%,
-    transparent 70%
+    rgba(255, 150, 215, 0.45) 0%,
+    rgba(242, 73, 184, 0.2) 42%,
+    rgba(242, 73, 184, 0.06) 60%,
+    transparent 72%
   );
   animation: rare-aura-pink 1.6s ease-out forwards;
 }
