@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { toast } from 'sonner';
 import type { ClassLevel } from '@/lib/dynasty-rebirth';
 
 export interface ShareInfo {
@@ -46,10 +45,7 @@ const useShareModal = create<ShareModalState>(set => ({
   activate: () => set({ active: true }),
   deactivate: () => set({ active: false }),
   setShareInfo: (info: ShareInfo) => set({ shareInfo: info }),
-  openShare: (info: ShareInfo) => {
-    toast.dismiss();
-    set({ shareInfo: info, active: true });
-  }
+  openShare: (info: ShareInfo) => set({ shareInfo: info, active: true })
 }));
 
 export default useShareModal;

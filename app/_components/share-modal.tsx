@@ -833,13 +833,7 @@ function ShareModal() {
   }
 
   return (
-    <Modal
-      active={active}
-      onClose={handleClose}
-      overlayClassName="share-modal-overlay"
-      className="share-modal-dialog"
-      position={{ s: 'bottom', m: 'center' }}
-    >
+    <Modal active={active} onClose={handleClose}>
       {previewImageUrl ? (
         <View gap={3} align="center">
           <Dismissible onClose={handleClosePreview} closeAriaLabel="关闭预览">
