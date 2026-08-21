@@ -2,9 +2,9 @@ import './_themes/orangeTheme/theme.css';
 import './globals.css';
 import ReshapedProvider from '@/components/reshaped-provider';
 import React from 'react';
-import { Toaster } from 'sonner';
+import AppToaster from '@/components/app-toaster';
 import Script from 'next/script';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import {
   createPageMetadata,
   jsonLd,
@@ -18,6 +18,12 @@ const cfBeacon = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
 const googleSiteVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 const baiduSiteVerification = process.env.NEXT_PUBLIC_BAIDU_SITE_VERIFICATION;
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover'
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -55,7 +61,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Toaster position="bottom-center" />
+        <AppToaster />
         <ReshapedProvider>{children}</ReshapedProvider>
         {adsenseClient && (
           <Script
