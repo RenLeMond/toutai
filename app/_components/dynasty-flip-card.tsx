@@ -5,7 +5,8 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
+  useState,
+  useSyncExternalStore
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Text, View } from 'reshaped';
@@ -245,7 +246,11 @@ const DynastyFlipCard = ({
     const [rareShineLevel, setRareShineLevel] = useState<RareLevel | null>(null);
     const [rareShinePlayId, setRareShinePlayId] = useState(0);
     const [fxRect, setFxRect] = useState<FxRect | null>(null);
-    const [portalMounted, setPortalMounted] = useState(false);
+    const portalMounted = useSyncExternalStore(
+      () => () => {},
+      () => true,
+      () => false
+    );
     const [flipped, setFlipped] = useState(Boolean(result));
     const [syncedSeq, setSyncedSeq] = useState<number | null>(null);
     const [winnerIsNew, setWinnerIsNew] = useState(false);
@@ -489,7 +494,6 @@ const DynastyFlipCard = ({
     }, [reveal]);
 
     useEffect(() => {
-      setPortalMounted(true);
       return () => {
         animRef.current?.cancel();
         if (spinTimerRef.current) window.clearTimeout(spinTimerRef.current);
@@ -502,7 +506,6 @@ const DynastyFlipCard = ({
     useLayoutEffect(() => {
       if (!rareShineLevel) {
         document.body.classList.remove('is-rare-shining');
-        setFxRect(null);
         return;
       }
 
@@ -529,7 +532,7 @@ const DynastyFlipCard = ({
         });
       };
 
-      measure();
+      onViewportChange();
       window.addEventListener('resize', onViewportChange);
       window.addEventListener('scroll', onViewportChange, true);
       window.visualViewport?.addEventListener('resize', onViewportChange);
