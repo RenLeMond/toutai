@@ -54,17 +54,44 @@ const ShareWorldMap = dynamic(() => import('@/components/share-world-map'), {
 
 const WORLD_SHARE_URL = 'https://toutai.online/world';
 
-function WorldShareQr({ bgColor }: { bgColor: string }) {
+function ShareQr({
+  value,
+  bgColor
+}: {
+  value: string;
+  bgColor: string;
+}) {
   return (
-    <QRCode
-      value={WORLD_SHARE_URL}
-      bgColor={bgColor}
-      fgColor="#000000"
-      level="L"
-      size={256}
-      className="w-12 h-12 shrink-0"
-      style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-    />
+    <div
+      style={{
+        width: 48,
+        height: 48,
+        minWidth: 48,
+        minHeight: 48,
+        maxWidth: 48,
+        maxHeight: 48,
+        flexShrink: 0,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
+      }}
+    >
+      <QRCode
+        value={value}
+        bgColor={bgColor}
+        fgColor="#000000"
+        level="L"
+        size={48}
+        style={{
+          width: 48,
+          height: 48,
+          maxWidth: 48,
+          maxHeight: 48,
+          display: 'block'
+        }}
+      />
+    </div>
   );
 }
 
@@ -82,7 +109,26 @@ function WorldShareFooter({ bgColor }: { bgColor: string }) {
           </Text>
         </View>
       </View>
-      <WorldShareQr bgColor={bgColor} />
+      <ShareQr value={WORLD_SHARE_URL} bgColor={bgColor} />
+    </View>
+  );
+}
+
+function ChinaShareFooter({ bgColor }: { bgColor: string }) {
+  return (
+    <View direction="row" justify="space-between" align="center">
+      <View direction="row" gap={2} align="center">
+        <CarrotIcon size={40} />
+        <View direction="column">
+          <Text color="primary" weight="medium" variant="body-1">
+            投胎模拟器
+          </Text>
+          <Text color="primary" weight="medium">
+            toutai.online
+          </Text>
+        </View>
+      </View>
+      <ShareQr value="https://toutai.online" bgColor={bgColor} />
     </View>
   );
 }
@@ -273,28 +319,7 @@ function ShareStyle1({ shareInfo }: { shareInfo: ShareInfo }) {
             </>
           )}
         </Text>
-        <View direction="row" justify="space-between" align="center">
-          <View direction="row" gap={2} align="center">
-            <CarrotIcon size={40} />
-            <View direction="column">
-              <Text color="primary" weight="medium" variant="body-1">
-                投胎模拟器
-              </Text>
-              <Text color="primary" weight="medium">
-                toutai.online
-              </Text>
-            </View>
-          </View>
-          <QRCode
-            value="https://toutai.online"
-            bgColor="#fed8aa"
-            fgColor="#000000"
-            level="L"
-            size={256}
-            className="w-12 h-12 shrink-0"
-            style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-          />
-        </View>
+        <ChinaShareFooter bgColor="#fed8aa" />
       </View>
     </div>
   );
@@ -369,28 +394,7 @@ function ShareStyle2({ shareInfo }: { shareInfo: ShareInfo }) {
             </>
           )}
         </View>
-        <View direction="row" justify="space-between" align="center">
-          <View direction="row" gap={2} align="center">
-            <CarrotIcon size={40} />
-            <View direction="column">
-              <Text color="primary" weight="medium" variant="body-1">
-                投胎模拟器
-              </Text>
-              <Text color="primary" weight="medium">
-                toutai.online
-              </Text>
-            </View>
-          </View>
-          <QRCode
-            value="https://toutai.online"
-            bgColor="#f5f3ef"
-            fgColor="#000000"
-            level="L"
-            size={256}
-            className="w-12 h-12 shrink-0"
-            style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-          />
-        </View>
+        <ChinaShareFooter bgColor="#f5f3ef" />
       </View>
     </div>
   );
@@ -469,28 +473,7 @@ function ShareStyle3({ shareInfo }: { shareInfo: ShareInfo }) {
             </>
           )}
         </View>
-        <View direction="row" justify="space-between" align="center">
-          <View direction="row" gap={2} align="center">
-            <CarrotIcon size={40} />
-            <View direction="column">
-              <Text color="primary" weight="medium" variant="body-1">
-                投胎模拟器
-              </Text>
-              <Text color="primary" weight="medium">
-                toutai.online
-              </Text>
-            </View>
-          </View>
-          <QRCode
-            value="https://toutai.online"
-            bgColor="#f5f3ef"
-            fgColor="#000000"
-            level="L"
-            size={256}
-            className="w-12 h-12 shrink-0"
-            style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-          />
-        </View>
+        <ChinaShareFooter bgColor="#f5f3ef" />
       </View>
     </div>
   );
