@@ -567,10 +567,15 @@ export function glowRgba(glow: string, alpha: number): string {
   return `rgba(228, 174, 57, ${alpha})`;
 }
 
-async function waitForFonts() {
+async function waitForFonts(timeoutMs = 2500) {
   if (typeof document === 'undefined' || !document.fonts?.ready) return;
   try {
-    await document.fonts.ready;
+    await Promise.race([
+      document.fonts.ready,
+      new Promise<void>(resolve => {
+        window.setTimeout(resolve, timeoutMs);
+      })
+    ]);
   } catch {
     // ignore font loading errors and draw with fallbacks
   }

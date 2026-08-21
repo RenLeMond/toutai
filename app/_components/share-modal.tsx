@@ -586,10 +586,15 @@ async function waitForShareImages(root: HTMLElement, timeoutMs = 3000) {
   );
 }
 
-async function waitForShareFonts() {
+async function waitForShareFonts(timeoutMs = 2500) {
   if (typeof document === 'undefined' || !document.fonts?.ready) return;
   try {
-    await document.fonts.ready;
+    await Promise.race([
+      document.fonts.ready,
+      new Promise<void>(resolve => {
+        window.setTimeout(resolve, timeoutMs);
+      })
+    ]);
   } catch {
     // draw with fallbacks if font loading fails
   }
@@ -752,7 +757,7 @@ function ShareModal() {
         );
 
         const canvas = await html2canvas(shareContent, {
-          scale: 3,
+          scale: window.matchMedia('(max-width: 768px)').matches ? 2 : 3,
           useCORS: true,
           allowTaint: true
         });
@@ -789,6 +794,7 @@ function ShareModal() {
         try {
           const file = new File([blob], filename, { type: 'image/png' });
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            setIsSaving(false);
             await navigator.share({
               files: [file],
               title: '投胎模拟器结果'
@@ -833,7 +839,11 @@ function ShareModal() {
   }
 
   return (
-    <Modal active={active} onClose={handleClose}>
+    <Modal
+      active={active}
+      onClose={handleClose}
+      className="share-modal-dialog"
+    >
       {previewImageUrl ? (
         <View gap={3} align="center">
           <Dismissible onClose={handleClosePreview} closeAriaLabel="关闭预览">
@@ -884,7 +894,7 @@ function ShareModal() {
             <Modal.Subtitle>分享你的投胎结果</Modal.Subtitle>
           </Dismissible>
           {shareInfo.mode === 'world' ? (
-            <Tabs variant="pills">
+            <Tabs variant="pills" defaultValue="1">
               <View gap={3}>
                 <View>
                   <Tabs.Panel value="1">
@@ -917,7 +927,7 @@ function ShareModal() {
               <DynastyShareCanvasPreview poster={cachedDynastyPoster} />
             </>
           ) : (
-            <Tabs variant="pills">
+            <Tabs variant="pills" defaultValue="1">
               <View gap={3}>
                 <View>
                   <Tabs.Panel value="1">

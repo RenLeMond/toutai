@@ -1,10 +1,11 @@
 .dynasty-share-canvas-preview {
   box-sizing: border-box;
-  width: min(100%, 360px, calc((70dvh - 9rem) * 3 / 4));
-  margin: 0 auto;
-  aspect-ratio: 3 / 4;
-  height: auto;
   display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  margin: 0 auto;
   object-fit: contain;
   border-radius: 14px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);

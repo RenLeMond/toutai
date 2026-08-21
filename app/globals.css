@@ -223,6 +223,11 @@ body {
   min-width: 0;
 }
 
+.share-modal-dialog {
+  min-width: 0;
+  max-width: min(100%, calc(100vw - 32px));
+}
+
 /* Sonner sets width:100% plus left/right offsets below 600px, which overflows. */
 @media (max-width: 600px) {
   [data-sonner-toaster] {
